@@ -57,7 +57,7 @@
 		BF_664473973557 /* TMDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_897124212628 /* TMDB.swift */; };
 		BF_680522099617 /* AlternativeTitlesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_310784778917 /* AlternativeTitlesResponse.swift */; };
 		BF_727261039954 /* MovieFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_431397819818 /* MovieFragment.swift */; };
-		BF_745950368900 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_610672372945 /* Result.swift */; };
+		BF_745950368900 /* Result+TMDBKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_610672372945 /* Result+TMDBKit.swift */; };
 		BF_765114060671 /* v3_movie_284054_credits.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_464649808103 /* v3_movie_284054_credits.json */; };
 		BF_770609878059 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_747014101839 /* AppDelegate.swift */; };
 		BF_771939691203 /* v3_movie_143_changes.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_131983396581 /* v3_movie_143_changes.json */; };
@@ -204,7 +204,7 @@
 		FR_500511333723 /* KeywordsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordsResponse.swift; sourceTree = "<group>"; };
 		FR_601198443681 /* v3_movie_284054_videos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_videos.json; sourceTree = "<group>"; };
 		FR_609162780262 /* v3_movie_143.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_143.json; sourceTree = "<group>"; };
-		FR_610672372945 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		FR_610672372945 /* Result+TMDBKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+TMDBKit.swift"; sourceTree = "<group>"; };
 		FR_616073543644 /* v3_movie_284054_release_dates.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_release_dates.json; sourceTree = "<group>"; };
 		FR_632710787705 /* v3_movie_latest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_latest.json; sourceTree = "<group>"; };
 		FR_636117385019 /* ReleaseDatesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseDatesResponse.swift; sourceTree = "<group>"; };
@@ -339,6 +339,7 @@
 		G_3576534917094 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				FR_610672372945 /* Result+TMDBKit.swift */,
 				FR_867121959953 /* URL+QueryItem.swift */,
 			);
 			path = Extensions;
@@ -414,7 +415,6 @@
 				FR_857261077891 /* HTTPLogger.swift */,
 				FR_196207011480 /* HTTPResponseHeaders.swift */,
 				FR_676958344169 /* NetworkClient.swift */,
-				FR_610672372945 /* Result.swift */,
 				FR_835683193613 /* TMDBError.swift */,
 			);
 			path = Networking;
@@ -748,7 +748,7 @@
 				BF_525754002816 /* NowPlayingMoviesResponse.swift in Sources */,
 				BF_189795359896 /* PopularMoviesResponse.swift in Sources */,
 				BF_301772338279 /* ReleaseDatesResponse.swift in Sources */,
-				BF_745950368900 /* Result.swift in Sources */,
+				BF_745950368900 /* Result+TMDBKit.swift in Sources */,
 				ED01409A2112EC1E00C714E9 /* Poster.swift in Sources */,
 				BF_337237285015 /* ReviewsResponse.swift in Sources */,
 				ED0140AC2112ECD700C714E9 /* Video.swift in Sources */,
