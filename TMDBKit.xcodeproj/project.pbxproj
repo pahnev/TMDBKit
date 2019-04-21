@@ -199,7 +199,7 @@
 		FR_448055571358 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FR_464649808103 /* v3_movie_284054_credits.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_credits.json; sourceTree = "<group>"; };
 		FR_465046817482 /* CacheConfig+Movies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CacheConfig+Movies.swift"; sourceTree = "<group>"; };
-		FR_470489640992 /* TMDBKitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TMDBKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FR_470489640992 /* TMDBKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMDBKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FR_499570475687 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		FR_500511333723 /* KeywordsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordsResponse.swift; sourceTree = "<group>"; };
 		FR_601198443681 /* v3_movie_284054_videos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_videos.json; sourceTree = "<group>"; };
@@ -577,12 +577,21 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0930;
+				TargetAttributes = {
+					NT_470489640992 = {
+						LastSwiftMigration = 1020;
+					};
+					NT_888199839162 = {
+						LastSwiftMigration = 1020;
+					};
+				};
 			};
 			buildConfigurationList = CL_888199839162 /* Build configuration list for PBXProject "TMDBKit" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				en,
 				Base,
 			);
 			mainGroup = G_8448771205358;
@@ -813,6 +822,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBKit;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -830,6 +840,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBKitTests;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -854,6 +865,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBKit;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1015,6 +1027,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBKitTests;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
