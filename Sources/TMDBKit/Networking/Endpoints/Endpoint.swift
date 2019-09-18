@@ -20,3 +20,5 @@ protocol Endpoint {
     var requestHeaders: [String: String] { get }
     var url: URL { get }
 }
+
+let baseURL = URL(string: "https://api.themoviedb.org/3/")!

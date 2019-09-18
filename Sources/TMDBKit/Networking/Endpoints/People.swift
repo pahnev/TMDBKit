@@ -72,9 +72,6 @@ enum People: Endpoint {
     }
 
     var url: URL {
-        guard let baseURL = URL(string: "https://api.themoviedb.org/3/") else {
-            preconditionFailure("Invalid URL string")
-        }
         let people = baseURL.appendingPathComponent("person")
 
         switch self {
