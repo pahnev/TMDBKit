@@ -207,7 +207,7 @@
 		FR_729429313537 /* TMDBDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TMDBDemo.entitlements; sourceTree = "<group>"; };
 		FR_732603626177 /* StubHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubHelper.swift; sourceTree = "<group>"; };
 		FR_747014101839 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FR_748603640912 /* TMDBDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TMDBDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FR_748603640912 /* TMDBDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TMDBDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FR_769493658083 /* v3_movie_upcoming.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_upcoming.json; sourceTree = "<group>"; };
 		FR_775432591574 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FR_800019162868 /* ImagesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesResponse.swift; sourceTree = "<group>"; };
@@ -555,6 +555,9 @@
 					NT_470489640992 = {
 						LastSwiftMigration = 1020;
 					};
+					NT_748603640912 = {
+						LastSwiftMigration = 1030;
+					};
 					NT_888199839162 = {
 						LastSwiftMigration = 1020;
 					};
@@ -894,6 +897,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBDemo;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -912,6 +916,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pahnev.TMDBKit.TMDBDemo;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
