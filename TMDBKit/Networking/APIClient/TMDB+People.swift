@@ -9,6 +9,6 @@ import Foundation
 
 extension TMDB {
     public func getPersonImages(personId: Int, completion: @escaping TMBDResult<PersonImageResponse>) {
-        fetchObject(ofType: PersonImageResponse.self, cacheConfig: People.images(personId: personId), endpoint: People.images(personId: personId), completion: completion)
+        fetchObject(ofType: PersonImageResponse.self, endpoint: People.images(personId: personId), completion: completion)
     }
 }

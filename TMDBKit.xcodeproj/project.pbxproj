@@ -39,16 +39,13 @@
 		BF_448544594098 /* ImagesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_800019162868 /* ImagesResponse.swift */; };
 		BF_456014020072 /* ListsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_689785635438 /* ListsResponse.swift */; };
 		BF_459546515640 /* TMDBKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FR_888199839162 /* TMDBKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BF_476389782353 /* CacheConfig+Movies.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_465046817482 /* CacheConfig+Movies.swift */; };
 		BF_495083782359 /* v3_movie_284054_videos.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_601198443681 /* v3_movie_284054_videos.json */; };
 		BF_502380877346 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_441240632494 /* Endpoint.swift */; };
 		BF_525754002816 /* NowPlayingMoviesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_651952950598 /* NowPlayingMoviesResponse.swift */; };
 		BF_560622747933 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = VG_125959221503 /* LaunchScreen.storyboard */; };
 		BF_560717495769 /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_676958344169 /* NetworkClient.swift */; };
 		BF_582779103226 /* v3_movie_upcoming.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_769493658083 /* v3_movie_upcoming.json */; };
-		BF_590726621209 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_168478894302 /* Cache.swift */; };
 		BF_593409212886 /* TranslationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_230273963918 /* TranslationsResponse.swift */; };
-		BF_595030117330 /* CacheConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_850340688167 /* CacheConfig.swift */; };
 		BF_595239853261 /* v3_movie_284054_translations.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_318090087248 /* v3_movie_284054_translations.json */; };
 		BF_616422119536 /* ExternalIds.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_858820158399 /* ExternalIds.swift */; };
 		BF_627495450624 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_448055571358 /* ViewController.swift */; };
@@ -68,8 +65,6 @@
 		BF_830131420550 /* v3_movie_284054_release_dates.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_616073543644 /* v3_movie_284054_release_dates.json */; };
 		BF_835869610188 /* TMDBKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_832694568592 /* TMDBKitTests.swift */; };
 		BF_838066795587 /* StubHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_732603626177 /* StubHelper.swift */; };
-		BF_850120457383 /* CacheEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_358016077032 /* CacheEntry.swift */; };
-		BF_853053842303 /* Cache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FR_260015663399 /* Cache.framework */; };
 		BF_855217717349 /* v3_movie_143_alternative_titles.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_160772987466 /* v3_movie_143_alternative_titles.json */; };
 		BF_855978565523 /* v3_movie_top_rated.json in Resources */ = {isa = PBXBuildFile; fileRef = FR_811540275144 /* v3_movie_top_rated.json */; };
 		BF_864969557692 /* HTTPResponseHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR_196207011480 /* HTTPResponseHeaders.swift */; };
@@ -98,7 +93,6 @@
 		EDF223D82135579200CEABE6 /* TMDB+People.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF223D72135579200CEABE6 /* TMDB+People.swift */; };
 		EDF223DA213557DB00CEABE6 /* People.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF223D9213557DB00CEABE6 /* People.swift */; };
 		EDF223DC21355A0100CEABE6 /* PersonImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF223DB21355A0100CEABE6 /* PersonImageResponse.swift */; };
-		EDF223DE21355B6500CEABE6 /* CacheConfig+People.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF223DD21355B6500CEABE6 /* CacheConfig+People.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,12 +157,10 @@
 		EDF223D72135579200CEABE6 /* TMDB+People.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TMDB+People.swift"; sourceTree = "<group>"; };
 		EDF223D9213557DB00CEABE6 /* People.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = People.swift; sourceTree = "<group>"; };
 		EDF223DB21355A0100CEABE6 /* PersonImageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonImageResponse.swift; sourceTree = "<group>"; };
-		EDF223DD21355B6500CEABE6 /* CacheConfig+People.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CacheConfig+People.swift"; sourceTree = "<group>"; };
 		FR_125959221503 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FR_131983396581 /* v3_movie_143_changes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_143_changes.json; sourceTree = "<group>"; };
 		FR_141624192847 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FR_160772987466 /* v3_movie_143_alternative_titles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_143_alternative_titles.json; sourceTree = "<group>"; };
-		FR_168478894302 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		FR_180005602418 /* v3_movie_popular.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_popular.json; sourceTree = "<group>"; };
 		FR_181308556184 /* VideosResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideosResponse.swift; sourceTree = "<group>"; };
 		FR_185558028798 /* v3_movie_284054_external_ids.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_external_ids.json; sourceTree = "<group>"; };
@@ -189,7 +181,6 @@
 		FR_354356248347 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OHHTTPStubs.framework; sourceTree = "<group>"; };
 		FR_355481800244 /* v3_movie_284054_recommendations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_recommendations.json; sourceTree = "<group>"; };
 		FR_356840202052 /* CodableEquatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableEquatable.swift; sourceTree = "<group>"; };
-		FR_358016077032 /* CacheEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheEntry.swift; sourceTree = "<group>"; };
 		FR_372804556643 /* TV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TV.swift; sourceTree = "<group>"; };
 		FR_377329226669 /* ReviewsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsResponse.swift; sourceTree = "<group>"; };
 		FR_381230159796 /* CreditsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsResponse.swift; sourceTree = "<group>"; };
@@ -198,7 +189,6 @@
 		FR_441240632494 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		FR_448055571358 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FR_464649808103 /* v3_movie_284054_credits.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_credits.json; sourceTree = "<group>"; };
-		FR_465046817482 /* CacheConfig+Movies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CacheConfig+Movies.swift"; sourceTree = "<group>"; };
 		FR_470489640992 /* TMDBKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMDBKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FR_499570475687 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		FR_500511333723 /* KeywordsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordsResponse.swift; sourceTree = "<group>"; };
@@ -230,7 +220,6 @@
 		FR_833942501994 /* v3_movie_284054_reviews.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_reviews.json; sourceTree = "<group>"; };
 		FR_835543884186 /* v3_movie_284054_lists.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = v3_movie_284054_lists.json; sourceTree = "<group>"; };
 		FR_835683193613 /* TMDBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMDBError.swift; sourceTree = "<group>"; };
-		FR_850340688167 /* CacheConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheConfig.swift; sourceTree = "<group>"; };
 		FR_857261077891 /* HTTPLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPLogger.swift; sourceTree = "<group>"; };
 		FR_858820158399 /* ExternalIds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalIds.swift; sourceTree = "<group>"; };
 		FR_867121959953 /* URL+QueryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+QueryItem.swift"; sourceTree = "<group>"; };
@@ -262,7 +251,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF_853053842303 /* Cache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,18 +353,6 @@
 				FR_832694568592 /* TMDBKitTests.swift */,
 			);
 			path = TMDBKitTests;
-			sourceTree = "<group>";
-		};
-		G_4725133775540 /* Caching */ = {
-			isa = PBXGroup;
-			children = (
-				FR_168478894302 /* Cache.swift */,
-				FR_465046817482 /* CacheConfig+Movies.swift */,
-				FR_850340688167 /* CacheConfig.swift */,
-				FR_358016077032 /* CacheEntry.swift */,
-				EDF223DD21355B6500CEABE6 /* CacheConfig+People.swift */,
-			);
-			path = Caching;
 			sourceTree = "<group>";
 		};
 		G_6164266980874 /* Movie */ = {
@@ -488,7 +464,6 @@
 		G_8881998391629 /* TMDBKit */ = {
 			isa = PBXGroup;
 			children = (
-				G_4725133775540 /* Caching */,
 				G_3576534917094 /* Extensions */,
 				G_1183355209575 /* Model */,
 				G_6466259764494 /* Networking */,
@@ -541,7 +516,6 @@
 				RBP_74860364091 /* Resources */,
 				FBP_74860364091 /* Frameworks */,
 				CFBP_8193723696 /* CopyFiles */,
-				SSBP_5389838371 /* Carthage */,
 			);
 			buildRules = (
 			);
@@ -652,31 +626,13 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Cache.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Nimble.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/OHHTTPStubs.framework",
 			);
 			name = Carthage;
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Cache.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Nimble.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/OHHTTPStubs.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks\n";
-		};
-		SSBP_5389838371 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Cache.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Cache.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -711,17 +667,12 @@
 				BF_680522099617 /* AlternativeTitlesResponse.swift in Sources */,
 				BF_181670702966 /* Authentication.swift in Sources */,
 				BF_295241792210 /* Authenticator.swift in Sources */,
-				BF_590726621209 /* Cache.swift in Sources */,
-				BF_476389782353 /* CacheConfig+Movies.swift in Sources */,
 				ED01408E2112EB6100C714E9 /* ProductionCountry.swift in Sources */,
 				ED0140962112EBF700C714E9 /* AlternativeTitle.swift in Sources */,
-				BF_595030117330 /* CacheConfig.swift in Sources */,
-				BF_850120457383 /* CacheEntry.swift in Sources */,
 				ED0140942112EBE700C714E9 /* Crew.swift in Sources */,
 				BF_300353002030 /* ChangesResponse.swift in Sources */,
 				BF_435255444390 /* CodableEquatable.swift in Sources */,
 				EDF223DC21355A0100CEABE6 /* PersonImageResponse.swift in Sources */,
-				EDF223DE21355B6500CEABE6 /* CacheConfig+People.swift in Sources */,
 				BF_629831320370 /* CreditsResponse.swift in Sources */,
 				ED0140A22112EC6100C714E9 /* TMDBDate.swift in Sources */,
 				BF_502380877346 /* Endpoint.swift in Sources */,

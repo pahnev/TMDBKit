@@ -33,13 +33,11 @@ public protocol SessionProvider {
 public final class TMDB {
     private let authenticator: Authenticator
     private let networkClient: NetworkClient
-    private let cache: Cache
     var sessionProvider: SessionProvider?
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator
         networkClient = NetworkClient(authenticator: authenticator)
-        cache = try Cache()
     }
 
     public func setSessionProvider(_ sessionProvider: SessionProvider) {
@@ -48,12 +46,12 @@ public final class TMDB {
 
     /// - Returns: Total byte size of all caches stored on disk by TMDBKit
     public func cacheDiskStorageSize() -> Int {
-        return cache.totalDiskStorageSize()
+        return networkClient.cacheDiskStorageSize()
     }
 
     /// Removes all cached data from memory and disk.
     public func clearCaches() {
-        do { try cache.clearCaches() } catch { print("Couldn't clear caches: \(error)") }
+        networkClient.clearCaches()
     }
 
     /// Create a temporary request token that can be used to validate a TMDb user login. More details about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
@@ -74,13 +72,8 @@ public final class TMDB {
     ///   - cacheConfig: The Cache configuration defining where to look for the object or cache in case it has to be fetched from network.
     ///   - endpoint: The API endpoint to fetch the object from.
     ///   - completion: The closure called when the fetch is finished. Returns either the object requested or TMDBError if something failed.
-    func fetchObject<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, cacheConfig: CacheConfigurable, endpoint: Endpoint, completion: @escaping TMBDResult<CachedObjectType>) {
-        fetchObjectFromLocalCache(ofType: CachedObjectType.self, cacheConfig: cacheConfig) { cachedObject in
-            guard let cachedObject = cachedObject else {
-                return self.fetchObjectFromNetwork(ofType: CachedObjectType.self, cacheConfig: cacheConfig, endpoint: endpoint, currentCacheEntry: nil, completion: completion)
-            }
-            self.fetchObjectFromNetwork(ofType: CachedObjectType.self, cacheConfig: cacheConfig, endpoint: endpoint, currentCacheEntry: cachedObject, completion: completion)
-        }
+    func fetchObject<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, endpoint: Endpoint, completion: @escaping TMBDResult<CachedObjectType>) {
+        fetchObjectFromNetwork(ofType: CachedObjectType.self, endpoint: endpoint, completion: completion)
     }
 
     /// Performs authenticated request and returns either NetworkResult.SuccessValue on successful completion or TMDBError if something failed.
@@ -144,70 +137,26 @@ private extension TMDB {
         }
     }
 
-    func parseAndCache<CachedObjectType>(ofType: CachedObjectType.Type, cacheConfig: CacheConfigurable, value: NetworkResult.SuccessValue, completion: TMBDResult<CachedObjectType>) where CachedObjectType: CodableEquatable {
+    func parseAndCache<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMBDResult<CachedObjectType>) where CachedObjectType: CodableEquatable {
         let parsedObject: CachedObjectType
         do {
             parsedObject = try self.parseObject(ofType: CachedObjectType.self, data: value.value)
+            completion(.success(parsedObject))
         } catch let error as TMDBError {
             return completion(.failure(error))
         } catch {
             preconditionFailure("There should no other error thrown from parsing.")
         }
-
-        // Cache
-        let cache = self.cache.storage(for: cacheConfig)
-        let cacheEntry = CacheEntry<CachedObjectType>(value: parsedObject,
-                                                      maxAge: value.headers.maxAge,
-                                                      etag: value.headers.etag)
-        do {
-            try cache.setObject(cacheEntry, forKey: cacheConfig.key)
-            completion(.success(parsedObject))
-        } catch {
-            completion(.failure(TMDBError.cacheSavingError(error)))
-        }
     }
 
-    func fetchObjectFromLocalCache<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, cacheConfig: CacheConfigurable, completion: @escaping (CacheEntry<CachedObjectType>?) -> Void) {
-        let cache = self.cache.storage(for: cacheConfig)
-        cache.async.object(ofType: CacheEntry<CachedObjectType>.self, forKey: cacheConfig.key) { result in
-            switch result {
-            case .value(let object):
-                completion(object)
-            case .error:
-                completion(nil)
-            }
-        }
-    }
+    func fetchObjectFromNetwork<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMBDResult<CachedObjectType>) {
 
-    func fetchObjectFromNetwork<CachedObjectType>(ofType: CachedObjectType.Type, cacheConfig: CacheConfigurable, endpoint: Endpoint, currentCacheEntry: CacheEntry<CachedObjectType>?, completion: @escaping TMBDResult<CachedObjectType>) {
-
-        // Check if the cached entry can be used without making network request
-        if let cacheEntry = currentCacheEntry,
-            let expirationDate = cacheEntry.expirationDate,
-            Date() < expirationDate {
-            DispatchQueue.main.async {
-                completion(.success(cacheEntry.value))
-            }
-            return
-        }
-
-        // Setup validation token
-        var headers: [String: String] = [:]
-        if let etag = currentCacheEntry?.etag {
-            headers = ["If-None-Match": etag]
-        }
-
-        authenticatedRequest(for: endpoint, additionalHeaders: headers, completion: { result in
+        authenticatedRequest(for: endpoint, additionalHeaders: additionalHeaders, completion: { result in
             switch result {
             case .failure(let error):
-                switch (error, currentCacheEntry) {
-                case (.httpError(let code), .some(let cacheEntry)) where code == 304:
-                    completion(.success(cacheEntry.value)) // HTTP 304 Not Modified - should use the cached value.
-                case ((let error), _):
-                    completion(.failure(error)) // Actual error - pass it up
-                }
+                completion(.failure(error))
             case .success(let value):
-                self.parseAndCache(ofType: CachedObjectType.self, cacheConfig: cacheConfig, value: value, completion: completion)
+                self.parseAndCache(ofType: CachedObjectType.self, value: value, completion: completion)
             }
         })
     }

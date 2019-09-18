@@ -12,11 +12,7 @@ enum NetworkResult {
     struct SuccessValue {
         let value: Data
         let headers: HTTPResponseHeaders
-
-        init(_ value: Data, headers: HTTPResponseHeaders) {
-            self.value = value
-            self.headers = headers
-        }
+        let statusCode: Int
     }
 
     case success(SuccessValue)
@@ -27,14 +23,27 @@ final class NetworkClient {
     private let authenticator: Authenticator
     private let httpLogger: HTTPLogger
     private let urlSession: URLSession
+    private let cache: URLCache
 
-    init(authenticator: Authenticator) {
+    init(authenticator: Authenticator, cache: URLCache = URLCache.shared) {
         self.authenticator = authenticator
+        self.cache = cache
         httpLogger = HTTPLogger()
+
+        cache.diskCapacity = 100 * 1024 * 1024
+        cache.memoryCapacity = 100 * 1024 * 1024
 
         let urlConfiguration = URLSessionConfiguration.default
         urlConfiguration.requestCachePolicy = .reloadIgnoringLocalCacheData
         urlSession = URLSession(configuration: urlConfiguration)
+    }
+
+    func cacheDiskStorageSize() -> Int {
+        return cache.currentDiskUsage
+    }
+
+    func clearCaches() {
+        cache.removeAllCachedResponses()
     }
 
     func executeAuthenticatedRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
@@ -63,6 +72,12 @@ private extension NetworkClient {
 
         let reqId = httpLogger.logStart(request)
 
+        if let cachedResponse = cache.cachedResponse(for: request), let httpResponse = cachedResponse.response as? HTTPURLResponse {
+            return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
+                                                                  headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
+                                                                  statusCode: httpResponse.statusCode)))
+        }
+
         let task = urlSession.dataTask(with: request) { data, response, httpRequestError in
             self.httpLogger.logComplete(with: reqId, data: data, response: response, error: httpRequestError)
 
@@ -83,7 +98,10 @@ private extension NetworkClient {
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }
 
-                return completion(.success(NetworkResult.SuccessValue(data, headers: HTTPResponseHeaders(httpResponse.allHeaderFields))))
+                self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: request)
+                return completion(.success(NetworkResult.SuccessValue(value: data,
+                                                                      headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
+                                                                      statusCode: httpResponse.statusCode)))
             }
         }
 
