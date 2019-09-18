@@ -1,3 +1,2 @@
 github "AliSoftware/OHHTTPStubs" "7.0.0"
 github "Quick/Nimble" "v8.0.1"
-github "hyperoslo/Cache" "4.2.0"
