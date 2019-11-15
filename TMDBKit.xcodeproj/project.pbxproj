@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		25D3CD54237E97E200DE5D38 /* TaggedImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3CD52237E966C00DE5D38 /* TaggedImageResponse.swift */; };
+		25D3CD57237EF9AC00DE5D38 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3CD56237EF9AC00DE5D38 /* Media.swift */; };
 		OBJ_177 /* AdapterProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_88 /* AdapterProtocols.swift */; };
 		OBJ_178 /* AssertionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_89 /* AssertionDispatcher.swift */; };
 		OBJ_179 /* AssertionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_90 /* AssertionRecorder.swift */; };
@@ -202,6 +203,7 @@
 
 /* Begin PBXFileReference section */
 		25D3CD52237E966C00DE5D38 /* TaggedImageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggedImageResponse.swift; sourceTree = "<group>"; };
+		25D3CD56237EF9AC00DE5D38 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		"Nimble::Nimble::Product" /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OBJ_100 /* ExpectationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpectationMessage.swift; sourceTree = "<group>"; };
@@ -464,6 +466,7 @@
 				OBJ_21 /* Keyword.swift */,
 				OBJ_22 /* Language.swift */,
 				OBJ_23 /* List.swift */,
+				25D3CD56237EF9AC00DE5D38 /* Media.swift */,
 				OBJ_24 /* Movie.swift */,
 				OBJ_25 /* MovieCollection.swift */,
 				OBJ_26 /* MovieFragment.swift */,
@@ -1015,6 +1018,7 @@
 				OBJ_284 /* ProductionCompany.swift in Sources */,
 				OBJ_285 /* ProductionCountry.swift in Sources */,
 				OBJ_286 /* ReleaseDate.swift in Sources */,
+				25D3CD57237EF9AC00DE5D38 /* Media.swift in Sources */,
 				OBJ_287 /* ReleaseDateResult.swift in Sources */,
 				OBJ_288 /* Review.swift in Sources */,
 				OBJ_289 /* TMDBDate.swift in Sources */,

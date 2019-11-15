@@ -100,6 +100,38 @@ class PeopleEndpointTests: XCTestCase {
         expect(images).toEventuallyNot(beNil())
     }
 
+    func testTaggedImagesResponseParsing() throws {
+        var images: TaggedImageResponse?
+        stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
+        tmdb.people.taggedImages(for: personId) { result in
+            images = result.value
+        }
+        expect(images).toEventuallyNot(beNil())
+        expect(images?.id).to(equal(19))
+        expect(images?.page).to(equal(1))
+        expect(images?.totalPages).to(equal(1))
+        expect(images?.results.count).to(equal(10))
+
+        let tvResult = try XCTUnwrap(images?.results.first)
+        expect(tvResult.iso6391).to(beNil())
+
+        expect(tvResult.voteCount).to(equal(3))
+        expect(tvResult.mediaType).to(equal(.tv))
+        expect(tvResult.filePath).to(equal("/hY0TRC5cXMqFQvm5xl5LLd9t7eX.jpg"))
+        expect(tvResult.aspectRatio).to(beCloseTo(1.7778))
+        expect(tvResult.height).to(equal(1080))
+        expect(tvResult.voteAverage).to(beCloseTo(5.4401))
+        expect(tvResult.width).to(equal(1920))
+
+        switch tvResult.media {
+        case .movie(let movie):
+            expect(movie).toEventually(beNil())
+        case .tv(let tvMedia):
+            expect(tvMedia.name).to(equal("The West Wing"))
+            expect(tvMedia.posterPath).to(equal("/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg"))
+        }
+    }
+
     func testReturnsTranslations() {
         var translations: PersonTranslationResponse?
         stubHelper.stubWithLocalFile(People.translations(personId: personId))
