@@ -21,4 +21,10 @@ protocol Endpoint {
     var url: URL { get }
 }
 
+extension Endpoint {
+    var httpMethod: HTTPMethod { return .GET }
+    var httpBody: Data? { return nil }
+    var requestHeaders: [String : String] { return [:] }
+}
+
 let baseURL = URL(string: "https://api.themoviedb.org/3/")!

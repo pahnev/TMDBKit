@@ -20,57 +20,6 @@ enum People: Endpoint {
     case latest
     case popular
 
-    var httpMethod: HTTPMethod {
-        switch self {
-        case .details,
-             .changes,
-             .movieCredits,
-             .tvCredits,
-             .combinedCredits,
-             .externalIds,
-             .images,
-             .taggedImages,
-             .translations,
-             .latest,
-             .popular:
-            return .GET
-        }
-    }
-
-    var httpBody: Data? {
-        switch self {
-        case .details,
-             .changes,
-             .movieCredits,
-             .tvCredits,
-             .combinedCredits,
-             .externalIds,
-             .images,
-             .taggedImages,
-             .translations,
-             .latest,
-             .popular:
-            return nil
-        }
-    }
-
-    var requestHeaders: [String : String] {
-        switch self {
-        case .details,
-             .changes,
-             .movieCredits,
-             .tvCredits,
-             .combinedCredits,
-             .externalIds,
-             .images,
-             .taggedImages,
-             .translations,
-             .latest,
-             .popular:
-            return [:]
-        }
-    }
-
     var url: URL {
         let people = baseURL.appendingPathComponent("person")
 
