@@ -31,7 +31,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsPersonDetails() {
         var person: PersonDetailsResponse?
         stubHelper.stubWithLocalFile(People.details(personId: personId, append: nil))
-        tmdb.getPersonDetails(personId: personId, appending: nil) { result in
+        tmdb.people.details(for: personId, appending: nil) { result in
             person = result.value
         }
         expect(person).toEventuallyNot(beNil())
@@ -41,7 +41,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsPersonChanges() {
         var changes: ChangesResponse?
         stubHelper.stubWithLocalFile(People.changes(personId: personId))
-        tmdb.getPersonChanges(personId: personId) { result in
+        tmdb.people.changes(for: personId) { result in
             changes = result.value
         }
         expect(changes).toEventuallyNot(beNil())
@@ -50,7 +50,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsMovieCredits() {
         var credits: PersonCreditsResponse?
         stubHelper.stubWithLocalFile(People.movieCredits(personId: personId))
-        tmdb.getPersonMovieCredits(personId: personId) { result in
+        tmdb.people.movieCredits(for: personId) { result in
             credits = result.value
         }
         expect(credits).toEventuallyNot(beNil())
@@ -59,7 +59,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsTVCredits() {
         var credits: PersonCreditsResponse?
         stubHelper.stubWithLocalFile(People.tvCredits(personId: personId))
-        tmdb.getPersonTVCredits(personId: personId) { result in
+        tmdb.people.tvCredits(for: personId) { result in
             credits = result.value
         }
         expect(credits).toEventuallyNot(beNil())
@@ -67,7 +67,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsCombinedCredits() {
         var credits: PersonCreditsResponse?
         stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId))
-        tmdb.getPersonCombinedCredits(personId: personId) { result in
+        tmdb.people.combinedCredits(for: personId) { result in
             credits = result.value
         }
         expect(credits).toEventuallyNot(beNil())
@@ -76,7 +76,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsExternalIds() {
         var ids: ExternalIds?
         stubHelper.stubWithLocalFile(People.externalIds(personId: personId))
-        tmdb.getPersonExternalIds(personId: personId) { result in
+        tmdb.people.externalIds(for: personId) { result in
             ids = result.value
         }
         expect(ids).toEventuallyNot(beNil())
@@ -85,7 +85,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsImages() {
         var images: PersonImageResponse?
         stubHelper.stubWithLocalFile(People.images(personId: personId))
-        tmdb.getPersonImages(personId: personId) { result in
+        tmdb.people.images(for: personId) { result in
             images = result.value
         }
         expect(images).toEventuallyNot(beNil())
@@ -94,7 +94,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsTaggedImages() {
         var images: TaggedImageResponse?
         stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
-        tmdb.getPersonTaggedImages(personId: personId) { result in
+        tmdb.people.taggedImages(for: personId) { result in
             images = result.value
         }
         expect(images).toEventuallyNot(beNil())
@@ -103,7 +103,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsTranslations() {
         var translations: PersonTranslationResponse?
         stubHelper.stubWithLocalFile(People.translations(personId: personId))
-        tmdb.getPersonTranslations(personId: personId) { result in
+        tmdb.people.translations(for: personId) { result in
             translations = result.value
         }
         expect(translations).toEventuallyNot(beNil())
@@ -112,7 +112,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsLatest() {
         var person: PersonDetailsResponse?
         stubHelper.stubWithLocalFile(People.latest)
-        tmdb.getPersonLatest { result in
+        tmdb.people.latest { result in
             person = result.value
         }
         expect(person).toEventuallyNot(beNil())
@@ -121,7 +121,7 @@ class PeopleEndpointTests: XCTestCase {
     func testReturnsPopular() {
         var person: PopularPersonResponse?
         stubHelper.stubWithLocalFile(People.popular)
-        tmdb.getPersonPopular { result in
+        tmdb.people.popular { result in
             person = result.value
         }
         expect(person).toEventuallyNot(beNil())

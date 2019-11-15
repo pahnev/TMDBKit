@@ -30,10 +30,11 @@ public protocol SessionProvider {
     var sessionId: String { get }
 }
 
-public final class TMDB {
+public class TMDB {
     private let authenticator: Authenticator
     private let networkClient: NetworkClient
     var sessionProvider: SessionProvider?
+    public lazy var people = TMDB.PeopleEndpoints(tmdb: self)
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator
