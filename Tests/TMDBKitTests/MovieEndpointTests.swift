@@ -42,7 +42,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil))
 
         var movie: Movie?
-        tmdb.getMovieDetails(for: allQuietMovieId, appending: nil) { result in
+        tmdb.movies.details(for: allQuietMovieId, appending: nil) { result in
             movie = result.value
         }
         expect(movie).toEventuallyNot(beNil())
@@ -50,7 +50,7 @@ struct MockAuth: Authenticator {
 
     func testReturnsMovieDetailsWithImages() {
         var movie: Movie?
-        tmdb.getMovieDetails(for: allQuietMovieId, appending: [.images(languages: ["en"])]) { result in
+        tmdb.movies.details(for: allQuietMovieId, appending: [.images(languages: ["en"])]) { result in
             movie = result.value
         }
         expect(movie).toEventuallyNot(beNil())
@@ -59,7 +59,7 @@ struct MockAuth: Authenticator {
 
     func testReturnsMovieDetailsWithAllExtraDetails() {
         var movie: Movie?
-        tmdb.getMovieDetails(for: allQuietMovieId, appending: [.images(languages: nil), .reviews(language: nil), .videos(language: nil)]) { result in
+        tmdb.movies.details(for: allQuietMovieId, appending: [.images(languages: nil), .reviews(language: nil), .videos(language: nil)]) { result in
             movie = result.value
         }
         expect(movie).toEventuallyNot(beNil())
@@ -71,7 +71,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId))
 
         var alternatives: AlternativeTitlesResponse?
-        tmdb.getAlternativeMovieTitles(movieId: allQuietMovieId) { result in
+        tmdb.movies.alternativeTitles(for: allQuietMovieId) { result in
             alternatives = result.value
         }
         expect(alternatives).toEventuallyNot(beNil())
@@ -81,7 +81,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId))
 
         var changes: ChangesResponse?
-        tmdb.getMovieChanges(movieId: allQuietMovieId) { result in
+        tmdb.movies.changes(for: allQuietMovieId) { result in
             changes = result.value
         }
         expect(changes).toEventuallyNot(beNil())
@@ -91,7 +91,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId))
 
         var credits: CreditsResponse?
-        tmdb.getMovieCredits(movieId: blackPantherMovieId) { result in
+        tmdb.movies.credits(for: blackPantherMovieId) { result in
             credits = result.value
         }
         expect(credits).toEventuallyNot(beNil())
@@ -101,7 +101,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId))
 
         var ids: ExternalIds?
-        tmdb.getExternalIds(movieId: blackPantherMovieId) { result in
+        tmdb.movies.externalIds(for: blackPantherMovieId) { result in
             ids = result.value
         }
         expect(ids).toEventuallyNot(beNil())
@@ -111,7 +111,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId))
 
         var images: ImagesResponse?
-        tmdb.getMovieImages(movieId: blackPantherMovieId) { result in
+        tmdb.movies.images(for: blackPantherMovieId) { result in
             images = result.value
         }
         expect(images).toEventuallyNot(beNil())
@@ -121,7 +121,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId))
 
         var words: KeywordsResponse?
-        tmdb.getMovieKeywords(movieId: blackPantherMovieId) { result in
+        tmdb.movies.keywords(for: blackPantherMovieId) { result in
             words = result.value
         }
         expect(words).toEventuallyNot(beNil())
@@ -131,7 +131,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId))
 
         var dates: ReleaseDatesResponse?
-        tmdb.getMovieReleaseDates(movieId: blackPantherMovieId) { result in
+        tmdb.movies.releaseDates(for: blackPantherMovieId) { result in
             dates = result.value
         }
         expect(dates).toEventuallyNot(beNil())
@@ -141,7 +141,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId))
 
         var videos: VideosResponse?
-        tmdb.getMovieVideos(movieId: blackPantherMovieId) { result in
+        tmdb.movies.videos(for: blackPantherMovieId) { result in
             videos = result.value
         }
         expect(videos).toEventuallyNot(beNil())
@@ -151,7 +151,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
 
         var translations: TranslationsResponse?
-        tmdb.getMovieTranslations(movieId: blackPantherMovieId) { result in
+        tmdb.movies.translations(for: blackPantherMovieId) { result in
             translations = result.value
         }
         expect(translations).toEventuallyNot(beNil())
@@ -161,7 +161,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1))
 
         var movies: PopularMoviesResponse?
-        tmdb.getMovieRecommendations(movieId: blackPantherMovieId, pageNumber: 1) { result in
+        tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1) { result in
             movies = result.value
         }
         expect(movies).toEventuallyNot(beNil())
@@ -171,7 +171,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1))
 
         var movies: PopularMoviesResponse?
-        tmdb.getSimilarMovies(for: blackPantherMovieId, pageNumber: 1) { result in
+        tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1) { result in
             movies = result.value
         }
         expect(movies).toEventuallyNot(beNil())
@@ -181,7 +181,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1))
 
         var reviews: ReviewsResponse?
-        tmdb.getReviews(for: blackPantherMovieId, pageNumber: 1) { result in
+        tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1) { result in
             reviews = result.value
         }
         expect(reviews).toEventuallyNot(beNil())
@@ -191,7 +191,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1))
 
         var lists: ListsResponse?
-        tmdb.getLists(for: blackPantherMovieId, pageNumber: 1) { result in
+        tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1) { result in
             lists = result.value
         }
         expect(lists).toEventuallyNot(beNil())
@@ -201,7 +201,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1))
 
         var nowPlaying: NowPlayingMoviesResponse?
-        tmdb.getNowPlayingMovies(pageNumber: 1) { result in
+        tmdb.movies.nowPlaying(pageNumber: 1) { result in
             nowPlaying = result.value
         }
         expect(nowPlaying).toEventuallyNot(beNil())
@@ -211,7 +211,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.latest)
 
         var movie: Movie?
-        tmdb.getLatestMovie { result in
+        tmdb.movies.latest { result in
             movie = result.value
         }
         expect(movie).toEventuallyNot(beNil())
@@ -221,7 +221,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1))
 
         var movies: PopularMoviesResponse?
-        tmdb.getPopularMovies(pageNumber: 1) { result in
+        tmdb.movies.popular(pageNumber: 1) { result in
             movies = result.value
         }
         expect(movies).toEventuallyNot(beNil())
@@ -231,7 +231,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1))
 
         var movies: PopularMoviesResponse?
-        tmdb.getTopRatedMovies(pageNumber: 1) { result in
+        tmdb.movies.topRated(pageNumber: 1) { result in
             movies = result.value
         }
         expect(movies).toEventuallyNot(beNil())
@@ -241,7 +241,7 @@ struct MockAuth: Authenticator {
         stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1))
 
         var nowPlaying: NowPlayingMoviesResponse?
-        tmdb.getUpcomingMovies(pageNumber: 1) { result in
+        tmdb.movies.upcoming(pageNumber: 1) { result in
             nowPlaying = result.value
         }
         expect(nowPlaying).toEventuallyNot(beNil())

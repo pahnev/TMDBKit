@@ -34,7 +34,9 @@ public class TMDB {
     private let authenticator: Authenticator
     private let networkClient: NetworkClient
     var sessionProvider: SessionProvider?
-    public lazy var people = TMDB.PeopleEndpoints(tmdb: self)
+
+    public lazy var movies = MovieEndpoints(tmdb: self, sessionProvider: sessionProvider)
+    public lazy var people = PeopleEndpoints(tmdb: self)
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator
