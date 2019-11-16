@@ -9,7 +9,7 @@ import Foundation
 
 public enum Media: CodableEquatable {
     case tv(TVMedia)
-    case movie(MovieMedia)
+    case movie(MovieFragment)
     case person(PopularPerson)
 }
 
@@ -19,7 +19,7 @@ extension Media {
         if let tvMedia = try? container.decode(TVMedia.self) {
             self = .tv(tvMedia)
             return
-        } else if let movieMedia = try? container.decode(MovieMedia.self) {
+        } else if let movieMedia = try? container.decode(MovieFragment.self) {
             self = .movie(movieMedia)
             return
         } else if let person = try? container.decode(PopularPerson.self) {
@@ -58,22 +58,4 @@ public struct TVMedia: CodableEquatable {
     public let voteCount: Int
     public let name: String
     public let originalName: String
-}
-
-public struct MovieMedia: CodableEquatable {
-    public let posterPath: String?
-    public let adult: Bool
-    public let overview: String
-    public let releaseDate: String
-    public let genreIds: [Int]
-    public let id: Int
-    public let originalTitle: String
-    public let originalLanguage: String
-    public let title: String
-    public let backdropPath: String?
-    /// Missing from popular people response.
-    public let popularity: Double?
-    public let voteCount: Int
-    public let voteAverage: Double
-    public let video: Bool
 }

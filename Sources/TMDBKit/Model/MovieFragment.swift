@@ -19,6 +19,7 @@ public struct MovieFragment: CodableEquatable {
     public let originalLanguage: String
     public let title: String
     public let backdropPath: String?
+    /// Missing from popular people response.
     public let popularity: Double?
     public let voteCount: Int
     public let video: Bool
