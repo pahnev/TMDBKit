@@ -18,7 +18,7 @@ extension TMDB {
         /// - Parameters:
         ///   - movieId: Movie
         ///   - completion: Result of `Movie` or `TMDBError`
-        public func details(for movieId: Int, appending details: [DetailsAppendable]?, completion: @escaping TMBDResult<Movie>) {
+        public func details(for movieId: Int, appending details: [DetailsAppendable]?, completion: @escaping TMDBResult<Movie>) {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.details(movieId: movieId, append: details), completion: completion)
         }
 
@@ -27,7 +27,7 @@ extension TMDB {
         }
 
         /// Get all of the alternative titles for a movie
-        public func alternativeTitles(for movieId: Int, completion: @escaping TMBDResult<AlternativeTitlesResponse>) {
+        public func alternativeTitles(for movieId: Int, completion: @escaping TMDBResult<AlternativeTitlesResponse>) {
             tmdb.fetchObject(ofType: AlternativeTitlesResponse.self, endpoint: Movies.alternativeTitles(movieId: movieId), completion: completion)
         }
 
@@ -37,12 +37,12 @@ extension TMDB {
         /// - Parameters:
         ///   - movieId: Movie
         ///   - completion: Closure
-        public func changes(for movieId: Int, completion: @escaping TMBDResult<ChangesResponse>) {
+        public func changes(for movieId: Int, completion: @escaping TMDBResult<ChangesResponse>) {
             tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: Movies.changes(movieId: movieId), completion: completion)
         }
 
         /// Get the cast and crew for a movie.
-        public func credits(for movieId: Int, completion: @escaping TMBDResult<CreditsResponse>) {
+        public func credits(for movieId: Int, completion: @escaping TMDBResult<CreditsResponse>) {
             tmdb.fetchObject(ofType: CreditsResponse.self, endpoint: Movies.credits(movieId: movieId), completion: completion)
         }
 
@@ -54,18 +54,18 @@ extension TMDB {
         /// |                     |   Instagram    |
         /// |                     |    Twitter     |
         ///
-        public func externalIds(for movieId: Int, completion: @escaping TMBDResult<ExternalIds>) {
+        public func externalIds(for movieId: Int, completion: @escaping TMDBResult<ExternalIds>) {
             tmdb.fetchObject(ofType: ExternalIds.self, endpoint: Movies.externalIds(movieId: movieId), completion: completion)
         }
 
         /// Get the images that belong to a movie.
         /// Querying images with a `language` parameter will filter the results. If you want to include a fallback language (especially useful for backdrops) you can use the `include_image_language` parameter. This should be a comma seperated value like so: `include_image_language=en,null`.
-        public func images(for movieId: Int, completion: @escaping TMBDResult<ImagesResponse>) {
+        public func images(for movieId: Int, completion: @escaping TMDBResult<ImagesResponse>) {
             tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId), completion: completion)
         }
 
         /// Get the keywords that have been added to a movie
-        public func keywords(for movieId: Int, completion: @escaping TMBDResult<KeywordsResponse>) {
+        public func keywords(for movieId: Int, completion: @escaping TMDBResult<KeywordsResponse>) {
             tmdb.fetchObject(ofType: KeywordsResponse.self, endpoint: Movies.keywords(movieId: movieId), completion: completion)
         }
 
@@ -77,45 +77,45 @@ extension TMDB {
         /// 5. Digital
         /// 6. Physical
         /// 7. TV
-        public func releaseDates(for movieId: Int, completion: @escaping TMBDResult<ReleaseDatesResponse>) {
+        public func releaseDates(for movieId: Int, completion: @escaping TMDBResult<ReleaseDatesResponse>) {
             tmdb.fetchObject(ofType: ReleaseDatesResponse.self, endpoint: Movies.releaseDates(movieId: movieId), completion: completion)
         }
 
         /// Get the videos that have been added to a movie.
-        public func videos(for movieId: Int, completion: @escaping TMBDResult<VideosResponse>) {
+        public func videos(for movieId: Int, completion: @escaping TMDBResult<VideosResponse>) {
             tmdb.fetchObject(ofType: VideosResponse.self, endpoint: Movies.videos(movieId: movieId), completion: completion)
         }
 
         /// Get a list of translations that have been created for a movie.
-        public func translations(for movieId: Int, completion: @escaping TMBDResult<TranslationsResponse>) {
+        public func translations(for movieId: Int, completion: @escaping TMDBResult<TranslationsResponse>) {
             tmdb.fetchObject(ofType: TranslationsResponse.self, endpoint: Movies.translations(movieId: movieId), completion: completion)
         }
 
         /// Get a list of recommended movies for a movie.
-        public func recommendations(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMBDResult<PopularMoviesResponse>) {
+        public func recommendations(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
             tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.recommendations(movieId: movieId, pageNumber: pageNumber), completion: completion)
         }
 
         /// Get a list of similar movies. This is not the same as the "Recommendation" system you see on the website.
         /// These items are assembled by looking at keywords and genres.
-        public func similarMovies(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMBDResult<PopularMoviesResponse>) {
+        public func similarMovies(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
             tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.similarMovies(movieId: movieId, pageNumber: pageNumber), completion: completion)
         }
 
         /// Get the user reviews for a movie.
-        public func reviews(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMBDResult<ReviewsResponse>) {
+        public func reviews(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<ReviewsResponse>) {
             tmdb.fetchObject(ofType: ReviewsResponse.self, endpoint: Movies.reviews(movieId: movieId, pageNumber: pageNumber), completion: completion)
         }
 
         /// Get a list of lists that this movie belongs to.
-        public func lists(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMBDResult<ListsResponse>) {
+        public func lists(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<ListsResponse>) {
             tmdb.fetchObject(ofType: ListsResponse.self, endpoint: Movies.lists(movieId: movieId, pageNumber: pageNumber), completion: completion)
         }
 
         /// Get the most newly created movie. This is a live response and will continuously change
         ///
         /// - Parameter completion: Result of `Movie` or `TMDBError`
-        public func latest(completion: @escaping TMBDResult<Movie>) {
+        public func latest(completion: @escaping TMDBResult<Movie>) {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.latest, completion: completion)
         }
 
@@ -125,12 +125,12 @@ extension TMDB {
         /// - Parameters:
         ///   - pageNumber: Pagenumber
         ///   - completion: Result of `NowPlayingMoviesResponse` or `TMDBError`
-        public func nowPlaying(pageNumber: PageNumber, completion: @escaping TMBDResult<NowPlayingMoviesResponse>) {
+        public func nowPlaying(pageNumber: PageNumber, completion: @escaping TMDBResult<NowPlayingMoviesResponse>) {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.nowPlaying(pageNumber: pageNumber), completion: completion)
         }
 
         /// Get the top rated movies on TMDb.
-        public func topRated(pageNumber: PageNumber, completion: @escaping TMBDResult<PopularMoviesResponse>) {
+        public func topRated(pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
             tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.topRated(pageNumber: pageNumber), completion: completion)
         }
 
@@ -139,18 +139,18 @@ extension TMDB {
         /// - Parameters:
         ///   - pageNumber: Page
         ///   - completion: Result of `PopularMoviesResponse` or `TMDBError`
-        public func popular(pageNumber: PageNumber, completion: @escaping TMBDResult<PopularMoviesResponse>) {
+        public func popular(pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
             tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.popular(pageNumber: pageNumber), completion: completion)
         }
 
-        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMBDResult<StatusResponse>) {
+        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
             guard let sessionProvider = sessionProvider else {
                 return completion(.failure(.sessionIdMissing))
             }
             tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId, sessionId: sessionProvider.sessionId), completion: completion)
         }
 
-        public func deleteRating(of movieId: Int, completion: @escaping TMBDResult<StatusResponse>) {
+        public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
             guard let sessionProvider = sessionProvider else {
                 return completion(.failure(.sessionIdMissing))
             }
@@ -164,7 +164,7 @@ extension TMDB {
         /// - Parameters:
         ///   - pageNumber: Pagenumber
         ///   - completion: Result of `NowPlayingMoviesResponse` or `TMDBError`
-        public func upcoming(pageNumber: PageNumber, completion: @escaping TMBDResult<NowPlayingMoviesResponse>) {
+        public func upcoming(pageNumber: PageNumber, completion: @escaping TMDBResult<NowPlayingMoviesResponse>) {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.upcoming(pageNumber: pageNumber), completion: completion)
         }
     }
