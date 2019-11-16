@@ -112,7 +112,7 @@ class PeopleEndpointTests: XCTestCase {
         expect(images?.totalPages).to(equal(1))
         expect(images?.results.count).to(equal(10))
 
-        let tvResult = try XCTUnwrap(images?.results.first)
+        let tvResult = images!.results.first!
         expect(tvResult.iso6391).to(beNil())
 
         expect(tvResult.voteCount).to(equal(3))
