@@ -129,6 +129,9 @@ class PeopleEndpointTests: XCTestCase {
         case .tv(let tvMedia):
             expect(tvMedia.name).to(equal("The West Wing"))
             expect(tvMedia.posterPath).to(equal("/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg"))
+        case .person(let person):
+            expect(person).toEventually(beNil())
+
         }
     }
 

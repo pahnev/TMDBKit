@@ -10,6 +10,7 @@ import Foundation
 public enum Media: CodableEquatable {
     case tv(TVMedia)
     case movie(MovieMedia)
+    case person(PopularPerson)
 }
 
 extension Media {
@@ -20,6 +21,9 @@ extension Media {
             return
         } else if let movieMedia = try? container.decode(MovieMedia.self) {
             self = .movie(movieMedia)
+            return
+        } else if let person = try? container.decode(PopularPerson.self) {
+            self = .person(person)
             return
         }
         throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: container.codingPath,
@@ -33,6 +37,8 @@ extension Media {
             try container.encode(tvMedia)
         case .movie(let movieMedia):
             try container.encode(movieMedia)
+        case .person(let person):
+            try container.encode(person)
         }
     }
 }

@@ -23,6 +23,10 @@
 /* Begin PBXBuildFile section */
 		25D3CD54237E97E200DE5D38 /* TaggedImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3CD52237E966C00DE5D38 /* TaggedImageResponse.swift */; };
 		25D3CD57237EF9AC00DE5D38 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D3CD56237EF9AC00DE5D38 /* Media.swift */; };
+		25FFD417238047FF00CF31BC /* Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FFD416238047FF00CF31BC /* Trending.swift */; };
+		25FFD4192380497C00CF31BC /* TMDB+Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FFD4182380497C00CF31BC /* TMDB+Trending.swift */; };
+		25FFD41B23804C8800CF31BC /* TrendingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FFD41A23804C8800CF31BC /* TrendingResponse.swift */; };
+		25FFD41D23804D5600CF31BC /* TrendingEndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FFD41C23804D5600CF31BC /* TrendingEndpointTests.swift */; };
 		OBJ_177 /* AdapterProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_88 /* AdapterProtocols.swift */; };
 		OBJ_178 /* AssertionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_89 /* AssertionDispatcher.swift */; };
 		OBJ_179 /* AssertionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_90 /* AssertionRecorder.swift */; };
@@ -204,6 +208,10 @@
 /* Begin PBXFileReference section */
 		25D3CD52237E966C00DE5D38 /* TaggedImageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggedImageResponse.swift; sourceTree = "<group>"; };
 		25D3CD56237EF9AC00DE5D38 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
+		25FFD416238047FF00CF31BC /* Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trending.swift; sourceTree = "<group>"; };
+		25FFD4182380497C00CF31BC /* TMDB+Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TMDB+Trending.swift"; sourceTree = "<group>"; };
+		25FFD41A23804C8800CF31BC /* TrendingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingResponse.swift; sourceTree = "<group>"; };
+		25FFD41C23804D5600CF31BC /* TrendingEndpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingEndpointTests.swift; sourceTree = "<group>"; };
 		"Nimble::Nimble::Product" /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OBJ_100 /* ExpectationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpectationMessage.swift; sourceTree = "<group>"; };
@@ -547,14 +555,14 @@
 		OBJ_36 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_37 /* APIClient */,
 				OBJ_42 /* Authenticator.swift */,
 				OBJ_43 /* CodableEquatable.swift */,
-				OBJ_44 /* Endpoints */,
 				OBJ_56 /* HTTPLogger.swift */,
 				OBJ_57 /* HTTPResponseHeaders.swift */,
 				OBJ_58 /* NetworkClient.swift */,
 				OBJ_59 /* TMDBError.swift */,
+				OBJ_37 /* APIClient */,
+				OBJ_44 /* Endpoints */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -562,10 +570,11 @@
 		OBJ_37 /* APIClient */ = {
 			isa = PBXGroup;
 			children = (
+				OBJ_41 /* TMDB.swift */,
 				OBJ_38 /* TMDB+Movies.swift */,
 				OBJ_39 /* TMDB+People.swift */,
+				25FFD4182380497C00CF31BC /* TMDB+Trending.swift */,
 				OBJ_40 /* TMDB+TV.swift */,
-				OBJ_41 /* TMDB.swift */,
 			);
 			path = APIClient;
 			sourceTree = "<group>";
@@ -580,6 +589,7 @@
 				OBJ_49 /* People.swift */,
 				OBJ_50 /* Reviews.swift */,
 				OBJ_51 /* Search.swift */,
+				25FFD416238047FF00CF31BC /* Trending.swift */,
 				OBJ_52 /* TV.swift */,
 				OBJ_53 /* TVEpisodeGroups.swift */,
 				OBJ_54 /* TVEpisodes.swift */,
@@ -588,7 +598,7 @@
 			path = Endpoints;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -599,7 +609,6 @@
 				OBJ_170 /* Example */,
 				OBJ_171 /* project.yml */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_60 /* Responses */ = {
@@ -612,12 +621,13 @@
 				OBJ_65 /* KeywordsResponse.swift */,
 				OBJ_66 /* ListsResponse.swift */,
 				OBJ_67 /* NowPlayingMoviesResponse.swift */,
-				OBJ_68 /* People */,
 				OBJ_72 /* PopularMoviesResponse.swift */,
 				OBJ_73 /* ReleaseDatesResponse.swift */,
 				OBJ_74 /* ReviewsResponse.swift */,
 				OBJ_75 /* TranslationsResponse.swift */,
+				25FFD41A23804C8800CF31BC /* TrendingResponse.swift */,
 				OBJ_76 /* VideosResponse.swift */,
+				OBJ_68 /* People */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -657,6 +667,7 @@
 				OBJ_81 /* MovieEndpointTests.swift */,
 				OBJ_82 /* PeopleEnpointTests.swift */,
 				OBJ_83 /* StubHelper.swift */,
+				25FFD41C23804D5600CF31BC /* TrendingEndpointTests.swift */,
 			);
 			name = TMDBKitTests;
 			path = Tests/TMDBKitTests;
@@ -880,7 +891,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_164 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1008,6 +1019,7 @@
 				OBJ_274 /* Crew.swift in Sources */,
 				OBJ_275 /* ExternalIds.swift in Sources */,
 				OBJ_276 /* Genre.swift in Sources */,
+				25FFD417238047FF00CF31BC /* Trending.swift in Sources */,
 				OBJ_277 /* Keyword.swift in Sources */,
 				OBJ_278 /* Language.swift in Sources */,
 				OBJ_279 /* List.swift in Sources */,
@@ -1048,6 +1060,7 @@
 				OBJ_313 /* AlternativeTitlesResponse.swift in Sources */,
 				OBJ_314 /* ChangesResponse.swift in Sources */,
 				OBJ_315 /* CreditsResponse.swift in Sources */,
+				25FFD4192380497C00CF31BC /* TMDB+Trending.swift in Sources */,
 				OBJ_316 /* ImagesResponse.swift in Sources */,
 				OBJ_317 /* KeywordsResponse.swift in Sources */,
 				OBJ_318 /* ListsResponse.swift in Sources */,
@@ -1057,6 +1070,7 @@
 				OBJ_321 /* PersonImageResponse.swift in Sources */,
 				OBJ_322 /* PersonCreditsResponse.swift in Sources */,
 				OBJ_323 /* PopularMoviesResponse.swift in Sources */,
+				25FFD41B23804C8800CF31BC /* TrendingResponse.swift in Sources */,
 				OBJ_324 /* ReleaseDatesResponse.swift in Sources */,
 				OBJ_325 /* ReviewsResponse.swift in Sources */,
 				OBJ_326 /* TranslationsResponse.swift in Sources */,
@@ -1076,6 +1090,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				25FFD41D23804D5600CF31BC /* TrendingEndpointTests.swift in Sources */,
 				OBJ_345 /* MockAuth.swift in Sources */,
 				OBJ_346 /* MovieEndpointTests.swift in Sources */,
 				OBJ_347 /* PeopleEnpointTests.swift in Sources */,

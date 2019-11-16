@@ -36,7 +36,7 @@ public struct PopularPerson: CodableEquatable {
     public let knownForDepartment: String?
     public let gender: Int
     public let id: Int
-    public let profilePath: String
+    public let profilePath: String?
     public let adult: Bool
     public let knownFor: [Media]
     public let name: String
