@@ -1,4 +1,4 @@
 module OHHTTPStubsCore {
-    umbrella "/Users/pahnki/Projects/Personal/TMDBKit/.build/checkouts/OHHTTPStubs/Sources/OHHTTPStubsCore/include"
+    umbrella "/Users/kirill/Projects/Personal/TMDBKit/.build/checkouts/OHHTTPStubs/Sources/OHHTTPStubsCore/include"
     export *
 }
