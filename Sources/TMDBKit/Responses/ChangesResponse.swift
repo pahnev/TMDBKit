@@ -8,6 +8,12 @@
 
 import Foundation
 
+// TODO: Combine
+
 public struct ChangesResponse: CodableEquatable {
     public let changes: [Change]?
+}
+
+public struct TVChangesResponse: CodableEquatable {
+    public let items: [TVChange]?
 }

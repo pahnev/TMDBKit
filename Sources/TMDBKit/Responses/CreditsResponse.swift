@@ -8,8 +8,16 @@
 
 import Foundation
 
+// TODO: Combine
+
 public struct CreditsResponse: CodableEquatable {
     public let id: Int
     public let cast: [Cast]
+    public let crew: [Crew]
+}
+
+public struct TVCreditsResponse: CodableEquatable {
+    public let id: Int
+    public let cast: [TVCast]
     public let crew: [Crew]
 }

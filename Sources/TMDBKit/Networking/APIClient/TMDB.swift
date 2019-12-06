@@ -38,6 +38,7 @@ public class TMDB {
     public lazy var movies = MovieEndpoints(tmdb: self, sessionProvider: sessionProvider)
     public lazy var people = PeopleEndpoints(tmdb: self)
     public lazy var trending = TrendingEndpoints(tmdb: self)
+    public lazy var tv = TVEndpoints(tmdb: self, sessionProvider: sessionProvider)
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator

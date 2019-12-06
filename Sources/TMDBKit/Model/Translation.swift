@@ -9,9 +9,10 @@ import Foundation
 
 public struct Translation: CodableEquatable {
     public struct TranslationData: CodableEquatable {
-        public let title: String
+        public let title: String?
         public let overview: String
         public let homepage: String
+        public let name: String?
     }
 
     public let data: TranslationData
