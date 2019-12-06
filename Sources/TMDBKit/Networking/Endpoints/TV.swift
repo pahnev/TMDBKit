@@ -21,6 +21,8 @@ enum TV: Endpoint {
 
     case credits(tvId: Int)
 
+    case episodeGroups(tvId: Int)
+
     case externalIds(tvId: Int)
 
     case images(tvId: Int)
@@ -51,9 +53,9 @@ enum TV: Endpoint {
     /// Get the top rated movies on TMDb.
     case topRated(pageNumber: PageNumber)
 
-    case airingToday
+    case airingToday(pageNumber: PageNumber)
 
-    case onTheAir
+    case onTheAir(pageNumber: PageNumber)
 
     var httpMethod: HTTPMethod {
         switch self {
@@ -62,6 +64,7 @@ enum TV: Endpoint {
              .alternativeTitles,
              .changes,
              .credits,
+             .episodeGroups,
              .onTheAir,
              .contentRatings,
              .screenedTheatrically,
@@ -92,6 +95,7 @@ enum TV: Endpoint {
              .alternativeTitles,
              .changes,
              .credits,
+             .episodeGroups,
              .onTheAir,
              .contentRatings,
              .screenedTheatrically,
@@ -121,6 +125,7 @@ enum TV: Endpoint {
              .alternativeTitles,
              .changes,
              .credits,
+             .episodeGroups,
              .onTheAir,
              .contentRatings,
              .screenedTheatrically,
@@ -166,6 +171,8 @@ enum TV: Endpoint {
             return tv.appendingPathComponent("\(tvId)/changes")
         case .credits(let tvId):
             return tv.appendingPathComponent("\(tvId)/credits")
+        case .episodeGroups(let tvId):
+            return tv.appendingPathComponent("\(tvId)/episode_groups")
         case .externalIds(let tvId):
             return tv.appendingPathComponent("\(tvId)/external_ids")
         case .images(let tvId):
@@ -179,7 +186,7 @@ enum TV: Endpoint {
         case .recommendations(let params):
             return tv.appendingPathComponent("\(params.tvId)/recommendations")
         case .similarShows(let params):
-            return tv.appendingPathComponent("\(params.tvId)/similar_movies")
+            return tv.appendingPathComponent("\(params.tvId)/similar")
         case .reviews(let params):
             return tv.appendingPathComponent("\(params.tvId)/reviews")
         case .rateShow(let params):
