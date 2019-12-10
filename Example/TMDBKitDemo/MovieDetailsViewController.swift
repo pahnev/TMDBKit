@@ -31,7 +31,7 @@ class MovieDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = movie.title
-        tmdb.getMovieDetails(for: movie.id, appending: [.images(languages: nil)]) { (result) in
+        tmdb.movies.details(for: movie.id, appending: [.images(languages: nil)]) { (result) in
             switch result {
             case .failure(let error):
                 print(error)
@@ -45,12 +45,12 @@ class MovieDetailsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     @IBAction func setRating(_ sender: UIButton) {
-        tmdb.rateMovie(movie.id, rating: 1.0) { (result) in
+        tmdb.movies.rateMovie(movie.id, rating: 1.0) { (result) in
             print(result)
         }
     }
     @IBAction func removeRating(_ sender: Any) {
-        tmdb.deleteRating(of: movie.id) { (result) in
+        tmdb.movies.deleteRating(of: movie.id) { (result) in
             print(result)
         }
     }

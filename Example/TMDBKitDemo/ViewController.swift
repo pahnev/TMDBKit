@@ -43,7 +43,7 @@ class ViewController: UIViewController {
             tmdb.setSessionProvider(Session(sessionId: sessionId))
         }
 
-        tmdb.getPopularMovies(pageNumber: 1) { result in
+        tmdb.movies.popular(pageNumber: 1) { result in
             switch result {
             case .failure(let error):
                 print(error)
