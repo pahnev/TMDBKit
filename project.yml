@@ -1,0 +1,36 @@
+name: TMDBKit
+options:
+  bundleIdPrefix: com.pahnev.TMDBKit
+targets:
+  TMDBKit:
+    deploymentTarget: "10.0"
+    type: framework
+    platform: iOS
+    scheme:
+      testTargets:
+        - TMDBKitTests
+    sources: 
+      - TMDBKit
+    dependencies:
+      - carthage: Cache
+    gatherCoverageData: true
+
+  TMDBKitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: TMDBKitTests
+    scheme:
+      testTargets:
+        - TMDBKitTests
+    gatherCoverageData: true
+    dependencies:
+      - target: TMDBKit
+      - carthage: Nimble
+      - carthage: OHHTTPStubs
+
+  TMDBDemo:
+    type: application
+    platform: iOS
+    sources: TMDBDemo
+    dependencies:
+      - target: TMDBKit      

@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a6d88a21-1a94-4af3-94e4-8dc218471126" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/AlternativeTitle.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Backdrop.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Cast.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Change.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Crew.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Genre.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Keyword.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Language.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/List.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/MovieCollection.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Poster.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/ProductionCompany.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/ProductionCountry.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/ReleaseDate.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/ReleaseDateResult.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Review.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/TMDBDate.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Translation.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TMDBKit/Model/Video.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBDemo/MovieDetailsViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBDemo/MovieDetailsViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBDemo/ViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBDemo/ViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit.xcodeproj/xcshareddata/xcschemes/TMDBKit.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit.xcodeproj/xcshareddata/xcschemes/TMDBKit.xcscheme" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Caching/Cache.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Caching/Cache.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Caching/CacheConfig+Movies.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Caching/CacheConfig+Movies.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Extensions/URL+QueryItem.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Extensions/URL+QueryItem.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Model/Movie.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Model/Movie.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB+Movies.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB+Movies.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Movies.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Movies.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Networking/TMDBError.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Networking/TMDBError.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/AlternativeTitlesResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/AlternativeTitlesResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/ChangesResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/ChangesResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/CreditsResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/CreditsResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/ImagesResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/ImagesResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/KeywordsResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/KeywordsResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/ListsResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/ListsResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/NowPlayingMoviesResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/NowPlayingMoviesResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/ReleaseDatesResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/ReleaseDatesResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/ReviewsResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/ReviewsResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/TranslationsResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/TranslationsResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKit/Responses/VideosResponse.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKit/Responses/VideosResponse.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TMDBKitTests/TMDBKitTests.swift" beforeDir="false" afterPath="$PROJECT_DIR$/TMDBKitTests/TMDBKitTests.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.yml" beforeDir="false" afterPath="$PROJECT_DIR$/project.yml" afterDir="false" />
+    </list>
+    <ignored path="$USER_HOME$/Library/Developer/Xcode/DerivedData/TMDBKit-fcitbfpawqyhfufxctgvnazoigfc/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_8567157B-DE3C-4F1A-8774-506B582C997E" />
+  <component name="FUSProjectUsageTrigger">
+    <session id="1335675948">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.8" value="2" />
+          <entry key="project.opened" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="swift" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Swift" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="swift" value="240" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Swift" value="240" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.cidr.testingFrameworks.usages" />
+    </session>
+    <session id="-935204805">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.1" value="3" />
+          <entry key="project.opened" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="swift" value="8" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Swift" value="8" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit" />
+      <usages-collector id="statistics.file.extensions.edit" />
+      <usages-collector id="statistics.cidr.testingFrameworks.usages" />
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/AlternativeTitle.swift">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Movie.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="154">
+                  <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/List.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="140">
+                  <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Language.swift">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Keyword.swift">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Video.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="266">
+                  <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB+Movies.swift">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="532">
+                  <caret line="38" column="38" selection-start-line="38" selection-start-column="38" selection-end-line="38" selection-end-column="38" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Authenticator.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="196">
+                  <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Translation.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="224">
+                  <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Movies.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="149">
+                  <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Endpoint.swift">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="308">
+                  <caret line="22" selection-start-line="22" selection-end-line="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>tagline</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Movies.swift" />
+        <option value="$PROJECT_DIR$/TMDBKit/Caching/CacheConfig.swift" />
+        <option value="$PROJECT_DIR$/TMDBKit/Model/Movie.swift" />
+        <option value="$PROJECT_DIR$/TMDBKit/Model/List.swift" />
+        <option value="$PROJECT_DIR$/TMDBKit/Model/Video.swift" />
+        <option value="$PROJECT_DIR$/TMDBKit/Model/Translation.swift" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="y" value="22" />
+    <option name="width" value="1920" />
+    <option name="height" value="1004" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Cidr.FilesView" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+              <item name="Caching" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+              <item name="Model" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+              <item name="Networking" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+              <item name="Networking" type="fcab9f18:XcodeViewNode" />
+              <item name="APIClient" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="TMDBKit" type="1d218c8b:XcodeProjectNode" />
+              <item name="TMDBKit" type="fcab9f18:XcodeViewNode" />
+              <item name="Networking" type="fcab9f18:XcodeViewNode" />
+              <item name="Endpoints" type="fcab9f18:XcodeViewNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.TMDBKit">
+    <list>
+      <item itemvalue="Application.TMDBKit" />
+      <item itemvalue="XCTest.TMDBKitTests" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a6d88a21-1a94-4af3-94e4-8dc218471126" name="Default Changelist" comment="" />
+      <created>1533110653469</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1533110653469</updated>
+      <workItem from="1533110655390" duration="79000" />
+      <workItem from="1533110781790" duration="113000" />
+      <workItem from="1533110915761" duration="1595000" />
+      <workItem from="1533195769222" duration="6000" />
+      <workItem from="1533195801937" duration="2000" />
+      <workItem from="1533195918153" duration="904000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="2699000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="22" width="1920" height="1004" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16240682" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25377283" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Caching/Cache.swift">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Endpoint.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Caching/CacheConfig.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/AlternativeTitle.swift">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Movie.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/List.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Language.swift">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Keyword.swift">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Translation.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Model/Video.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB+Movies.swift">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/APIClient/TMDB.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="38" column="38" selection-start-line="38" selection-start-column="38" selection-end-line="38" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Endpoints/Movies.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TMDBKit/Networking/Authenticator.swift">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
