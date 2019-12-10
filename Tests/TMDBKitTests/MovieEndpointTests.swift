@@ -20,17 +20,15 @@ struct MockAuth: Authenticator {
     }
 }
 
-class TMDBKitTests: XCTestCase {
-
-    let mockAuth = MockAuth()
-    let stubHelper = StubHelper()
+    var stubHelper: StubHelper!
     var tmdb: TMDB!
 
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
     
     override func setUp() {
-        guard let tmdb = try? TMDB(authenticator: mockAuth) else { preconditionFailure() }
+        stubHelper = StubHelper()
+        guard let tmdb = try? TMDB(authenticator: MockAuth()) else { preconditionFailure() }
         self.tmdb = tmdb
         super.setUp()
     }

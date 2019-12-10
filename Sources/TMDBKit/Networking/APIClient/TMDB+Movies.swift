@@ -18,6 +18,10 @@ extension TMDB {
         fetchObject(ofType: Movie.self, endpoint: Movies.details(movieId: movieId, append: details), completion: completion)
     }
 
+    public func getMovieAccountStates(for movieId: Int) {
+        // TODO
+    }
+
     /// Get all of the alternative titles for a movie
     public func getAlternativeMovieTitles(movieId: Int, completion: @escaping TMBDResult<AlternativeTitlesResponse>) {
         fetchObject(ofType: AlternativeTitlesResponse.self, endpoint: Movies.alternativeTitles(movieId: movieId), completion: completion)

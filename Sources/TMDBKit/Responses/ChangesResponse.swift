@@ -9,5 +9,5 @@
 import Foundation
 
 public struct ChangesResponse: CodableEquatable {
-    public let changes: [Change]
+    public let changes: [Change]?
 }
