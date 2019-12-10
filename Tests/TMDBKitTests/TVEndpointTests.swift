@@ -10,14 +10,13 @@ import Nimble
 @testable import TMDBKit
 
 class TVEndpointTests: XCTestCase {
-    private var stubHelper: StubHelper!
+    private var stubHelper = StubHelper()
     private var tmdb: TMDB!
     private let gameOfThrones = 1399
 
     override func setUp() {
         super.setUp()
         self.tmdb = try! TMDB(authenticator: MockAuth())
-        self.stubHelper = StubHelper()
     }
 
     override func tearDown() {

@@ -12,14 +12,13 @@ import OHHTTPStubsSwift
 
 class PeopleEndpointTests: XCTestCase {
 
-    private var stubHelper: StubHelper!
+    private var stubHelper = StubHelper()
     private var tmdb: TMDB!
     private let personId = 1
 
     override func setUp() {
         guard let tmdb = try? TMDB(authenticator: MockAuth()) else { preconditionFailure() }
         self.tmdb = tmdb
-        self.stubHelper = StubHelper()
         super.setUp()
     }
 
