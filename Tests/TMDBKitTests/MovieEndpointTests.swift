@@ -8,34 +8,12 @@
 
 import XCTest
 import Nimble
-import OHHTTPStubsSwift
 @testable import TMDBKit
 
-struct MockAuth: Authenticator {
-    var apiKey: String {
-        return "123"
-    }
-    var sessionId: String? {
-        return nil
-    }
-}
-
-    private var stubHelper = StubHelper()
-    var tmdb: TMDB!
+class MovieEndpointTests: TMDBTestCase {
 
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
-    
-    override func setUp() {
-        guard let tmdb = try? TMDB(authenticator: MockAuth()) else { preconditionFailure() }
-        self.tmdb = tmdb
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        tmdb.clearCaches()
-        super.tearDown()
-    }
 
     func testReturnsMovieDetails() {
         stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil))

@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		EDDE14FF23A060B600D9215C /* TMDBTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDE14FE23A060B600D9215C /* TMDBTestCase.swift */; };
 		EDE38516239431A900BEC6C5 /* TVDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE38515239431A900BEC6C5 /* TVDetails.swift */; };
 		EDE385192394374300BEC6C5 /* TVEndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE385182394374300BEC6C5 /* TVEndpointTests.swift */; };
 		EDFDAAC5239AD6330010065F /* ContentRatingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDFDAAC3239AD6190010065F /* ContentRatingsResponse.swift */; };
@@ -214,6 +215,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EDDE14FE23A060B600D9215C /* TMDBTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMDBTestCase.swift; sourceTree = "<group>"; };
 		EDE38515239431A900BEC6C5 /* TVDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetails.swift; sourceTree = "<group>"; };
 		EDE385182394374300BEC6C5 /* TVEndpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEndpointTests.swift; sourceTree = "<group>"; };
 		EDFDAAC3239AD6190010065F /* ContentRatingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentRatingsResponse.swift; sourceTree = "<group>"; };
@@ -720,6 +722,7 @@
 				OBJ_86 /* MovieEndpointTests.swift */,
 				OBJ_87 /* PeopleEnpointTests.swift */,
 				OBJ_88 /* StubHelper.swift */,
+				EDDE14FE23A060B600D9215C /* TMDBTestCase.swift */,
 				OBJ_89 /* TrendingEndpointTests.swift */,
 				EDE385182394374300BEC6C5 /* TVEndpointTests.swift */,
 			);
@@ -1130,6 +1133,7 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_356 /* MockAuth.swift in Sources */,
+				EDDE14FF23A060B600D9215C /* TMDBTestCase.swift in Sources */,
 				OBJ_357 /* MovieEndpointTests.swift in Sources */,
 				OBJ_358 /* PeopleEnpointTests.swift in Sources */,
 				OBJ_359 /* StubHelper.swift in Sources */,

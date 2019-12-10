@@ -9,19 +9,7 @@ import XCTest
 import Nimble
 @testable import TMDBKit
 
-class TrendingEndpointTests: XCTestCase {
-    private var stubHelper = StubHelper()
-    private var tmdb: TMDB!
-
-    override func setUp() {
-        super.setUp()
-        self.tmdb = try! TMDB(authenticator: MockAuth())
-    }
-
-    override func tearDown() {
-        tmdb.clearCaches()
-        super.tearDown()
-    }
+class TrendingEndpointTests: TMDBTestCase {
 
     func testReturnsTrendingMovies() {
         var response: TrendingResponse?

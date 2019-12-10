@@ -7,25 +7,11 @@
 
 import XCTest
 import Nimble
-import OHHTTPStubsSwift
 @testable import TMDBKit
 
-class PeopleEndpointTests: XCTestCase {
+class PeopleEndpointTests: TMDBTestCase {
 
-    private var stubHelper = StubHelper()
-    private var tmdb: TMDB!
     private let personId = 1
-
-    override func setUp() {
-        guard let tmdb = try? TMDB(authenticator: MockAuth()) else { preconditionFailure() }
-        self.tmdb = tmdb
-        super.setUp()
-    }
-
-    override func tearDown() {
-        tmdb.clearCaches()
-        super.tearDown()
-    }
 
     func testReturnsPersonDetails() {
         var person: PersonDetailsResponse?

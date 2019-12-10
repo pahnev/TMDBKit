@@ -9,20 +9,8 @@ import XCTest
 import Nimble
 @testable import TMDBKit
 
-class TVEndpointTests: XCTestCase {
-    private var stubHelper = StubHelper()
-    private var tmdb: TMDB!
+class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
-
-    override func setUp() {
-        super.setUp()
-        self.tmdb = try! TMDB(authenticator: MockAuth())
-    }
-
-    override func tearDown() {
-        tmdb.clearCaches()
-        super.tearDown()
-    }
 
     func testReturnsDetails() {
         stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, append: nil))
