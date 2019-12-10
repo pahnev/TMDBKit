@@ -37,6 +37,9 @@ public struct TVDetails: CodableEquatable {
     public let voteAverage: Double
     public let voteCount: Int
 
+    public let reviews: AppendedReviews?
+    public let videos: AppendedVideos?
+    public let images: AppendedImages?
 }
 
 // MARK: - CreatedBy

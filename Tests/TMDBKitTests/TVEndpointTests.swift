@@ -35,6 +35,38 @@ class TVEndpointTests: XCTestCase {
         expect(result).toEventuallyNot(beNil())
     }
 
+    func testReturnsDetailsWithAppendedData() {
+        stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, append: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]))
+
+        var result: TVDetails?
+        tmdb.tv.details(for: gameOfThrones, appending: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]) { res in
+            result = res.value
+        }
+        expect(result?.reviews).toEventuallyNot(beNil())
+        expect(result?.videos).toEventuallyNot(beNil())
+        expect(result?.images).toEventuallyNot(beNil())
+    }
+
+    func testDetailsURL() {
+        let withoutAppending = TV.details(tvId: 1, append: nil)
+        XCTAssertEqual(withoutAppending.url.absoluteString, "https://api.themoviedb.org/3/tv/1")
+
+        let appendingReviews = TV.details(tvId: 1, append: [.reviews(language: nil)])
+        XCTAssertEqual(appendingReviews.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews")
+
+        let appendingVideos = TV.details(tvId: 1, append: [.videos(language: nil)])
+        XCTAssertEqual(appendingVideos.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=videos")
+
+        let appendingImages = TV.details(tvId: 1, append: [.images(languages: nil)])
+        XCTAssertEqual(appendingImages.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=images")
+
+        let appendingEverything = TV.details(tvId: 1, append: [.reviews(language: "en"),
+                                                               .images(languages: ["en", "es"]),
+                                                               .videos(language: "en")
+        ])
+        XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es&language=en")
+    }
+
     func testReturnsAlternativeTitles() {
         stubHelper.stubWithLocalFile(TV.alternativeTitles(tvId: gameOfThrones))
 

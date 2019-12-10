@@ -15,9 +15,12 @@ import OHHTTPStubsCore
 class StubHelper {
     func stubWithLocalFile(_ endpoint: Endpoint) {
         print(endpoint.url.path)
-        let fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
+        var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
 
         stub(condition: isPath(endpoint.url.path)) { _ in
+            if let query = endpoint.url.query {
+                fileName.append("?\(query)")
+            }
             let file = self.fixtureCache["v\(fileName).json"]
             return OHHTTPStubsResponse(data: try! Data(contentsOf: file!), statusCode: 200, headers: [:])
         }

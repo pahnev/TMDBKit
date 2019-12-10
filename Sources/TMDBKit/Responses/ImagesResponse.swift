@@ -8,8 +8,15 @@
 
 import Foundation
 
+// TODO: Combine
+
 public struct ImagesResponse: CodableEquatable {
     public let id: Int
+    public let backdrops: [Image]
+    public let posters: [Image]
+}
+
+public struct AppendedImages: CodableEquatable {
     public let backdrops: [Image]
     public let posters: [Image]
 }
