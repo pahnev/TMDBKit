@@ -34,4 +34,8 @@ public struct Movie: CodableEquatable {
     public let video: Bool
     public let voteAverage: Double
     public let voteCount: Int
+
+    public let reviews: AppendedReviews?
+    public let videos: AppendedVideos?
+    public let images: AppendedImages?
 }
