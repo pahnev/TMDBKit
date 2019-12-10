@@ -108,7 +108,7 @@ class TVEndpointTests: XCTestCase {
     }
 
     func testReturnsEpisodeGroups() {
-        stubHelper.stubWithLocalFile(TV.episodeGroups(tvId: gameOfThrones))
+        stubHelper.stubWithLocalFile(TV.episodeGroups(tvId: 30983))
 
         var result: EpisodeGroupsResponse?
         tmdb.tv.episodeGroups(for: 30983) { res in
@@ -158,7 +158,7 @@ class TVEndpointTests: XCTestCase {
     }
     
     func testReturnsReviews() {
-        stubHelper.stubWithLocalFile(TV.recommendations(tvId: gameOfThrones, pageNumber: 1))
+        stubHelper.stubWithLocalFile(TV.reviews(tvId: gameOfThrones, pageNumber: 1))
 
         var result: ReviewsResponse?
         tmdb.tv.reviews(for: gameOfThrones, pageNumber: 1) { res in
@@ -178,7 +178,7 @@ class TVEndpointTests: XCTestCase {
     }
 
     func testReturnsSimilarShows() {
-        stubHelper.stubWithLocalFile(TV.recommendations(tvId: gameOfThrones, pageNumber: 1))
+        stubHelper.stubWithLocalFile(TV.similarShows(tvId: gameOfThrones, pageNumber: 1))
 
         var result: SimilarShowsResponse?
         tmdb.tv.similarShows(for: gameOfThrones, pageNumber: 1) { res in
