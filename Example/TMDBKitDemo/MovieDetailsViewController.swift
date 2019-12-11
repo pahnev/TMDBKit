@@ -16,10 +16,15 @@ class MovieDetailsViewController: UIViewController {
     private var fullMovie: Movie? {
         didSet {
             guard let fullMovie = fullMovie else { return }
-            ratingLabel.text = String(fullMovie.voteCount) ?? ""
+            ratingLabel.text = String(fullMovie.voteAverage)
+            descriptionLabel.text = fullMovie.tagline
+            guard let backdrop = fullMovie.backdropPath else { return }
+            imageView.downloaded(from: "https://image.tmdb.org/t/p/w780/\(backdrop)")
         }
     }
     @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
 
     init(tmdb: TMDB, movie: MovieFragment) {
         self.tmdb = tmdb
@@ -53,5 +58,26 @@ class MovieDetailsViewController: UIViewController {
         tmdb.movies.deleteRating(of: movie.id) { (result) in
             print(result)
         }
+    }
+}
+
+extension UIImageView {
+    func downloaded(from url: URL, contentMode mode: UIView.ContentMode = .scaleAspectFit) {  // for swift 4.2 syntax just use ===> mode: UIView.ContentMode
+        contentMode = mode
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data, error == nil,
+                let image = UIImage(data: data)
+                else { return }
+            DispatchQueue.main.async() {
+                self.image = image
+            }
+        }.resume()
+    }
+    func downloaded(from link: String, contentMode mode: UIView.ContentMode = .scaleAspectFit) {  // for swift 4.2 syntax just use ===> mode: UIView.ContentMode
+        guard let url = URL(string: link) else { return }
+        downloaded(from: url, contentMode: mode)
     }
 }
