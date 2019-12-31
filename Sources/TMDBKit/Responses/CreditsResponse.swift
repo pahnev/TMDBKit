@@ -21,3 +21,8 @@ public struct TVCreditsResponse: CodableEquatable {
     public let cast: [TVCast]
     public let crew: [Crew]
 }
+
+public struct AppendedCredits: CodableEquatable {
+    public let cast: [Cast]
+    public let crew: [Crew]
+}

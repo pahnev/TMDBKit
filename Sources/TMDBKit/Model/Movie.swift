@@ -35,7 +35,24 @@ public struct Movie: CodableEquatable {
     public let voteAverage: Double
     public let voteCount: Int
 
+    /// Nil unless the appended to the API call.
     public let reviews: AppendedReviews?
+
+    /// Nil unless the appended to the API call.
     public let videos: AppendedVideos?
+
+    /// Nil unless the appended to the API call.
     public let images: AppendedImages?
+
+    /// Nil unless the appended to the API call.
+    public let credits: AppendedCredits?
+
+    /// Nil unless the appended to the API call.
+    public let recommendations: AppendedRecommendations?
+
+    /// Nil unless the appended to the API call.
+    public let similar: PopularMoviesResponse?
+
+    /// Nil unless the appended to the API call.
+    public let translations: AppendedTranslations?
 }

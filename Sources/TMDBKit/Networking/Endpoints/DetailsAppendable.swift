@@ -8,14 +8,21 @@ import Foundation
 public enum DetailsAppendable {
     case reviews(language: String?)
     case videos(language: String?)
-
     case images(languages: [String]?)
+    case credits
+    case similar
+    case recommendations
+    case translations
 
     var name: String {
         switch self {
         case .reviews: return "reviews"
         case .videos: return "videos"
         case .images: return "images"
+        case .credits: return "credits"
+        case .similar: return "similar"
+        case .recommendations: return "recommendations"
+        case .translations: return "translations"
         }
     }
 
@@ -30,10 +37,24 @@ public enum DetailsAppendable {
         case .images(let languages):
             guard let languages = languages else { return nil }
             return URLQueryItem(name: "include_image_language", value: languages.joined(separator: ","))
+        case .credits, .similar, .recommendations, .translations:
+            return nil
         }
     }
 
     var debugDescription: String {
         return "\(name)_\(String(describing: queryItem?.name))_\(String(describing: queryItem?.value))"
+    }
+
+    static var allCases: [DetailsAppendable] {
+        return [
+            .images(languages: nil),
+            .reviews(language: nil),
+            .videos(language: nil),
+            .credits,
+            .similar,
+            .recommendations,
+            .translations
+        ]
     }
 }

@@ -30,3 +30,10 @@ public struct RecommendationsResponse: CodableEquatable {
     public let totalPages: Int
     public let totalResults: Int
 }
+
+public struct AppendedRecommendations: CodableEquatable {
+    public let page: Int
+    public let results: [MovieFragment]
+    public let totalPages: Int
+    public let totalResults: Int
+}

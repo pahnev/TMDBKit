@@ -17,3 +17,7 @@ public struct PersonTranslationResponse: CodableEquatable {
     public let id: Int
     public let translations: [PersonTranslation]
 }
+
+public struct AppendedTranslations: CodableEquatable {
+    public let translations: [Translation]
+}

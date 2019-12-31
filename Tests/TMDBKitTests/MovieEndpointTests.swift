@@ -26,14 +26,18 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieDetailsWithAllExtraDetails() {
-        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: [.images(languages: nil), .reviews(language: nil), .videos(language: nil)]))
+        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases))
         var movie: Movie?
-        tmdb.movies.details(for: allQuietMovieId, appending: [.images(languages: nil), .reviews(language: nil), .videos(language: nil)]) { result in
+        tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases) { result in
             movie = result.value
         }
         expect(movie?.reviews).toEventuallyNot(beNil())
         expect(movie?.videos).toEventuallyNot(beNil())
         expect(movie?.images).toEventuallyNot(beNil())
+        expect(movie?.credits).toEventuallyNot(beNil())
+        expect(movie?.recommendations).toEventuallyNot(beNil())
+        expect(movie?.similar).toEventuallyNot(beNil())
+        expect(movie?.translations).toEventuallyNot(beNil())
     }
 
     func testReturnsAlternativeTitlesForMovie() {
