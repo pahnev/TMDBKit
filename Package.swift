@@ -11,7 +11,7 @@ let package = Package(
             targets: ["TMDBKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", .branch("feature/spm-support")),
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", .revision("fda9902f8c5c4170c6914d7dc845174e8c75bf92")),
         .package(url: "https://github.com/Quick/Nimble.git", .exact("8.0.2"))
     ],
     targets: [
