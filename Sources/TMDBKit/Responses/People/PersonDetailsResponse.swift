@@ -22,6 +22,27 @@ public struct PersonDetailsResponse: CodableEquatable {
     public let adult: Bool
     public let imdbId: String?
     public let homepage: String?
+
+    /// Nil unless appended to the API call.
+    public let reviews: AppendedReviews?
+
+    /// Nil unless appended to the API call.
+    public let videos: AppendedVideos?
+
+    /// Nil unless appended to the API call.
+    public let images: AppendedImages?
+
+    /// Nil unless appended to the API call.
+    public let credits: AppendedCredits?
+
+    /// Nil unless appended to the API call.
+    public let recommendations: AppendedRecommendations?
+
+    /// Nil unless appended to the API call.
+    public let similar: PopularMoviesResponse?
+
+    /// Nil unless appended to the API call.
+    public let translations: AppendedTranslations?
 }
 
 public struct PopularPersonResponse: CodableEquatable {
