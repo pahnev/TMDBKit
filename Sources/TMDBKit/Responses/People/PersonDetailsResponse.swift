@@ -33,7 +33,7 @@ public struct PersonDetailsResponse: CodableEquatable {
     public let images: AppendedImages?
 
     /// Nil unless appended to the API call.
-    public let credits: AppendedCredits?
+    public let credits: AppendedPersonCredits?
 
     /// Nil unless appended to the API call.
     public let recommendations: AppendedRecommendations?

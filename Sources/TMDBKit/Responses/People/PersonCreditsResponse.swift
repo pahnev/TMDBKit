@@ -44,3 +44,9 @@ public struct CreditsCast: CodableEquatable {
     public let originCountry: [String]?
 
 }
+
+public struct AppendedPersonCredits: CodableEquatable {
+    public let cast: [CreditsCast]
+    public let crew: [CreditsCast]
+
+}
