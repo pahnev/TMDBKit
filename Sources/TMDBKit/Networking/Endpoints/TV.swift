@@ -164,7 +164,7 @@ enum TV: Endpoint {
             return tvDetails
         case .accountStates(let tvId, let sessionId):
             return tv.appendingPathComponent("\(tvId)/account_states")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+                .appendingSessionId(sessionId)
         case .alternativeTitles(let tvId):
             return tv.appendingPathComponent("\(tvId)/alternative_titles")
         case .changes(let tvId):
@@ -184,27 +184,35 @@ enum TV: Endpoint {
         case .translations(let tvId):
             return tv.appendingPathComponent("\(tvId)/translations")
         case .recommendations(let tvId, let page):
-            return tv.appendingPathComponent("\(tvId)/recommendations")
+            return tv
+                .appendingPathComponent("\(tvId)/recommendations")
+                .appendingPage(page)
         case .similarShows(let tvId, let page):
-            return tv.appendingPathComponent("\(tvId)/similar")
+            return tv
+                .appendingPathComponent("\(tvId)/similar")
+                .appendingPage(page)
         case .reviews(let tvId, let page):
-            return tv.appendingPathComponent("\(tvId)/reviews")
+            return tv
+                .appendingPathComponent("\(tvId)/reviews")
+                .appendingPage(page)
         case .rateShow(let tvId, _, let sessionId):
-            return tv.appendingPathComponent("\(tvId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+            return tv
+                .appendingPathComponent("\(tvId)/rating")
+                .appendingSessionId(sessionId)
         case .deleteRating(let tvId, let sessionId):
-            return tv.appendingPathComponent("\(tvId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
-        case .popular:
-            return tv.appendingPathComponent("popular")
+            return tv
+                .appendingPathComponent("\(tvId)/rating")
+                .appendingSessionId(sessionId)
+        case .popular(let page):
+            return tv.appendingPathComponent("popular").appendingPage(page)
         case .latest:
             return tv.appendingPathComponent("latest")
-        case .topRated:
-            return tv.appendingPathComponent("top_rated")
-        case .airingToday:
-            return tv.appendingPathComponent("airing_today")
-        case .onTheAir:
-            return tv.appendingPathComponent("on_the_air")
+        case .topRated(let page):
+            return tv.appendingPathComponent("top_rated").appendingPage(page)
+        case .airingToday(let page):
+            return tv.appendingPathComponent("airing_today").appendingPage(page)
+        case .onTheAir(let page):
+            return tv.appendingPathComponent("on_the_air").appendingPage(page)
         case .contentRatings(let tvId):
             return tv.appendingPathComponent("\(tvId)/content_ratings")
         case .screenedTheatrically(let tvId):
