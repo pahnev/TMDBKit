@@ -25,4 +25,13 @@ extension URL {
         queryItems.forEach { url = url.appendingQueryItem($0) }
         return url
     }
+
+    func appendingPage(_ pageNumber: Int) -> URL {
+        appendingQueryItem(URLQueryItem(name: "page", value: "\(pageNumber)"))
+    }
+
+    func appendingSessionId(_ sessionId: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+    }
+
 }

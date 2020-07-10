@@ -221,4 +221,89 @@ class MovieEndpointTests: TMDBTestCase {
 
     }
 
+    func testEndpointURLsAreConstructedProperly() {
+        assertURL(.accountStates(movieId: 1, sessionsId: "id"), matches: "https://api.themoviedb.org/3/movie/1/account_states?session_id=id")
+
+        assertURL(.alternativeTitles(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles")
+
+        assertURL(.changes(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/changes")
+
+        assertURL(.credits(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/credits")
+
+        assertURL(.deleteRating(movieId: 1, sessionId: "id"), matches: "https://api.themoviedb.org/3/movie/1/rating?session_id=id")
+
+        assertURL(.details(movieId: 1, append: nil), matches: "https://api.themoviedb.org/3/movie/1")
+
+        assertURL(.externalIds(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/external_ids")
+
+        assertURL(.images(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/images")
+
+        assertURL(.keywords(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/keywords")
+
+        assertURL(.latest, matches: "https://api.themoviedb.org/3/movie/latest")
+
+        assertURL(.lists(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/lists?page=1")
+
+        assertURL(.nowPlaying(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/now_playing?page=1")
+
+        assertURL(.popular(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/popular?page=1")
+
+        assertURL(.rateMovie(rating: 1, movieId: 1, sessionId: "id"), matches: "https://api.themoviedb.org/3/movie/1/rating?session_id=id")
+
+        assertURL(.recommendations(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/recommendations?page=1")
+
+        assertURL(.releaseDates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/release_dates")
+
+        assertURL(.reviews(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/reviews?page=1")
+
+        assertURL(.similarMovies(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/similar_movies?page=1")
+
+        assertURL(.topRated(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/top_rated?page=1")
+
+        assertURL(.translations(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/translations")
+
+        assertURL(.upcoming(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/upcoming?page=1")
+
+        assertURL(.videos(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/videos")
+    }
+
+    func testDetailsEndpointURLAppendsDetails() {
+        let credits = Movies.details(movieId: 1, append: [DetailsAppendable.credits])
+        assertURL(credits, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=credits")
+
+        let similar = Movies.details(movieId: 1, append: [DetailsAppendable.similar])
+        assertURL(similar, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=similar")
+
+        let recommendations = Movies.details(movieId: 1, append: [DetailsAppendable.recommendations])
+        assertURL(recommendations, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=recommendations")
+
+        let translations = Movies.details(movieId: 1, append: [DetailsAppendable.translations])
+        assertURL(translations, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=translations")
+
+        let reviews = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: nil)])
+        assertURL(reviews, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=reviews")
+
+        let reviews2 = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: "en")])
+        assertURL(reviews2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=reviews&language=en")
+
+        let videos = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: nil)])
+        assertURL(videos, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=videos")
+
+        let videos2 = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: "en")])
+        assertURL(videos2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=videos&language=en")
+
+        let images = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: nil)])
+        assertURL(images, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images")
+
+        let images2 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en"])])
+        assertURL(images2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en")
+
+        let images3 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en", "fi"])])
+        assertURL(images3, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en,fi")
+    }
+
+    private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: FileString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
+    }
+
 }

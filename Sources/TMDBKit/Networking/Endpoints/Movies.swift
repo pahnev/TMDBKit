@@ -168,7 +168,7 @@ enum Movies: Endpoint {
             return movieDetails
         case .accountStates(let params):
             return movies.appendingPathComponent("\(params.movieId)/account_states")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionsId))
+                .appendingSessionId(params.sessionsId)
         case .alternativeTitles(let movieId):
             return movies.appendingPathComponent("\(movieId)/alternative_titles")
         case .changes(let movieId):
@@ -188,29 +188,39 @@ enum Movies: Endpoint {
         case .translations(let movieId):
             return movies.appendingPathComponent("\(movieId)/translations")
         case .recommendations(let params):
-            return movies.appendingPathComponent("\(params.movieId)/recommendations")
+            return movies
+                .appendingPathComponent("\(params.movieId)/recommendations")
+                .appendingPage(params.pageNumber)
         case .similarMovies(let params):
-            return movies.appendingPathComponent("\(params.movieId)/similar_movies")
+            return movies
+                .appendingPathComponent("\(params.movieId)/similar_movies")
+                .appendingPage(params.pageNumber)
         case .reviews(let params):
-            return movies.appendingPathComponent("\(params.movieId)/reviews")
+            return movies
+                .appendingPathComponent("\(params.movieId)/reviews")
+                .appendingPage(params.pageNumber)
         case .lists(let params):
-            return movies.appendingPathComponent("\(params.movieId)/lists")
+            return movies
+                .appendingPathComponent("\(params.movieId)/lists")
+                .appendingPage(params.pageNumber)
         case .rateMovie(let params):
-            return movies.appendingPathComponent("\(params.movieId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionId))
+            return movies
+                .appendingPathComponent("\(params.movieId)/rating")
+                .appendingSessionId(params.sessionId)
         case .deleteRating(let params):
-            return movies.appendingPathComponent("\(params.movieId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionId))
-        case .popular:
-            return movies.appendingPathComponent("popular")
+            return movies
+                .appendingPathComponent("\(params.movieId)/rating")
+                .appendingSessionId(params.sessionId)
+        case .popular(let page):
+            return movies.appendingPathComponent("popular").appendingPage(page)
         case .latest:
             return movies.appendingPathComponent("latest")
-        case .topRated:
-            return movies.appendingPathComponent("top_rated")
-        case .nowPlaying:
-            return movies.appendingPathComponent("now_playing")
-        case .upcoming:
-            return movies.appendingPathComponent("upcoming")
+        case .topRated(let page):
+            return movies.appendingPathComponent("top_rated").appendingPage(page)
+        case .nowPlaying(let page):
+            return movies.appendingPathComponent("now_playing").appendingPage(page)
+        case .upcoming(let page):
+            return movies.appendingPathComponent("upcoming").appendingPage(page)
 
         }
     }
