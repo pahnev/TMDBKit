@@ -20,8 +20,8 @@ enum Trending: Endpoint {
 
     var url: URL {
         switch self {
-        case .trending(let params):
-            return baseURL.appendingPathComponent("trending/\(params.mediaType.rawValue)/\(params.timeWindow.rawValue)")
+        case .trending(let mediaType, let timeWindow):
+            return baseURL.appendingPathComponent("trending/\(mediaType.rawValue)/\(timeWindow.rawValue)")
         }
     }
 }

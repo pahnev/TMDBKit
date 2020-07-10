@@ -32,9 +32,9 @@ enum Movies: Endpoint {
 
     case latest
 
-    /// Get a list of movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+    /// Get a list of movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
 
-    /// You can optionally specify a region prameter which will narrow the search to only look for theatrical release dates within the specified country.
+    /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
     case lists(movieId: Int, pageNumber: PageNumber)
 
     case nowPlaying(pageNumber: PageNumber)
@@ -55,9 +55,9 @@ enum Movies: Endpoint {
 
     case topRated(pageNumber: PageNumber)
 
-    /// Get a list of upcoming movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+    /// Get a list of upcoming movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
 
-    /// You can optionally specify a region prameter which will narrow the search to only look for theatrical release dates within the specified country.
+    /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
     case translations(movieId: Int)
 
     case upcoming(pageNumber: PageNumber)
@@ -118,8 +118,8 @@ enum Movies: Endpoint {
              .upcoming,
              .deleteRating:
             return nil
-        case .rateMovie(let params):
-            return try! JSONEncoder().encode(["value": params.rating])
+        case .rateMovie(let rating, _, _):
+            return try! JSONEncoder().encode(["value": rating])
         }
     }
 
@@ -155,9 +155,9 @@ enum Movies: Endpoint {
         let movies = baseURL.appendingPathComponent("movie")
 
         switch self {
-        case .details(let params):
-            let movieDetails = movies.appendingPathComponent("\(params.movieId)")
-            if let append = params.append {
+        case .details(let movieId, let append):
+            let movieDetails = movies.appendingPathComponent("\(movieId)")
+            if let append = append {
                 let appendEndpoints = append.map { $0.name }.joined(separator: ",")
                 let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
                 let query = append.compactMap { $0.queryItem }
@@ -166,9 +166,9 @@ enum Movies: Endpoint {
                     .appendingQueryItems(query)
             }
             return movieDetails
-        case .accountStates(let params):
-            return movies.appendingPathComponent("\(params.movieId)/account_states")
-                .appendingSessionId(params.sessionsId)
+        case .accountStates(let movieId, let sessionId):
+            return movies.appendingPathComponent("\(movieId)/account_states")
+                .appendingSessionId(sessionId)
         case .alternativeTitles(let movieId):
             return movies.appendingPathComponent("\(movieId)/alternative_titles")
         case .changes(let movieId):
@@ -187,30 +187,30 @@ enum Movies: Endpoint {
             return movies.appendingPathComponent("\(movieId)/videos")
         case .translations(let movieId):
             return movies.appendingPathComponent("\(movieId)/translations")
-        case .recommendations(let params):
+        case .recommendations(let movieId, let page):
             return movies
-                .appendingPathComponent("\(params.movieId)/recommendations")
-                .appendingPage(params.pageNumber)
-        case .similarMovies(let params):
+                .appendingPathComponent("\(movieId)/recommendations")
+                .appendingPage(page)
+        case .similarMovies(let movieId, let page):
             return movies
-                .appendingPathComponent("\(params.movieId)/similar_movies")
-                .appendingPage(params.pageNumber)
-        case .reviews(let params):
+                .appendingPathComponent("\(movieId)/similar_movies")
+                .appendingPage(page)
+        case .reviews(let movieId, let page):
             return movies
-                .appendingPathComponent("\(params.movieId)/reviews")
-                .appendingPage(params.pageNumber)
-        case .lists(let params):
+                .appendingPathComponent("\(movieId)/reviews")
+                .appendingPage(page)
+        case .lists(let movieId, let page):
             return movies
-                .appendingPathComponent("\(params.movieId)/lists")
-                .appendingPage(params.pageNumber)
-        case .rateMovie(let params):
+                .appendingPathComponent("\(movieId)/lists")
+                .appendingPage(page)
+        case .rateMovie(_, let movieId, let sessionId):
             return movies
-                .appendingPathComponent("\(params.movieId)/rating")
-                .appendingSessionId(params.sessionId)
-        case .deleteRating(let params):
+                .appendingPathComponent("\(movieId)/rating")
+                .appendingSessionId(sessionId)
+        case .deleteRating(let movieId, let sessionId):
             return movies
-                .appendingPathComponent("\(params.movieId)/rating")
-                .appendingSessionId(params.sessionId)
+                .appendingPathComponent("\(movieId)/rating")
+                .appendingSessionId(sessionId)
         case .popular(let page):
             return movies.appendingPathComponent("popular").appendingPage(page)
         case .latest:

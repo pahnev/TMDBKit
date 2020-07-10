@@ -113,8 +113,8 @@ enum TV: Endpoint {
              .topRated,
              .deleteRating:
             return nil
-        case .rateShow(let params):
-            return try! JSONEncoder().encode(["value": params.rating])
+        case .rateShow(let rating, _, _):
+            return try! JSONEncoder().encode(["value": rating])
         }
     }
 
@@ -151,9 +151,9 @@ enum TV: Endpoint {
         let tv = baseURL.appendingPathComponent("tv")
 
         switch self {
-        case .details(let params):
-            let tvDetails = tv.appendingPathComponent("\(params.tvId)")
-            if let append = params.append {
+        case .details(let tvId, let append):
+            let tvDetails = tv.appendingPathComponent("\(tvId)")
+            if let append = append {
                 let appendEndpoints = append.map { $0.name }.joined(separator: ",")
                 let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
                 let query = append.compactMap { $0.queryItem }
@@ -162,9 +162,9 @@ enum TV: Endpoint {
                     .appendingQueryItems(query)
             }
             return tvDetails
-        case .accountStates(let params):
-            return tv.appendingPathComponent("\(params.tvId)/account_states")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionsId))
+        case .accountStates(let tvId, let sessionId):
+            return tv.appendingPathComponent("\(tvId)/account_states")
+                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
         case .alternativeTitles(let tvId):
             return tv.appendingPathComponent("\(tvId)/alternative_titles")
         case .changes(let tvId):
@@ -183,18 +183,18 @@ enum TV: Endpoint {
             return tv.appendingPathComponent("\(tvId)/videos")
         case .translations(let tvId):
             return tv.appendingPathComponent("\(tvId)/translations")
-        case .recommendations(let params):
-            return tv.appendingPathComponent("\(params.tvId)/recommendations")
-        case .similarShows(let params):
-            return tv.appendingPathComponent("\(params.tvId)/similar")
-        case .reviews(let params):
-            return tv.appendingPathComponent("\(params.tvId)/reviews")
-        case .rateShow(let params):
-            return tv.appendingPathComponent("\(params.tvId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionId))
-        case .deleteRating(let params):
-            return tv.appendingPathComponent("\(params.tvId)/rating")
-                .appendingQueryItem(URLQueryItem(name: "session_id", value: params.sessionId))
+        case .recommendations(let tvId, let page):
+            return tv.appendingPathComponent("\(tvId)/recommendations")
+        case .similarShows(let tvId, let page):
+            return tv.appendingPathComponent("\(tvId)/similar")
+        case .reviews(let tvId, let page):
+            return tv.appendingPathComponent("\(tvId)/reviews")
+        case .rateShow(let tvId, _, let sessionId):
+            return tv.appendingPathComponent("\(tvId)/rating")
+                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+        case .deleteRating(let tvId, let sessionId):
+            return tv.appendingPathComponent("\(tvId)/rating")
+                .appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
         case .popular:
             return tv.appendingPathComponent("popular")
         case .latest:

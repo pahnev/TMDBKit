@@ -24,9 +24,9 @@ enum People: Endpoint {
         let people = baseURL.appendingPathComponent("person")
 
         switch self {
-        case .details(let params):
-            let peopleDetails = people.appendingPathComponent("\(params.personId)")
-            if let append = params.append {
+        case .details(let personId, let append):
+            let peopleDetails = people.appendingPathComponent("\(personId)")
+            if let append = append {
                 let appendEndpoints = append.map { $0.name }.joined(separator: ",")
                 let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
                 let query = append.compactMap { $0.queryItem }
