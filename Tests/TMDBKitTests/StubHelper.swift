@@ -18,7 +18,8 @@ class StubHelper {
         var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
 
         stub(condition: isPath(endpoint.url.path)) { _ in
-            if let query = endpoint.url.query {
+            // Append only append query, ignore pagination and other things
+            if let query = endpoint.url.query, query.contains("append_to_response") {
                 fileName.append("?\(query)")
             }
             let file = self.fixtureCache["v\(fileName).json"]

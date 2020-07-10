@@ -302,7 +302,7 @@ class MovieEndpointTests: TMDBTestCase {
         assertURL(images3, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en,fi")
     }
 
-    private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: FileString = #filePath, line: UInt = #line) {
+    private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: FileString = #file, line: UInt = #line) {
         XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
     }
 
