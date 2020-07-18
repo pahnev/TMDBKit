@@ -21,10 +21,10 @@ public struct TVShowFragment: CodableEquatable {
     public let voteCount: Int
     public let voteAverage: Double
     public let firstAirDate: String
-    public let posterPath: String
+    public let posterPath: String?
     public let genreIds: [Int]
     public let originalLanguage: String
-    public let backdropPath: String
+    public let backdropPath: String?
     public let overview: String
     public let originCountry: [String]
     public let popularity: Double

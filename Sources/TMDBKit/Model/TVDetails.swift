@@ -59,7 +59,7 @@ public struct LastEpisodeToAir: CodableEquatable {
     public let id: Int
     public let name: String
     public let overview: String
-    public let productionCode: String
+    public let productionCode: String?
     public let seasonNumber: Int
     public let showId: Int
     public let stillPath: String?
