@@ -21,6 +21,10 @@ public struct Session: CodableEquatable {
     public let sessionId: String
 }
 
+public struct SuccessResponse: CodableEquatable {
+    public let success: Bool?
+}
+
 public struct StatusResponse: CodableEquatable {
     public let statusCode: Int
     public let statusMessage: String
@@ -67,6 +71,20 @@ public class TMDB {
     /// You can use this method to create a fully valid session ID once a user has validated the request token. More information about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
     public func createSession(requestToken: RequestToken, completion: @escaping TMDBResult<Session>) {
         authenticatedRequestAndParse(Authentication.createSession(requestToken: requestToken.requestToken), completion: completion)
+    }
+
+    /// If you would like to delete (or "logout") from a session, call this method with a valid session ID.
+
+
+    /// If you would like to delete (or "logout") from a session, call this method with a valid `sessionId`.
+    /// If you haven't initialized TMDB with `sessionId` this completes with `TMDBError.sessionIdMissing`
+    /// - Parameter completion: The closure called when the deletion is finished.
+    public func deleteSession(completion: @escaping TMDBResult<SuccessResponse>) {
+        guard let sessionId = authenticator.sessionId ?? sessionProvider?.sessionId else {
+            completion(.failure(.sessionIdMissing))
+            return
+        }
+        authenticatedRequestAndParse(Authentication.deleteSession(sessionId: sessionId), completion: completion)
     }
 
 

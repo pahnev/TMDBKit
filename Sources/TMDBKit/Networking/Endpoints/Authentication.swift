@@ -12,20 +12,37 @@ enum Authentication: Endpoint {
     case requestToken
     case createSession(requestToken: String)
     case createQuestSession
+    case deleteSession(sessionId: String)
 
     var httpMethod: HTTPMethod {
         switch self {
-        case .requestToken, .createSession, .createQuestSession:
+        case .requestToken, .createQuestSession:
             return .GET
+        case .createSession:
+            return .POST
+        case .deleteSession:
+            return .DELETE
         }
     }
 
     var httpBody: Data? {
-        return nil
+        switch self {
+        case .requestToken, .createQuestSession:
+            return nil
+        case .createSession(let requestToken):
+            return try! JSONEncoder().encode(["request_token": requestToken])
+        case .deleteSession(let sessionId):
+            return try! JSONEncoder().encode(["session_id": sessionId])
+        }
     }
 
     var requestHeaders: [String : String] {
-        return [:]
+        switch self {
+        case .requestToken, .createQuestSession:
+            return [:]
+        case .createSession, .deleteSession:
+            return ["Content-Type": "application/json;charset=utf-8"]
+        }
     }
 
     var url: URL {
@@ -43,6 +60,8 @@ enum Authentication: Endpoint {
                 .appendingQueryItem(URLQueryItem(name: "request_token", value: token))
         case .createQuestSession:
             return authentication.appendingPathComponent("guest_session/new")
+        case .deleteSession:
+            return authentication.appendingPathComponent("session")
         }
     }
 
