@@ -30,8 +30,15 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: "page", value: "\(pageNumber)"))
     }
 
-    func appendingSessionId(_ sessionId: String) -> URL {
-        appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+    func appendingAccountId(_ accountId: Int?) -> URL {
+        appendingPathComponent(String(accountId ?? 0))
     }
 
+    func appendingSortedPagination(_ pagination: SortedPagination) -> URL {
+        // TODO: Append sorting info
+        if let page = pagination.page {
+            return appendingPage(page)
+        }
+        return self
+    }
 }
