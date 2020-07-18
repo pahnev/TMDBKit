@@ -31,7 +31,15 @@ extension Endpoint {
     var httpMethod: HTTPMethod { return .GET }
     var httpBody: Data? { return nil }
     var requestHeaders: [String : String] { return [:] }
-    var cachePolicy: CachePolicy { .allowed }
+    
+    var cachePolicy: CachePolicy {
+        switch httpMethod {
+        case .GET:
+            return .allowed
+        case .POST, .PUT, .PATCH, .DELETE:
+            return .never
+        }
+    }
 }
 
 let baseURL = URL(string: "https://api.themoviedb.org/3/")!
