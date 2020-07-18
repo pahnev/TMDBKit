@@ -46,16 +46,34 @@ final class NetworkClient {
         cache.removeAllCachedResponses()
     }
 
+    func executeSessionRequest(for endpoint: Endpoint, sessionId: String?, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+        guard let sessionId = sessionId else {
+            completion(.error(TMDBError.sessionIdMissing))
+            return
+        }
+        startRequest(authenticatedRequest(endpoint, sessionId: sessionId, additionalHeaders: additionalHeaders),
+                     cachePolicy: endpoint.cachePolicy,
+                     completion: completion)
+    }
+
     func executeAuthenticatedRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
-        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders), cachePolicy: endpoint.cachePolicy, completion: completion)
+        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders),
+                     cachePolicy: endpoint.cachePolicy,
+                     completion: completion)
     }
 
 }
 
 private extension NetworkClient {
-    func authenticatedRequest(_ endpoint: Endpoint, additionalHeaders: [String: String]) -> URLRequest {
+    func urlFor(_ endpoint: Endpoint, sessionId: String?) -> URL {
+        let url = endpoint.url.appendingQueryItem(URLQueryItem(name: "api_key", value: authenticator.apiKey))
+        guard let sessionId = sessionId else { return url }
+        return url.appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+    }
+
+    func authenticatedRequest(_ endpoint: Endpoint, sessionId: String? = nil, additionalHeaders: [String: String]) -> URLRequest {
         var request = URLRequest(url: endpoint.url)
-        request.url = request.url?.appendingQueryItem(URLQueryItem(name: "api_key", value: authenticator.apiKey))
+        request.url = urlFor(endpoint, sessionId: sessionId)
 
         request.httpMethod = endpoint.httpMethod.rawValue
         request.allHTTPHeaderFields = endpoint.requestHeaders

@@ -117,7 +117,7 @@ public class TMDB {
     }
 
     func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint, additionalHeaders: additionalHeaders) { result in
+        networkClient.executeSessionRequest(for: endpoint, sessionId: sessionId(), additionalHeaders: additionalHeaders) { result in
             switch result {
             case .error(let error):
                 completion(.failure(TMDBError.networkError(error)))
@@ -184,4 +184,7 @@ private extension TMDB {
         })
     }
 
+    func sessionId() -> String? {
+        authenticator.sessionId ?? sessionProvider?.sessionId
+    }
 }
