@@ -10,7 +10,6 @@ import Foundation
 extension TMDB {
     public struct MovieEndpoints {
         let tmdb: TMDB
-        let sessionProvider: SessionProvider?
 
         /// Get the primary information about a movie
         /// Supports append_to_response. Read more about this here https://developers.themoviedb.org/3/getting-started/append-to-response.
@@ -144,18 +143,11 @@ extension TMDB {
         }
 
         public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-            guard let sessionProvider = sessionProvider else {
-                return completion(.failure(.sessionIdMissing))
-            }
-            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId, sessionId: sessionProvider.sessionId), completion: completion)
+            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), completion: completion)
         }
 
         public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-            guard let sessionProvider = sessionProvider else {
-                return completion(.failure(.sessionIdMissing))
-            }
-
-            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId, sessionId: sessionProvider.sessionId), completion: completion)
+            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
         }
 
         /// Get a list of movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.

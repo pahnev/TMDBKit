@@ -39,10 +39,11 @@ public class TMDB {
     private let networkClient: NetworkClient
     var sessionProvider: SessionProvider?
 
-    public lazy var movies = MovieEndpoints(tmdb: self, sessionProvider: sessionProvider)
+    public lazy var movies = MovieEndpoints(tmdb: self)
     public lazy var people = PeopleEndpoints(tmdb: self)
     public lazy var trending = TrendingEndpoints(tmdb: self)
-    public lazy var tv = TVEndpoints(tmdb: self, sessionProvider: sessionProvider)
+    public lazy var tv = TVEndpoints(tmdb: self)
+    public lazy var account = AccountEndpoints(tmdb: self)
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator
@@ -65,12 +66,12 @@ public class TMDB {
 
     /// Create a temporary request token that can be used to validate a TMDb user login. More details about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
     public func createRequestToken(completion: @escaping TMDBResult<RequestToken>) {
-        authenticatedRequestAndParse(Authentication.requestToken, completion: completion)
+        fetchObjectFromNetwork(ofType: RequestToken.self, endpoint: Authentication.requestToken, completion: completion)
     }
 
     /// You can use this method to create a fully valid session ID once a user has validated the request token. More information about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
     public func createSession(requestToken: RequestToken, completion: @escaping TMDBResult<Session>) {
-        authenticatedRequestAndParse(Authentication.createSession(requestToken: requestToken.requestToken), completion: completion)
+        fetchObjectFromNetwork(ofType: Session.self, endpoint: Authentication.createSession(requestToken: requestToken.requestToken), completion: completion)
     }
 
     /// If you would like to delete (or "logout") from a session, call this method with a valid session ID.

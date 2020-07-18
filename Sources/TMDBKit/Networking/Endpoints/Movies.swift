@@ -10,7 +10,7 @@ import Foundation
 
 enum Movies: Endpoint {
 
-    case accountStates(movieId: Int, sessionsId: String)
+    case accountStates(movieId: Int)
 
     case alternativeTitles(movieId: Int)
 
@@ -18,7 +18,7 @@ enum Movies: Endpoint {
 
     case credits(movieId: Int)
 
-    case deleteRating(movieId: Int, sessionId: String)
+    case deleteRating(movieId: Int)
 
     /// Get the most newly created movie. This is a live response and will continuously change.
     /// Get the primary information about a movie
@@ -43,7 +43,7 @@ enum Movies: Endpoint {
     case popular(pageNumber: PageNumber)
 
     /// Get the top rated movies on TMDb.
-    case rateMovie(rating: Double, movieId: Int, sessionId: String)
+    case rateMovie(rating: Double, movieId: Int)
 
     case recommendations(movieId: Int, pageNumber: PageNumber)
 
@@ -118,7 +118,7 @@ enum Movies: Endpoint {
              .upcoming,
              .deleteRating:
             return nil
-        case .rateMovie(let rating, _, _):
+        case .rateMovie(let rating, _):
             return try! JSONEncoder().encode(["value": rating])
         }
     }
@@ -166,9 +166,8 @@ enum Movies: Endpoint {
                     .appendingQueryItems(query)
             }
             return movieDetails
-        case .accountStates(let movieId, let sessionId):
+        case .accountStates(let movieId):
             return movies.appendingPathComponent("\(movieId)/account_states")
-                .appendingSessionId(sessionId)
         case .alternativeTitles(let movieId):
             return movies.appendingPathComponent("\(movieId)/alternative_titles")
         case .changes(let movieId):
@@ -203,14 +202,10 @@ enum Movies: Endpoint {
             return movies
                 .appendingPathComponent("\(movieId)/lists")
                 .appendingPage(page)
-        case .rateMovie(_, let movieId, let sessionId):
-            return movies
-                .appendingPathComponent("\(movieId)/rating")
-                .appendingSessionId(sessionId)
-        case .deleteRating(let movieId, let sessionId):
-            return movies
-                .appendingPathComponent("\(movieId)/rating")
-                .appendingSessionId(sessionId)
+        case .rateMovie(_, let movieId):
+            return movies.appendingPathComponent("\(movieId)/rating")
+        case .deleteRating(let movieId):
+            return movies.appendingPathComponent("\(movieId)/rating")
         case .popular(let page):
             return movies.appendingPathComponent("popular").appendingPage(page)
         case .latest:

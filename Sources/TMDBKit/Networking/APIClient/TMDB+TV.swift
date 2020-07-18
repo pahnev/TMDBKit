@@ -9,7 +9,6 @@ import Foundation
 
 public struct TVEndpoints {
     let tmdb: TMDB
-    let sessionProvider: SessionProvider?
 
     public func details(for tvId: Int, appending details: [DetailsAppendable]?, completion: @escaping TMDBResult<TVDetails>) {
         tmdb.fetchObject(ofType: TVDetails.self, endpoint: TV.details(tvId: tvId, append: details), completion: completion)
@@ -104,19 +103,12 @@ public struct TVEndpoints {
     // MARK: - Post
 
     public func rateShow(_ tvId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-        guard let sessionProvider = sessionProvider else {
-            return completion(.failure(.sessionIdMissing))
-        }
-        tmdb.authenticatedRequestAndParse(TV.rateShow(tvId: tvId, rating: rating, sessionId: sessionProvider.sessionId), completion: completion)
+        tmdb.authenticatedRequestAndParse(TV.rateShow(tvId: tvId, rating: rating), completion: completion)
     }
 
     // MARK: - Delete
 
     public func deleteRating(of tvId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-        guard let sessionProvider = sessionProvider else {
-            return completion(.failure(.sessionIdMissing))
-        }
-
-        tmdb.authenticatedRequestAndParse(TV.deleteRating(tvId: tvId, sessionId: sessionProvider.sessionId), completion: completion)
+        tmdb.authenticatedRequestAndParse(TV.deleteRating(tvId: tvId), completion: completion)
     }
 }

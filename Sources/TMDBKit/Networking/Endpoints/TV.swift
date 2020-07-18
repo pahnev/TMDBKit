@@ -9,7 +9,7 @@
 import Foundation
 
 enum TV: Endpoint {
-    case accountStates(tvId: Int, sessionsId: String)
+    case accountStates(tvId: Int)
 
     case alternativeTitles(tvId: Int)
 
@@ -44,9 +44,9 @@ enum TV: Endpoint {
 
     case latest
 
-    case rateShow(tvId: Int, rating: Double, sessionId: String)
+    case rateShow(tvId: Int, rating: Double)
 
-    case deleteRating(tvId: Int, sessionId: String)
+    case deleteRating(tvId: Int)
 
     case popular(pageNumber: PageNumber)
 
@@ -113,7 +113,7 @@ enum TV: Endpoint {
              .topRated,
              .deleteRating:
             return nil
-        case .rateShow(let rating, _, _):
+        case .rateShow(let rating, _):
             return try! JSONEncoder().encode(["value": rating])
         }
     }
@@ -162,9 +162,8 @@ enum TV: Endpoint {
                     .appendingQueryItems(query)
             }
             return tvDetails
-        case .accountStates(let tvId, let sessionId):
+        case .accountStates(let tvId):
             return tv.appendingPathComponent("\(tvId)/account_states")
-                .appendingSessionId(sessionId)
         case .alternativeTitles(let tvId):
             return tv.appendingPathComponent("\(tvId)/alternative_titles")
         case .changes(let tvId):
@@ -195,14 +194,10 @@ enum TV: Endpoint {
             return tv
                 .appendingPathComponent("\(tvId)/reviews")
                 .appendingPage(page)
-        case .rateShow(let tvId, _, let sessionId):
-            return tv
-                .appendingPathComponent("\(tvId)/rating")
-                .appendingSessionId(sessionId)
-        case .deleteRating(let tvId, let sessionId):
-            return tv
-                .appendingPathComponent("\(tvId)/rating")
-                .appendingSessionId(sessionId)
+        case .rateShow(let tvId, _):
+            return tv.appendingPathComponent("\(tvId)/rating")
+        case .deleteRating(let tvId):
+            return tv.appendingPathComponent("\(tvId)/rating")
         case .popular(let page):
             return tv.appendingPathComponent("popular").appendingPage(page)
         case .latest:

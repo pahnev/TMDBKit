@@ -222,7 +222,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testEndpointURLsAreConstructedProperly() {
-        assertURL(.accountStates(movieId: 1, sessionsId: "id"), matches: "https://api.themoviedb.org/3/movie/1/account_states?session_id=id")
+        assertURL(.accountStates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/account_states")
 
         assertURL(.alternativeTitles(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles")
 
@@ -230,7 +230,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         assertURL(.credits(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/credits")
 
-        assertURL(.deleteRating(movieId: 1, sessionId: "id"), matches: "https://api.themoviedb.org/3/movie/1/rating?session_id=id")
+        assertURL(.deleteRating(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/rating")
 
         assertURL(.details(movieId: 1, append: nil), matches: "https://api.themoviedb.org/3/movie/1")
 
@@ -248,7 +248,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         assertURL(.popular(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/popular?page=1")
 
-        assertURL(.rateMovie(rating: 1, movieId: 1, sessionId: "id"), matches: "https://api.themoviedb.org/3/movie/1/rating?session_id=id")
+        assertURL(.rateMovie(rating: 1, movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/rating")
 
         assertURL(.recommendations(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/recommendations?page=1")
 
