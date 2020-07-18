@@ -45,6 +45,8 @@ enum Authentication: Endpoint {
         }
     }
 
+    var cachePolicy: CachePolicy { .never }
+
     var url: URL {
         guard let baseURL = URL(string: "https://api.themoviedb.org/3/") else {
             preconditionFailure("Invalid URL string")

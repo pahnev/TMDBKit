@@ -47,7 +47,7 @@ final class NetworkClient {
     }
 
     func executeAuthenticatedRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
-        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders), completion: completion)
+        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders), cachePolicy: endpoint.cachePolicy, completion: completion)
     }
 
 }
@@ -68,11 +68,13 @@ private extension NetworkClient {
         return request
     }
 
-    func startRequest(_ request: URLRequest, completion: @escaping (NetworkResult) -> Void) {
+    func startRequest(_ request: URLRequest, cachePolicy: CachePolicy, completion: @escaping (NetworkResult) -> Void) {
 
         let reqId = httpLogger.logStart(request)
 
-        if let cachedResponse = cache.cachedResponse(for: request), let httpResponse = cachedResponse.response as? HTTPURLResponse {
+        if cachePolicy == .allowed,
+            let cachedResponse = cache.cachedResponse(for: request),
+            let httpResponse = cachedResponse.response as? HTTPURLResponse {
             return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
                                                                   headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
                                                                   statusCode: httpResponse.statusCode)))
@@ -98,7 +100,10 @@ private extension NetworkClient {
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }
 
-                self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: request)
+                if cachePolicy == .allowed {
+                    self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: request)
+                }
+
                 return completion(.success(NetworkResult.SuccessValue(value: data,
                                                                       headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
                                                                       statusCode: httpResponse.statusCode)))
