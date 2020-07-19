@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Result {
+public extension Result {
     /// Return the underlying Value object.
     var value: Success? {
         if case let .success(value) = self {
@@ -17,7 +17,7 @@ extension Result {
         return nil
     }
 
-    /// Returns the underlying Error objcet
+    /// Returns the underlying Error object.
     var error: Failure? {
         if case let .failure(error) = self {
             return error
