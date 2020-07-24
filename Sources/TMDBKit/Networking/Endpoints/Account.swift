@@ -13,6 +13,12 @@ public struct FavoriteMedia: CodableEquatable {
         case tv, movie
     }
 
+    public init(mediaType: MediaType, mediaId: Int, favorite: Bool) {
+        self.mediaType = mediaType
+        self.mediaId = mediaId
+        self.favorite = favorite
+    }
+
     public let mediaType: MediaType
     public let mediaId: Int
     public let favorite: Bool
