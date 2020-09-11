@@ -27,7 +27,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: ListsResponse?
         tmdb.account.createdListsFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -37,7 +37,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: PopularMoviesResponse?
         tmdb.account.favoriteMoviesFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -47,7 +47,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: SimilarShowsResponse?
         tmdb.account.favoriteTVShowsFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -57,7 +57,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: PopularMoviesResponse?
         tmdb.account.ratedMoviesFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -67,7 +67,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: SimilarShowsResponse?
         tmdb.account.ratedTVShowsFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -77,7 +77,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: EpisodeListResponse?
         tmdb.account.ratedTVEpisodesFor(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -87,7 +87,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: PopularMoviesResponse?
         tmdb.account.movieWatchlist(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
@@ -97,7 +97,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         var details: SimilarShowsResponse?
         tmdb.account.tvShowWatchlist(accountId: 1, pageNumber: nil) { (result) in
-            details = result.value
+            details = result.value?.object
         }
         expect(details).toEventuallyNot(beNil())
     }
