@@ -63,16 +63,13 @@ public class TMDB {
 
     /// Create a temporary request token that can be used to validate a TMDb user login. More details about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
     public func createRequestToken(completion: @escaping TMDBResult<RequestToken>) {
-        fetchObjectFromNetwork(ofType: RequestToken.self, endpoint: Authentication.requestToken, completion: completion)
+        fetchObject(ofType: RequestToken.self, endpoint: Authentication.requestToken, completion: completion)
     }
 
     /// You can use this method to create a fully valid session ID once a user has validated the request token. More information about how this works can be found here: https://developers.themoviedb.org/3/authentication/how-do-i-generate-a-session-id.
     public func createSession(requestToken: RequestToken, completion: @escaping TMDBResult<Session>) {
-        fetchObjectFromNetwork(ofType: Session.self, endpoint: Authentication.createSession(requestToken: requestToken.requestToken), completion: completion)
+        fetchObject(ofType: Session.self, endpoint: Authentication.createSession(requestToken: requestToken.requestToken), completion: completion)
     }
-
-    /// If you would like to delete (or "logout") from a session, call this method with a valid session ID.
-
 
     /// If you would like to delete (or "logout") from a session, call this method with a valid `sessionId`.
     /// If you haven't initialized TMDB with `sessionId` this completes with `TMDBError.sessionIdMissing`
@@ -85,26 +82,20 @@ public class TMDB {
         authenticatedRequestAndParse(Authentication.deleteSession(sessionId: sessionId), completion: completion)
     }
 
-
-    /// Fetches the wanted object either from Cache if one is found, otherwise from the network. The successfull network request is then cached.
-    ///
-    /// - Parameters:
-    ///   - ofType: The object that should be fetched. Has to conform to CodableEquatable.
-    ///   - cacheConfig: The Cache configuration defining where to look for the object or cache in case it has to be fetched from network.
-    ///   - endpoint: The API endpoint to fetch the object from.
-    ///   - completion: The closure called when the fetch is finished. Returns either the object requested or TMDBError if something failed.
+    /// Fetches the wanted object either from Cache if one is found, otherwise from the network. The successful network request is then cached.
     func fetchObject<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, endpoint: Endpoint, completion: @escaping TMDBResult<CachedObjectType>) {
-        fetchObjectFromNetwork(ofType: CachedObjectType.self, endpoint: endpoint, completion: completion)
+        request(for: endpoint, additionalHeaders: [:], completion: { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let value):
+                self.parse(ofType: CachedObjectType.self, value: value, completion: completion)
+            }
+        })
     }
 
-    /// Performs authenticated request and returns either NetworkResult.SuccessValue on successful completion or TMDBError if something failed.
-    ///
-    /// - Parameters:
-    ///   - endpoint: The API endpoint to make the request to.
-    ///   - additionalHeaders: Any additional header values that should be added to the request.
-    ///   - completion: The closure called when the fetch is finished. Returns either NetworkResult.SuccessValue on successful completion or TMDBError if something failed.
-    func authenticatedRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<NetworkResult.SuccessValue>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint, additionalHeaders: additionalHeaders) { result in
+    func request(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<NetworkResult.SuccessValue>) {
+        networkClient.executeRequest(for: endpoint, additionalHeaders: additionalHeaders) { result in
             switch result {
             case .error(let error):
                 completion(.failure(TMDBError.networkError(error)))
@@ -115,19 +106,12 @@ public class TMDB {
     }
 
     func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
-        networkClient.executeSessionRequest(for: endpoint, sessionId: sessionId(), additionalHeaders: additionalHeaders) { result in
+        networkClient.executeAuthenticatedRequest(for: endpoint, sessionId: authenticator.sessionId, additionalHeaders: additionalHeaders) { result in
             switch result {
             case .error(let error):
                 completion(.failure(TMDBError.networkError(error)))
             case .success(let value):
-                do {
-                    let parsedObject = try self.parseObject(ofType: Type.self, data: value.value)
-                    completion(.success(parsedObject))
-                } catch let error as TMDBError {
-                    return completion(.failure(error))
-                } catch {
-                    preconditionFailure("There should no other error thrown from parsing.")
-                }
+                self.parse(ofType: Type.self, value: value, completion: completion)
             }
         }
     }
@@ -138,7 +122,19 @@ public class TMDB {
 
 private extension TMDB {
 
-    func parseObject<CachedObjectType>(ofType: CachedObjectType.Type, data: Data) throws -> CachedObjectType where CachedObjectType: Decodable {
+    func parse<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<CachedObjectType>) where CachedObjectType: CodableEquatable {
+        do {
+            let object = try decodeObject(ofType: CachedObjectType.self, data: value.value)
+            completion(.success(object))
+        } catch let error as TMDBError {
+            completion(.failure(error))
+        } catch {
+            completion(.failure(TMDBError.unknownDecodingError(error)))
+            preconditionFailure("There should be no other error thrown from parsing.")
+        }
+    }
+
+    func decodeObject<CachedObjectType>(ofType: CachedObjectType.Type, data: Data) throws -> CachedObjectType where CachedObjectType: Decodable {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -158,31 +154,4 @@ private extension TMDB {
         }
     }
 
-    func parseAndCache<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<CachedObjectType>) where CachedObjectType: CodableEquatable {
-        let parsedObject: CachedObjectType
-        do {
-            parsedObject = try self.parseObject(ofType: CachedObjectType.self, data: value.value)
-            completion(.success(parsedObject))
-        } catch let error as TMDBError {
-            return completion(.failure(error))
-        } catch {
-            preconditionFailure("There should no other error thrown from parsing.")
-        }
-    }
-
-    func fetchObjectFromNetwork<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<CachedObjectType>) {
-
-        authenticatedRequest(for: endpoint, additionalHeaders: additionalHeaders, completion: { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let value):
-                self.parseAndCache(ofType: CachedObjectType.self, value: value, completion: completion)
-            }
-        })
-    }
-
-    func sessionId() -> String? {
-        authenticator.sessionId
-    }
 }

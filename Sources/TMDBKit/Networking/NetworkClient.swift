@@ -46,7 +46,7 @@ final class NetworkClient {
         cache.removeAllCachedResponses()
     }
 
-    func executeSessionRequest(for endpoint: Endpoint, sessionId: String?, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+    func executeAuthenticatedRequest(for endpoint: Endpoint, sessionId: String?, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
         guard let sessionId = sessionId else {
             completion(.error(TMDBError.sessionIdMissing))
             return
@@ -56,7 +56,7 @@ final class NetworkClient {
                      completion: completion)
     }
 
-    func executeAuthenticatedRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+    func executeRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
         startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders),
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
