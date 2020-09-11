@@ -30,14 +30,9 @@ public struct StatusResponse: CodableEquatable {
     public let statusMessage: String
 }
 
-public protocol SessionProvider {
-    var sessionId: String { get }
-}
-
 public class TMDB {
-    private let authenticator: Authenticator
+    private var authenticator: Authenticator
     private let networkClient: NetworkClient
-    var sessionProvider: SessionProvider?
 
     public lazy var movies = MovieEndpoints(tmdb: self)
     public lazy var people = PeopleEndpoints(tmdb: self)
@@ -50,8 +45,10 @@ public class TMDB {
         networkClient = NetworkClient(authenticator: authenticator)
     }
 
-    public func setSessionProvider(_ sessionProvider: SessionProvider) {
-        self.sessionProvider = sessionProvider
+    /// Updates the authentication details for the service. Can be called at
+    /// - Parameter authenticator: The new `Authenticator` to use.
+    public func updateAuthenticator(_ authenticator: Authenticator) {
+        self.authenticator = authenticator
     }
 
     /// - Returns: Total byte size of all caches stored on disk by TMDBKit
@@ -81,7 +78,7 @@ public class TMDB {
     /// If you haven't initialized TMDB with `sessionId` this completes with `TMDBError.sessionIdMissing`
     /// - Parameter completion: The closure called when the deletion is finished.
     public func deleteSession(completion: @escaping TMDBResult<SuccessResponse>) {
-        guard let sessionId = authenticator.sessionId ?? sessionProvider?.sessionId else {
+        guard let sessionId = authenticator.sessionId else {
             completion(.failure(.sessionIdMissing))
             return
         }
@@ -186,6 +183,6 @@ private extension TMDB {
     }
 
     func sessionId() -> String? {
-        authenticator.sessionId ?? sessionProvider?.sessionId
+        authenticator.sessionId
     }
 }
