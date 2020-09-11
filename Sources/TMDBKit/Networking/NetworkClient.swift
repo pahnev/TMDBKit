@@ -34,7 +34,7 @@ final class NetworkClient {
         cache.memoryCapacity = 100 * 1024 * 1024
 
         let urlConfiguration = URLSessionConfiguration.default
-        urlConfiguration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        urlConfiguration.requestCachePolicy = .useProtocolCachePolicy
         urlSession = URLSession(configuration: urlConfiguration)
     }
 
@@ -87,21 +87,32 @@ private extension NetworkClient {
     }
 
     func startRequest(_ request: URLRequest, cachePolicy: CachePolicy, completion: @escaping (NetworkResult) -> Void) {
-
+        var modifiedRequest = request
         let reqId = httpLogger.logStart(request)
+        let cachedResponse = cache.cachedResponse(for: request)
 
         if cachePolicy == .allowed,
-            let cachedResponse = cache.cachedResponse(for: request),
-            let httpResponse = cachedResponse.response as? HTTPURLResponse {
-            return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
-                                                                  headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
-                                                                  statusCode: httpResponse.statusCode)))
+           let cachedResponse = cachedResponse,
+           let httpResponse = cachedResponse.response as? HTTPURLResponse {
+
+            let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
+            let now = Date()
+
+            if let maxAge = headers.maxAge, maxAge > 0, now < Date.withTimeIntervalSinceNow(maxAge) ?? now {
+                return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
+                                                                      headers: headers,
+                                                                      statusCode: httpResponse.statusCode)))
+            }
+            if let etag = headers.etag {
+                modifiedRequest.addValue(etag, forHTTPHeaderField: "If-None-Match")
+            }
         }
 
-        let task = urlSession.dataTask(with: request) { data, response, httpRequestError in
+        let task = urlSession.dataTask(with: modifiedRequest) { data, response, httpRequestError in
             self.httpLogger.logComplete(with: reqId, data: data, response: response, error: httpRequestError)
 
             DispatchQueue.main.async {
+
                 if let httpRequestError = httpRequestError {
                     return completion(.error(TMDBError.networkError(httpRequestError)))
                 }
@@ -115,11 +126,18 @@ private extension NetworkClient {
                 }
 
                 guard 200 ..< 300 ~= httpResponse.statusCode else {
+                    // HTTP 304, Not modified, our cached response is valid, use it.
+                    if httpResponse.statusCode == 304, let cachedResponse = cachedResponse {
+                        return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
+                                                                              headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
+                                                                              statusCode: httpResponse.statusCode)))
+
+                    }
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }
 
                 if cachePolicy == .allowed {
-                    self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: request)
+                    self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: modifiedRequest)
                 }
 
                 return completion(.success(NetworkResult.SuccessValue(value: data,
@@ -129,5 +147,12 @@ private extension NetworkClient {
         }
 
         task.resume()
+    }
+}
+
+private extension Date {
+    static func withTimeIntervalSinceNow(_ timeInterval: TimeInterval?) -> Date? {
+        guard let timeInterval = timeInterval else { return nil }
+        return Date().addingTimeInterval(timeInterval)
     }
 }
