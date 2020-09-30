@@ -105,21 +105,26 @@ extension TMDB {
         /// This method allows you to mark a movie or TV show as a favorite item.
         ///
         /// - Parameters:
+        ///   - isFavorite: Whether the item should be added or removed from favorites list.
         ///   - media: The media to be added or removed from favorites list.
         ///   - accountId: The `accountId`, of the user. `nil` by default, will add to currently logged in user's list.
         ///   - completion: Result of `StatusResponse` or `TMDBError`
-        public func markAsFavorite(media: FavoriteMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Account.markFavorite(accountId: accountId, media: media), completion: completion)
+        
+        public func markAsFavorite(_ isFavorite: Bool, media: ListableMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            let favorite = FavoriteMedia(mediaType: media.type, mediaId: media.id, favorite: isFavorite)
+            tmdb.authenticatedRequestAndParse(Account.markFavorite(accountId: accountId, media: favorite), completion: completion)
         }
 
         /// Add a movie or TV show to your watchlist.
         ///
         /// - Parameters:
+        ///   - toWatchlist: Whether the item should be added or removed from watchlist.
         ///   - media: The media to be added or removed from watchlist.
         ///   - accountId: The `accountId`, of the user. `nil` by default, will add to currently logged in user's list.
         ///   - completion: Result of `StatusResponse` or `TMDBError`
-        public func addToWatchlist(media: FavoriteMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Account.addToWatchlist(accountId: accountId, media: media), completion: completion)
+        public func addToWatchlist(_ toWatchlist: Bool, media: ListableMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            let watchlist = WatchlistMedia(mediaType: media.type, mediaId: media.id, watchlist: toWatchlist)
+            tmdb.authenticatedRequestAndParse(Account.addToWatchlist(accountId: accountId, media: watchlist), completion: completion)
         }
 
     }

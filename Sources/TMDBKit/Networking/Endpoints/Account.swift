@@ -8,20 +8,30 @@
 
 import Foundation
 
-public struct FavoriteMedia: CodableEquatable {
+public struct ListableMedia {
     public enum MediaType: String, CodableEquatable {
         case tv, movie
     }
 
-    public init(mediaType: MediaType, mediaId: Int, favorite: Bool) {
-        self.mediaType = mediaType
-        self.mediaId = mediaId
-        self.favorite = favorite
+    public init(type: MediaType, id: Int) {
+        self.type = type
+        self.id = id
     }
 
-    public let mediaType: MediaType
-    public let mediaId: Int
-    public let favorite: Bool
+    public let type: MediaType
+    public let id: Int
+}
+
+struct FavoriteMedia: CodableEquatable {
+    let mediaType: ListableMedia.MediaType
+    let mediaId: Int
+    let favorite: Bool
+}
+
+struct WatchlistMedia: CodableEquatable {
+    let mediaType: ListableMedia.MediaType
+    let mediaId: Int
+    let watchlist: Bool
 }
 
 struct SortedPagination {
@@ -46,7 +56,7 @@ enum Account: Endpoint {
     case ratedTVEpisodes(accountId: Int?, pagination: SortedPagination)
     case movieWatchlist(accountId: Int?, pagination: SortedPagination)
     case tvShowWatchlist(accountId: Int?, pagination: SortedPagination)
-    case addToWatchlist(accountId: Int?, media: FavoriteMedia)
+    case addToWatchlist(accountId: Int?, media: WatchlistMedia)
 
     var httpMethod: HTTPMethod {
         switch self {
@@ -78,8 +88,11 @@ enum Account: Endpoint {
              .movieWatchlist,
              .tvShowWatchlist:
             return nil
-        case .markFavorite(_, let media),
-             .addToWatchlist(_,let media):
+        case .markFavorite(_, let media):
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            return try! encoder.encode(media)
+        case .addToWatchlist(_,let media):
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
             return try! encoder.encode(media)
