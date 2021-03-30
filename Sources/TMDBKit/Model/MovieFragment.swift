@@ -24,4 +24,7 @@ public struct MovieFragment: CodableEquatable {
     public let voteCount: Int
     public let video: Bool
     public let voteAverage: Double
+
+    /// User's rating for the movie.
+    public let rating: Double?
 }
