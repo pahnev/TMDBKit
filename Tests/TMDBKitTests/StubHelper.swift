@@ -8,7 +8,7 @@
 
 import Foundation
 import OHHTTPStubsSwift
-import OHHTTPStubsCore
+import OHHTTPStubs
 
 @testable import TMDBKit
 
@@ -23,7 +23,7 @@ class StubHelper {
                 fileName.append("?\(query)")
             }
             let file = self.fixtureCache["v\(fileName).json"]
-            return OHHTTPStubsResponse(data: try! Data(contentsOf: file!), statusCode: 200, headers: [:])
+            return HTTPStubsResponse(data: try! Data(contentsOf: file!), statusCode: 200, headers: [:])
         }
     }
 

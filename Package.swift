@@ -11,8 +11,8 @@ let package = Package(
             targets: ["TMDBKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", .revision("fda9902f8c5c4170c6914d7dc845174e8c75bf92")),
-        .package(url: "https://github.com/Quick/Nimble.git", .exact("8.0.2"))
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", .upToNextMajor(from: "9.1.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0"))
     ],
     targets: [
         .target(
