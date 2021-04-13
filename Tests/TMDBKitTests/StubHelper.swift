@@ -33,11 +33,10 @@ class StubHelper {
         var cache: [String: URL] = [:] // Save all local files in this cache
         let baseURL = StubHelper.urlForRestServicesTestsDir()
 
-        guard let enumerator = FileManager.default.enumerator(
-            at: baseURL,
-            includingPropertiesForKeys: [.nameKey],
-            options: [.skipsHiddenFiles, .skipsPackageDescendants],
-            errorHandler: nil)
+        guard let enumerator = FileManager.default.enumerator(at: baseURL,
+                                                              includingPropertiesForKeys: [.nameKey],
+                                                              options: [.skipsHiddenFiles, .skipsPackageDescendants],
+                                                              errorHandler: nil)
         else {
             fatalError("Could not enumerate \(baseURL)")
         }

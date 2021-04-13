@@ -6,8 +6,8 @@
 //
 
 import Nimble
-@testable import TMDBKit
 import XCTest
+@testable import TMDBKit
 
 class PeopleEndpointTests: TMDBTestCase {
     private let personId = 1

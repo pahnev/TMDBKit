@@ -6,8 +6,8 @@
 //
 
 import Nimble
-@testable import TMDBKit
 import XCTest
+@testable import TMDBKit
 
 class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
@@ -47,9 +47,11 @@ class TVEndpointTests: TMDBTestCase {
         let appendingImages = TV.details(tvId: 1, append: [.images(languages: nil)])
         XCTAssertEqual(appendingImages.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=images")
 
-        let appendingEverything = TV.details(tvId: 1, append: [.reviews(language: "en"),
-                                                               .images(languages: ["en", "es"]),
-                                                               .videos(language: "en")])
+        let appendingEverything = TV.details(tvId: 1, append: [
+            .reviews(language: "en"),
+            .images(languages: ["en", "es"]),
+            .videos(language: "en")
+        ])
         XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es&language=en")
     }
 

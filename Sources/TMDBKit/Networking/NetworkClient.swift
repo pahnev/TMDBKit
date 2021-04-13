@@ -92,8 +92,7 @@ private extension NetworkClient {
 
         if cachePolicy == .allowed,
            let cachedResponse = cachedResponse,
-           let httpResponse = cachedResponse.response as? HTTPURLResponse
-        {
+           let httpResponse = cachedResponse.response as? HTTPURLResponse {
             let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
             let now = Date()
 

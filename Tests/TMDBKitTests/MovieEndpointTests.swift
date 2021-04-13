@@ -7,8 +7,8 @@
 //
 
 import Nimble
-@testable import TMDBKit
 import XCTest
+@testable import TMDBKit
 
 class MovieEndpointTests: TMDBTestCase {
     let blackPantherMovieId = 284054

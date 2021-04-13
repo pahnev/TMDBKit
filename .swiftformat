@@ -1,12 +1,25 @@
 --swiftversion 5
+
+--allman false
 --binarygrouping none 
---closingparen same-line 
+--closingparen same-line
+--comments indent
 --commas inline 
+--empty void
+--elseposition same-line
 --decimalgrouping none 
 --hexgrouping none 
+--importgrouping testable-bottom
 --octalgrouping none 
 --patternlet inline 
 --semicolons never 
+--self remove
 --stripunusedargs closure-only
+--wraparguments after-first
+--wrapparameters after-first
+--wrapcollections before-first
+--xcodeindentation true
 
 --exclude Package.swift
+
+--disable andOperator,wrapMultilineStatementBraces
