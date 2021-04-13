@@ -36,7 +36,7 @@ public struct TVChange: CodableEquatable {
         public let iso6391: String
         public let iso31661: String
         public let value: Value
-        public let originalValuex: Value
+        public let originalValue: Value
     }
     public let key: String
     public let items: [Item]

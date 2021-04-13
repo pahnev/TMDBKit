@@ -58,7 +58,7 @@ extension TMDB {
         }
 
         /// Get the images that belong to a movie.
-        /// Querying images with a `language` parameter will filter the results. If you want to include a fallback language (especially useful for backdrops) you can use the `include_image_language` parameter. This should be a comma seperated value like so: `include_image_language=en,null`.
+        /// Querying images with a `language` parameter will filter the results. If you want to include a fallback language (especially useful for backdrops) you can use the `include_image_language` parameter. This should be a comma separated value like so: `include_image_language=en,null`.
         public func images(for movieId: Int, completion: @escaping TMDBResult<ImagesResponse>) {
             tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId), completion: completion)
         }
@@ -118,11 +118,11 @@ extension TMDB {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.latest, completion: completion)
         }
 
-        /// Get a list of movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
-        /// You can optionally specify a region prameter which will narrow the search to only look for theatrical release dates within the specified country.
+        /// Get a list of movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+        /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
         ///
         /// - Parameters:
-        ///   - pageNumber: Pagenumber
+        ///   - pageNumber: Page number
         ///   - completion: Result of `NowPlayingMoviesResponse` or `TMDBError`
         public func nowPlaying(pageNumber: PageNumber, completion: @escaping TMDBResult<NowPlayingMoviesResponse>) {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.nowPlaying(pageNumber: pageNumber), completion: completion)
@@ -150,11 +150,11 @@ extension TMDB {
             tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
         }
 
-        /// Get a list of movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
-        /// You can optionally specify a region prameter which will narrow the search to only look for theatrical release dates within the specified country.
+        /// Get a list of movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+        /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
         ///
         /// - Parameters:
-        ///   - pageNumber: Pagenumber
+        ///   - pageNumber: Page number
         ///   - completion: Result of `NowPlayingMoviesResponse` or `TMDBError`
         public func upcoming(pageNumber: PageNumber, completion: @escaping TMDBResult<NowPlayingMoviesResponse>) {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.upcoming(pageNumber: pageNumber), completion: completion)

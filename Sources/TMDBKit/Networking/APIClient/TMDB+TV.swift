@@ -45,7 +45,7 @@ public struct TVEndpoints {
     }
 
     /// Get the images that belong to a movie.
-    /// Querying images with a `language` parameter will filter the results. If you want to include a fallback language (especially useful for backdrops) you can use the `include_image_language` parameter. This should be a comma seperated value like so: `include_image_language=en,null`.
+    /// Querying images with a `language` parameter will filter the results. If you want to include a fallback language (especially useful for backdrops) you can use the `include_image_language` parameter. This should be a comma separated value like so: `include_image_language=en,null`.
     public func images(for tvId: Int, completion: @escaping TMDBResult<ImagesResponse>) {
         tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: TV.images(tvId: tvId), completion: completion)
     }
