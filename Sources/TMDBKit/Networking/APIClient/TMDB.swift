@@ -47,6 +47,7 @@ public class TMDB {
     public lazy var trending = TrendingEndpoints(tmdb: self)
     public lazy var tv = TVEndpoints(tmdb: self)
     public lazy var account = AccountEndpoints(tmdb: self)
+    public lazy var lists = ListEndpoints(tmdb: self)
 
     public init(authenticator: Authenticator) throws {
         self.authenticator = authenticator
