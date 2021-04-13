@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 14/11/2019.
 //
@@ -12,6 +12,7 @@ struct MockAuth: Authenticator {
     var apiKey: String {
         return "123"
     }
+
     var sessionId: String? {
         return "456"
     }

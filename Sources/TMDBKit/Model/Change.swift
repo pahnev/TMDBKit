@@ -28,8 +28,10 @@ public struct TVChange: CodableEquatable {
                 public let filePath: String
                 public let iso6391: String?
             }
+
             public let poster: Poster
         }
+
         public let id: String
         public let action: String
         public let time: String
@@ -38,7 +40,7 @@ public struct TVChange: CodableEquatable {
         public let value: Value
         public let originalValue: Value
     }
+
     public let key: String
     public let items: [Item]
-
 }

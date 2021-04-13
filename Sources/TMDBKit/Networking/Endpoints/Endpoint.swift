@@ -30,8 +30,8 @@ protocol Endpoint {
 extension Endpoint {
     var httpMethod: HTTPMethod { return .GET }
     var httpBody: Data? { return nil }
-    var requestHeaders: [String : String] { return [:] }
-    
+    var requestHeaders: [String: String] { return [:] }
+
     var cachePolicy: CachePolicy {
         switch httpMethod {
         case .GET:

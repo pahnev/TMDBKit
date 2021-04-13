@@ -38,9 +38,11 @@ struct SortedPagination {
     enum SortDirection {
         case ascending, descending
     }
+
     enum Sort {
         case createdAt(SortDirection)
     }
+
     let sortBy: Sort?
     let page: PageNumber?
 }
@@ -92,7 +94,7 @@ enum Account: Endpoint {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
             return try! encoder.encode(media)
-        case .addToWatchlist(_,let media):
+        case .addToWatchlist(_, let media):
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
             return try! encoder.encode(media)
@@ -173,6 +175,4 @@ enum Account: Endpoint {
                 .appendingPathComponent("watchlist")
         }
     }
-
-
 }

@@ -5,9 +5,9 @@
 //  Created by Kirill Pahnev on 01/12/2019.
 //
 
-import XCTest
 import Nimble
 @testable import TMDBKit
+import XCTest
 
 class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
@@ -49,8 +49,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let appendingEverything = TV.details(tvId: 1, append: [.reviews(language: "en"),
                                                                .images(languages: ["en", "es"]),
-                                                               .videos(language: "en")
-        ])
+                                                               .videos(language: "en")])
         XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es&language=en")
     }
 
@@ -143,7 +142,7 @@ class TVEndpointTests: TMDBTestCase {
         }
         expect(result).toEventuallyNot(beNil())
     }
-    
+
     func testReturnsReviews() {
         stubHelper.stubWithLocalFile(TV.reviews(tvId: gameOfThrones, pageNumber: 1))
 

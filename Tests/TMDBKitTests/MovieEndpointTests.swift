@@ -6,12 +6,11 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
-import XCTest
 import Nimble
 @testable import TMDBKit
+import XCTest
 
 class MovieEndpointTests: TMDBTestCase {
-
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 
@@ -218,7 +217,6 @@ class MovieEndpointTests: TMDBTestCase {
             nowPlaying = result.value
         }
         expect(nowPlaying).toEventuallyNot(beNil())
-
     }
 
     func testEndpointURLsAreConstructedProperly() {
@@ -305,5 +303,4 @@ class MovieEndpointTests: TMDBTestCase {
     private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: FileString = #file, line: UInt = #line) {
         XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
     }
-
 }

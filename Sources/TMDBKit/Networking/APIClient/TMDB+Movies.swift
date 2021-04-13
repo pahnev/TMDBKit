@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension TMDB {
-    public struct MovieEndpoints {
+public extension TMDB {
+    struct MovieEndpoints {
         let tmdb: TMDB
 
         /// Get the primary information about a movie
@@ -22,7 +22,7 @@ extension TMDB {
         }
 
         public func accountStates(for movieId: Int) {
-            // TODO
+            // TODO:
         }
 
         /// Get all of the alternative titles for a movie
@@ -92,23 +92,31 @@ extension TMDB {
 
         /// Get a list of recommended movies for a movie.
         public func recommendations(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
-            tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.recommendations(movieId: movieId, pageNumber: pageNumber), completion: completion)
+            tmdb.fetchObject(ofType: PopularMoviesResponse.self,
+                             endpoint: Movies.recommendations(movieId: movieId, pageNumber: pageNumber),
+                             completion: completion)
         }
 
         /// Get a list of similar movies. This is not the same as the "Recommendation" system you see on the website.
         /// These items are assembled by looking at keywords and genres.
         public func similarMovies(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<PopularMoviesResponse>) {
-            tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.similarMovies(movieId: movieId, pageNumber: pageNumber), completion: completion)
+            tmdb.fetchObject(ofType: PopularMoviesResponse.self,
+                             endpoint: Movies.similarMovies(movieId: movieId, pageNumber: pageNumber),
+                             completion: completion)
         }
 
         /// Get the user reviews for a movie.
         public func reviews(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<ReviewsResponse>) {
-            tmdb.fetchObject(ofType: ReviewsResponse.self, endpoint: Movies.reviews(movieId: movieId, pageNumber: pageNumber), completion: completion)
+            tmdb.fetchObject(ofType: ReviewsResponse.self,
+                             endpoint: Movies.reviews(movieId: movieId, pageNumber: pageNumber),
+                             completion: completion)
         }
 
         /// Get a list of lists that this movie belongs to.
         public func lists(for movieId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<ListsResponse>) {
-            tmdb.fetchObject(ofType: ListsResponse.self, endpoint: Movies.lists(movieId: movieId, pageNumber: pageNumber), completion: completion)
+            tmdb.fetchObject(ofType: ListsResponse.self,
+                             endpoint: Movies.lists(movieId: movieId, pageNumber: pageNumber),
+                             completion: completion)
         }
 
         /// Get the most newly created movie. This is a live response and will continuously change

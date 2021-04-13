@@ -1,6 +1,6 @@
 //
 //  List.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 13.4.2021.
 //
@@ -8,7 +8,6 @@
 import Foundation
 
 enum Lists: Endpoint {
-
     struct List: Encodable {
         let name: String
         let description: String
@@ -53,7 +52,7 @@ enum Lists: Endpoint {
         }
     }
 
-    var requestHeaders: [String : String] {
+    var requestHeaders: [String: String] {
         switch self {
         case .details,
              .itemStatus,
@@ -88,5 +87,4 @@ enum Lists: Endpoint {
             return lists.appendingPathComponent("\(listId)")
         }
     }
-
 }

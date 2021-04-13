@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension TMDB {
-    public struct AccountEndpoints {
+public extension TMDB {
+    struct AccountEndpoints {
         let tmdb: TMDB
 
         /// Get your account details.
@@ -26,7 +26,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `ListsResponse` or `TMDBError`
         public func createdListsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<ListsResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.createdLists(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.createdLists(accountId: accountId,
+                                                                            pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get the list of your favorite movies.
@@ -36,7 +38,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `HTTPResponseContaining<PopularMoviesResponse>` or `TMDBError`
         public func favoriteMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.favoriteMovies(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.favoriteMovies(accountId: accountId,
+                                                                              pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get the list of your favorite TV shows.
@@ -46,7 +50,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
         public func favoriteTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.favoriteTVShows(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.favoriteTVShows(accountId: accountId,
+                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get a list of all the movies you have rated.
@@ -56,7 +62,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `PopularMoviesResponse` or `TMDBError`
         public func ratedMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.ratedMovies(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.ratedMovies(accountId: accountId,
+                                                                           pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get a list of all the TV shows you have rated.
@@ -66,7 +74,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
         public func ratedTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.ratedTVShows(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.ratedTVShows(accountId: accountId,
+                                                                            pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get a list of all the TV episodes you have rated.
@@ -76,7 +86,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `EpisodeListResponse` or `TMDBError`
         public func ratedTVEpisodesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<EpisodeListResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.ratedTVEpisodes(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.ratedTVEpisodes(accountId: accountId,
+                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get a list of all the movies you have added to your watchlist.
@@ -86,7 +98,9 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `PopularMoviesResponse` or `TMDBError`
         public func movieWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.movieWatchlist(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.movieWatchlist(accountId: accountId,
+                                                                              pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         /// Get a list of all the TV shows you have added to your watchlist.
@@ -96,11 +110,12 @@ extension TMDB {
         ///   - pageNumber: The number of the page if fetching paginated results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
         public func tvShowWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
-            tmdb.authenticatedRequestWithResponse(for: Account.tvShowWatchlist(accountId: accountId, pagination: SortedPagination(sortBy: nil, page: pageNumber)), completion: completion)
+            tmdb.authenticatedRequestWithResponse(for: Account.tvShowWatchlist(accountId: accountId,
+                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                  completion: completion)
         }
 
         // MARK: - POST
-
 
         /// This method allows you to mark a movie or TV show as a favorite item.
         ///
@@ -109,7 +124,7 @@ extension TMDB {
         ///   - media: The media to be added or removed from favorites list.
         ///   - accountId: The `accountId`, of the user. `nil` by default, will add to currently logged in user's list.
         ///   - completion: Result of `StatusResponse` or `TMDBError`
-        
+
         public func markAsFavorite(_ isFavorite: Bool, media: ListableMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
             let favorite = FavoriteMedia(mediaType: media.type, mediaId: media.id, favorite: isFavorite)
             tmdb.authenticatedRequestAndParse(Account.markFavorite(accountId: accountId, media: favorite), completion: completion)
@@ -126,6 +141,5 @@ extension TMDB {
             let watchlist = WatchlistMedia(mediaType: media.type, mediaId: media.id, watchlist: toWatchlist)
             tmdb.authenticatedRequestAndParse(Account.addToWatchlist(accountId: accountId, media: watchlist), completion: completion)
         }
-
     }
 }

@@ -1,6 +1,6 @@
 //
 //  PersonMovieCreditsResponse.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 14/11/2019.
 //
@@ -14,6 +14,7 @@ public struct PersonCreditsResponse: CodableEquatable {
 }
 
 // MARK: - Cast
+
 public struct CreditsCast: CodableEquatable {
     public let character: String?
     public let creditID: String?
@@ -42,11 +43,9 @@ public struct CreditsCast: CodableEquatable {
     public let episodeCount: Int?
     public let firstAirDate: String?
     public let originCountry: [String]?
-
 }
 
 public struct AppendedPersonCredits: CodableEquatable {
     public let cast: [CreditsCast]
     public let crew: [CreditsCast]
-
 }

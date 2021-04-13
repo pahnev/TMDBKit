@@ -13,6 +13,7 @@ public struct AccountDetails: CodableEquatable {
         public struct Gravatar: CodableEquatable {
             public let hash: String
         }
+
         public let gravatar: Gravatar
     }
 

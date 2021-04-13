@@ -7,27 +7,28 @@
 
 import Foundation
 
-extension TMDB {
-
-    public struct PeopleEndpoints {
+public extension TMDB {
+    struct PeopleEndpoints {
         let tmdb: TMDB
 
         /// Get the primary person details by id.
         public func details(for personId: Int, appending details: [DetailsAppendable]?, completion: @escaping TMDBResult<PersonDetailsResponse>) {
-            // TODO Return appended details, lang
-            tmdb.fetchObject(ofType: PersonDetailsResponse.self, endpoint: People.details(personId: personId, append: details), completion: completion)
+            // TODO: Return appended details, lang
+            tmdb.fetchObject(ofType: PersonDetailsResponse.self,
+                             endpoint: People.details(personId: personId, append: details),
+                             completion: completion)
         }
 
         /// Get the changes for a person. By default only the last 24 hours are returned.
         /// You can query up to 14 days in a single query by using the start_date and end_date query parameters.
         public func changes(for personId: Int, completion: @escaping TMDBResult<ChangesResponse>) {
-            // TODO lang, pagination & start and end date query
+            // TODO: lang, pagination & start and end date query
             tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: People.changes(personId: personId), completion: completion)
         }
 
         /// Get the movie credits for a person.
         public func movieCredits(for personId: Int, completion: @escaping TMDBResult<PersonCreditsResponse>) {
-            // TODO Lang query
+            // TODO: Lang query
             tmdb.fetchObject(ofType: PersonCreditsResponse.self, endpoint: People.movieCredits(personId: personId), completion: completion)
         }
 
@@ -39,7 +40,7 @@ extension TMDB {
 
         /// Get the movie and TV credits together in a single response.
         public func combinedCredits(for personId: Int, completion: @escaping TMDBResult<PersonCreditsResponse>) {
-            // TODO Lang query
+            // TODO: Lang query
             tmdb.fetchObject(ofType: PersonCreditsResponse.self, endpoint: People.combinedCredits(personId: personId), completion: completion)
         }
 
@@ -56,7 +57,7 @@ extension TMDB {
         /// | Twitter              |
         ///
         public func externalIds(for personId: Int, completion: @escaping TMDBResult<ExternalIds>) {
-            // TODO Lang query
+            // TODO: Lang query
             tmdb.fetchObject(ofType: ExternalIds.self, endpoint: People.externalIds(personId: personId), completion: completion)
         }
 
@@ -67,25 +68,25 @@ extension TMDB {
 
         /// Get the images that this person has been tagged in.
         public func taggedImages(for personId: Int, completion: @escaping TMDBResult<TaggedImageResponse>) {
-            // TODO lang, pagination
+            // TODO: lang, pagination
             tmdb.fetchObject(ofType: TaggedImageResponse.self, endpoint: People.taggedImages(personId: personId), completion: completion)
         }
 
         /// Get a list of translations that have been created for a person.
         public func translations(for personId: Int, completion: @escaping TMDBResult<PersonTranslationResponse>) {
-            // TODO Lang query
+            // TODO: Lang query
             tmdb.fetchObject(ofType: PersonTranslationResponse.self, endpoint: People.translations(personId: personId), completion: completion)
         }
 
         /// Get the most newly created person. This is a live response and will continuously change.
         public func latest(completion: @escaping TMDBResult<PersonDetailsResponse>) {
-            // TODO Lang query
+            // TODO: Lang query
             tmdb.fetchObject(ofType: PersonDetailsResponse.self, endpoint: People.latest, completion: completion)
         }
 
         /// Get the list of popular people on TMDb. This list updates daily.
         public func popular(completion: @escaping TMDBResult<PopularPersonResponse>) {
-            // TODO lang, pagination
+            // TODO: lang, pagination
             tmdb.fetchObject(ofType: PopularPersonResponse.self, endpoint: People.popular, completion: completion)
         }
     }

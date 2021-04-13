@@ -43,16 +43,17 @@ public struct TVDetails: CodableEquatable {
 }
 
 // MARK: - CreatedBy
+
 public struct CreatedBy: CodableEquatable {
     public let id: Int
     public let creditId: String
     public let name: String
     public let gender: Int
     public let profilePath: String
-
 }
 
 // MARK: - LastEpisodeToAir
+
 public struct LastEpisodeToAir: CodableEquatable {
     public let airDate: String
     public let episodeNumber: Int
@@ -65,10 +66,10 @@ public struct LastEpisodeToAir: CodableEquatable {
     public let stillPath: String?
     public let voteAverage: Double
     public let voteCount: Int
-
 }
 
 // MARK: - Network
+
 public struct Network: CodableEquatable {
     public let name: String
     public let id: Int
@@ -88,8 +89,8 @@ public struct RecommendationNetwork: CodableEquatable {
     public let originCountry: String
 }
 
-
 // MARK: - Season
+
 public struct Season: CodableEquatable {
     public let airDate: String?
     public let episodeCount: Int

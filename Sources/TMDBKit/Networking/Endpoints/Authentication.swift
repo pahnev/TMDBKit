@@ -36,7 +36,7 @@ enum Authentication: Endpoint {
         }
     }
 
-    var requestHeaders: [String : String] {
+    var requestHeaders: [String: String] {
         switch self {
         case .requestToken, .createQuestSession:
             return [:]
@@ -66,5 +66,4 @@ enum Authentication: Endpoint {
             return authentication.appendingPathComponent("session")
         }
     }
-
 }

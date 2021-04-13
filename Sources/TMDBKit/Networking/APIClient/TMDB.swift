@@ -115,33 +115,35 @@ public class TMDB {
     }
 
     func authenticatedRequestWithResponse<Type: CodableEquatable>(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<HTTPResponseContaining<Type>>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint, sessionId: authenticator.sessionId, additionalHeaders: additionalHeaders) { result in
-            switch result {
-            case .error(let error):
-                completion(.failure(TMDBError.networkError(error)))
-            case .success(let value):
-                self.parseWithResponse(ofType: Type.self, value: value, completion: completion)
-            }
+        networkClient.executeAuthenticatedRequest(for: endpoint,
+                                                  sessionId: authenticator.sessionId,
+                                                  additionalHeaders: additionalHeaders) { result in
+                switch result {
+                case .error(let error):
+                    completion(.failure(TMDBError.networkError(error)))
+                case .success(let value):
+                    self.parseWithResponse(ofType: Type.self, value: value, completion: completion)
+                }
         }
     }
 
     func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint, sessionId: authenticator.sessionId, additionalHeaders: additionalHeaders) { result in
-            switch result {
-            case .error(let error):
-                completion(.failure(TMDBError.networkError(error)))
-            case .success(let value):
-                self.parse(ofType: Type.self, value: value, completion: completion)
-            }
+        networkClient.executeAuthenticatedRequest(for: endpoint,
+                                                  sessionId: authenticator.sessionId,
+                                                  additionalHeaders: additionalHeaders) { result in
+                switch result {
+                case .error(let error):
+                    completion(.failure(TMDBError.networkError(error)))
+                case .success(let value):
+                    self.parse(ofType: Type.self, value: value, completion: completion)
+                }
         }
     }
-
 }
 
 // MARK: - Private
 
 private extension TMDB {
-
     func parseWithResponse<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<HTTPResponseContaining<CachedObjectType>>) where CachedObjectType: CodableEquatable {
         do {
             let object = try decodeObject(ofType: CachedObjectType.self, data: value.value)
@@ -185,5 +187,4 @@ private extension TMDB {
             throw TMDBError.decodingError(DecodingError.valueNotFound(object, context))
         }
     }
-
 }

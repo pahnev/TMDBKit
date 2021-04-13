@@ -61,7 +61,6 @@ final class NetworkClient {
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
     }
-
 }
 
 private extension NetworkClient {
@@ -93,8 +92,8 @@ private extension NetworkClient {
 
         if cachePolicy == .allowed,
            let cachedResponse = cachedResponse,
-           let httpResponse = cachedResponse.response as? HTTPURLResponse {
-
+           let httpResponse = cachedResponse.response as? HTTPURLResponse
+        {
             let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
             let now = Date()
 
@@ -112,7 +111,6 @@ private extension NetworkClient {
             self.httpLogger.logComplete(with: reqId, data: data, response: response, error: httpRequestError)
 
             DispatchQueue.main.async {
-
                 if let httpRequestError = httpRequestError {
                     return completion(.error(TMDBError.networkError(httpRequestError)))
                 }
@@ -131,7 +129,6 @@ private extension NetworkClient {
                         return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
                                                                               headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
                                                                               statusCode: httpResponse.statusCode)))
-
                     }
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }

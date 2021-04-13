@@ -9,7 +9,6 @@
 import Foundation
 
 enum Movies: Endpoint {
-
     case accountStates(movieId: Int)
 
     case alternativeTitles(movieId: Int)
@@ -62,7 +61,6 @@ enum Movies: Endpoint {
 
     case upcoming(pageNumber: PageNumber)
     case videos(movieId: Int)
-
 
     var httpMethod: HTTPMethod {
         switch self {
@@ -216,8 +214,6 @@ enum Movies: Endpoint {
             return movies.appendingPathComponent("now_playing").appendingPage(page)
         case .upcoming(let page):
             return movies.appendingPathComponent("upcoming").appendingPage(page)
-
         }
     }
-
 }

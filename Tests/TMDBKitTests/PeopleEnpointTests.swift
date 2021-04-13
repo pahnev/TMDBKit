@@ -1,16 +1,15 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 14/11/2019.
 //
 
-import XCTest
 import Nimble
 @testable import TMDBKit
+import XCTest
 
 class PeopleEndpointTests: TMDBTestCase {
-
     private let personId = 1
 
     func testReturnsPersonDetails() {
@@ -49,6 +48,7 @@ class PeopleEndpointTests: TMDBTestCase {
         }
         expect(credits).toEventuallyNot(beNil())
     }
+
     func testReturnsCombinedCredits() {
         var credits: PersonCreditsResponse?
         stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId))
@@ -116,7 +116,6 @@ class PeopleEndpointTests: TMDBTestCase {
             expect(tvMedia.posterPath).to(equal("/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg"))
         case .person(let person):
             expect(person).toEventually(beNil())
-
         }
     }
 
@@ -128,7 +127,7 @@ class PeopleEndpointTests: TMDBTestCase {
         }
         expect(translations).toEventuallyNot(beNil())
     }
-    
+
     func testReturnsLatest() {
         var person: PersonDetailsResponse?
         stubHelper.stubWithLocalFile(People.latest)

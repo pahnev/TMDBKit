@@ -17,6 +17,8 @@ public struct TrendingEndpoints {
     ///   - timeWindow: The time period of the results to be returned.
     ///   - completion: The closure called on completion with `TrendingResponse` or `TMDBError`.
     public func trending(_ mediaType: MediaType, withinLast timeWindow: TimeWindow, completion: @escaping TMDBResult<TrendingResponse>) {
-        tmdb.fetchObject(ofType: TrendingResponse.self, endpoint: Trending.trending(mediaType: mediaType, timeWindow: timeWindow), completion: completion)
+        tmdb.fetchObject(ofType: TrendingResponse.self,
+                         endpoint: Trending.trending(mediaType: mediaType, timeWindow: timeWindow),
+                         completion: completion)
     }
 }

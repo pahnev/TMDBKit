@@ -13,8 +13,8 @@ public enum Media: CodableEquatable {
     case person(PopularPerson)
 }
 
-extension Media {
-    public init(from decoder: Decoder) throws {
+public extension Media {
+    init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let tvMedia = try? container.decode(TVMedia.self) {
             self = .tv(tvMedia)
@@ -30,7 +30,7 @@ extension Media {
                                                                 debugDescription: "Media type not supported."))
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case .tv(let tvMedia):

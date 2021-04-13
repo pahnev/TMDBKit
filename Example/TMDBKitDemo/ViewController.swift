@@ -6,9 +6,9 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
-import UIKit
-import TMDBKit
 import AuthenticationServices
+import TMDBKit
+import UIKit
 
 struct Auth: Authenticator {
     let apiKey: String
@@ -20,8 +20,7 @@ struct Session: SessionProvider {
 }
 
 class ViewController: UIViewController {
-
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     let auth = Auth(apiKey: "123", sessionId: nil)
     lazy var tmdb = try! TMDB(authenticator: auth)
     var webAuthSession: ASWebAuthenticationSession?
@@ -87,7 +86,6 @@ class ViewController: UIViewController {
                 self.authenticate(requestToken: token)
             }
         }
-
     }
 }
 
@@ -95,6 +93,7 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
     }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
 

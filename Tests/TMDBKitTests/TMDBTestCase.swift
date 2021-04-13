@@ -5,8 +5,8 @@
 //  Created by Kirill Pahnev on 10/12/2019.
 //
 
-import XCTest
 @testable import TMDBKit
+import XCTest
 
 class TMDBTestCase: XCTestCase {
     var stubHelper = StubHelper()

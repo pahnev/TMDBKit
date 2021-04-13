@@ -5,12 +5,11 @@
 //  Created by Pahnev, Kirill on 16/11/2019.
 //
 
-import XCTest
 import Nimble
 @testable import TMDBKit
+import XCTest
 
 class TrendingEndpointTests: TMDBTestCase {
-
     func testReturnsTrendingMovies() {
         var response: TrendingResponse?
         stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day))
@@ -47,5 +46,4 @@ class TrendingEndpointTests: TMDBTestCase {
         }
         expect(response).toEventuallyNot(beNil())
     }
-
 }

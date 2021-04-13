@@ -13,6 +13,7 @@ public struct ScreenedTheatricallyResponse: CodableEquatable {
         public let episodeNumber: Int
         public let seasonNumber: Int
     }
+
     public let id: Int
     public let results: [Result]
 }

@@ -15,7 +15,7 @@ public struct TVEndpoints {
     }
 
     public func accountStates(for tvId: Int) {
-        // TODO
+        // TODO:
     }
 
     public func alternativeTitles(for tvId: Int, completion: @escaping TMDBResult<AlternativeTvTitlesResponse>) {
@@ -39,7 +39,6 @@ public struct TVEndpoints {
         tmdb.fetchObject(ofType: EpisodeGroupsResponse.self, endpoint: TV.episodeGroups(tvId: tvId), completion: completion)
     }
 
-
     public func externalIds(for tvId: Int, completion: @escaping TMDBResult<ExternalIds>) {
         tmdb.fetchObject(ofType: ExternalIds.self, endpoint: TV.externalIds(tvId: tvId), completion: completion)
     }
@@ -56,7 +55,9 @@ public struct TVEndpoints {
     }
 
     public func recommendations(for tvId: Int, pageNumber: PageNumber, completion: @escaping TMDBResult<RecommendationsResponse>) {
-        tmdb.fetchObject(ofType: RecommendationsResponse.self, endpoint: TV.recommendations(tvId: tvId, pageNumber: pageNumber), completion: completion)
+        tmdb.fetchObject(ofType: RecommendationsResponse.self,
+                         endpoint: TV.recommendations(tvId: tvId, pageNumber: pageNumber),
+                         completion: completion)
     }
 
     /// Get the user reviews for a movie.

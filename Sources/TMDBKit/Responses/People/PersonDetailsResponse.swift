@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 14/11/2019.
 //
@@ -50,8 +50,8 @@ public struct PopularPersonResponse: CodableEquatable {
     public let totalResults: Int
     public let totalPages: Int
     public let results: [PopularPerson]
-
 }
+
 public struct PopularPerson: CodableEquatable {
     public let popularity: Double
     public let knownForDepartment: String?

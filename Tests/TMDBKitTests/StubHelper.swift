@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import OHHTTPStubsSwift
 import OHHTTPStubs
+import OHHTTPStubsSwift
 
 @testable import TMDBKit
 
@@ -37,8 +37,9 @@ class StubHelper {
             at: baseURL,
             includingPropertiesForKeys: [.nameKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants],
-            errorHandler: nil) else {
-                fatalError("Could not enumerate \(baseURL)")
+            errorHandler: nil)
+        else {
+            fatalError("Could not enumerate \(baseURL)")
         }
 
         for case let url as URL in enumerator where url.isFileURL {
@@ -46,6 +47,7 @@ class StubHelper {
         }
         fixtureCache = cache
     }
+
     private static func urlForRestServicesTestsDir() -> URL {
         let currentFileURL = URL(fileURLWithPath: "\(#file)", isDirectory: false)
         return currentFileURL

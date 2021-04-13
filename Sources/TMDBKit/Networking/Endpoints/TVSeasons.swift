@@ -21,5 +21,4 @@ enum TVSeasons {
     case images(tvId: Int, seasonNumber: Int)
 
     case videos(tvId: Int, seasonNumber: Int)
-
 }

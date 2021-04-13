@@ -36,7 +36,7 @@ struct HTTPResponseHeaders {
 
         // Including explicit types to help Swift typechecker to perform faster
         let cacheControlDirectives: [String] = cacheControl.lowercased().split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-        let maxAgeDirective: String? = cacheControlDirectives.filter { $0.starts(with: "max-age")}.first
+        let maxAgeDirective: String? = cacheControlDirectives.filter { $0.starts(with: "max-age") }.first
         let maxAgeKeyValue: [String.SubSequence]? = maxAgeDirective.map { $0.split(separator: "=") }
 
         guard let keyValuePair = maxAgeKeyValue, keyValuePair.count == 2, let maxAge = TimeInterval(keyValuePair[1]) else { return nil }

@@ -57,5 +57,4 @@ enum People: Endpoint {
             return people.appendingPathComponent("popular")
         }
     }
-
 }

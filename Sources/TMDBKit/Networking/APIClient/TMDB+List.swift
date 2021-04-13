@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension TMDB {
-    public struct ListEndpoints {
+public extension TMDB {
+    struct ListEndpoints {
         let tmdb: TMDB
 
         /// Get the details of a list.
@@ -17,7 +17,6 @@ extension TMDB {
         public func details(for listId: Int, completion: @escaping TMDBResult<ListDetails>) {
             tmdb.fetchObject(ofType: ListDetails.self, endpoint: Lists.details(listId: listId), completion: completion)
         }
-
 
         /// You can use this method to check if a movie has already been added to the list.
         /// - Parameters:

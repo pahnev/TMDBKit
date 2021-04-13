@@ -10,7 +10,7 @@ import Foundation
 public extension Result {
     /// Return the underlying Value object.
     var value: Success? {
-        if case let .success(value) = self {
+        if case .success(let value) = self {
             return value
         }
 
@@ -19,7 +19,7 @@ public extension Result {
 
     /// Returns the underlying Error object.
     var error: Failure? {
-        if case let .failure(error) = self {
+        if case .failure(let error) = self {
             return error
         }
 

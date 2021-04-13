@@ -9,7 +9,6 @@
 import Foundation
 
 public protocol Authenticator {
-
     /// The API key for the TMDB. Required for all requests.
     var apiKey: String { get }
 
