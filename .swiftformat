@@ -1,0 +1,12 @@
+--swiftversion 5
+--binarygrouping none 
+--closingparen same-line 
+--commas inline 
+--decimalgrouping none 
+--hexgrouping none 
+--octalgrouping none 
+--patternlet inline 
+--semicolons never 
+--stripunusedargs closure-only
+
+--exclude Package.swift
