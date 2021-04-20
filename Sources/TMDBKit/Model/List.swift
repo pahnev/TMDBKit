@@ -22,11 +22,11 @@ public struct ListDetails: CodableEquatable {
     public let createdBy: String
     public let description: String
     public let favoriteCount: Int
-    public let id: Int
+    public let id: String
     public let items: [MovieFragment]
     public let iso6391: String
     public let itemCount: Int
-    public let listType: String
+    public let listType: String?
     public let name: String
     public let posterPath: String?
 }
