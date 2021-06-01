@@ -118,12 +118,12 @@ public class TMDB {
         networkClient.executeAuthenticatedRequest(for: endpoint,
                                                   sessionId: authenticator.sessionId,
                                                   additionalHeaders: additionalHeaders) { result in
-                switch result {
-                case .error(let error):
-                    completion(.failure(TMDBError.networkError(error)))
-                case .success(let value):
-                    self.parseWithResponse(ofType: Type.self, value: value, completion: completion)
-                }
+            switch result {
+            case .error(let error):
+                completion(.failure(TMDBError.networkError(error)))
+            case .success(let value):
+                self.parseWithResponse(ofType: Type.self, value: value, completion: completion)
+            }
         }
     }
 
@@ -131,12 +131,12 @@ public class TMDB {
         networkClient.executeAuthenticatedRequest(for: endpoint,
                                                   sessionId: authenticator.sessionId,
                                                   additionalHeaders: additionalHeaders) { result in
-                switch result {
-                case .error(let error):
-                    completion(.failure(TMDBError.networkError(error)))
-                case .success(let value):
-                    self.parse(ofType: Type.self, value: value, completion: completion)
-                }
+            switch result {
+            case .error(let error):
+                completion(.failure(TMDBError.networkError(error)))
+            case .success(let value):
+                self.parse(ofType: Type.self, value: value, completion: completion)
+            }
         }
     }
 }
