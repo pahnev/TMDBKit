@@ -14,13 +14,13 @@ enum Lists: Endpoint {
         let language: String
     }
 
-    case details(listId: Int)
-    case itemStatus(listId: Int, movieId: Int)
     case createList(list: List)
-    case addMovie(listId: Int, mediaId: Int)
-    case removeMovie(listId: Int, mediaId: Int)
-    case clearList(listId: Int)
-    case deleteList(listId: Int)
+    case details(listId: String)
+    case itemStatus(listId: String, movieId: Int)
+    case addMovie(listId: String, mediaId: Int)
+    case removeMovie(listId: String, mediaId: Int)
+    case clearList(listId: String)
+    case deleteList(listId: String)
 
     var httpMethod: HTTPMethod {
         switch self {
@@ -78,7 +78,7 @@ enum Lists: Endpoint {
         case .createList:
             return lists
         case .addMovie(let listId, _):
-            return lists.appendingPathComponent("\(listId)/item_status")
+            return lists.appendingPathComponent("\(listId)/add_item")
         case .removeMovie(let listId, _):
             return lists.appendingPathComponent("\(listId)/remove_item")
         case .clearList(let listId):
