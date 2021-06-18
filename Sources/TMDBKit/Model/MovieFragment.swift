@@ -12,7 +12,7 @@ public struct MovieFragment: CodableEquatable {
     public let posterPath: String?
     public let adult: Bool
     public let overview: String
-    public let releaseDate: String
+    public let releaseDate: String?
     public let genreIds: [Int]
     public let id: Int
     public let originalTitle: String
