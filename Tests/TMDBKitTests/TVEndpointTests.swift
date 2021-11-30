@@ -12,29 +12,28 @@ import XCTest
 class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
 
-    func testReturnsDetails() {
+    func testReturnsDetails() throws {
         stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, append: nil))
 
-        var result: TVDetails?
-        tmdb.tv.details(for: gameOfThrones, appending: nil) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.details(for: gameOfThrones, appending: nil, completion: $0) }.value
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsDetailsWithAppendedData() {
+    func testReturnsDetailsWithAppendedData() throws {
         stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, append: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]))
 
-        var result: TVDetails?
-        tmdb.tv.details(for: gameOfThrones, appending: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]) { res in
-            result = res.value
-        }
+        let result = try awaitFor {
+            tmdb.tv.details(for: gameOfThrones,
+                               appending: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)],
+                               completion: $0)
+        }.value
+
         expect(result?.reviews).toEventuallyNot(beNil())
         expect(result?.videos).toEventuallyNot(beNil())
         expect(result?.images).toEventuallyNot(beNil())
     }
 
-    func testDetailsURL() {
+    func testDetailsURL() throws {
         let withoutAppending = TV.details(tvId: 1, append: nil)
         XCTAssertEqual(withoutAppending.url.absoluteString, "https://api.themoviedb.org/3/tv/1")
 
@@ -55,193 +54,154 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es&language=en")
     }
 
-    func testReturnsAlternativeTitles() {
+    func testReturnsAlternativeTitles() throws {
         stubHelper.stubWithLocalFile(TV.alternativeTitles(tvId: gameOfThrones))
 
-        var result: AlternativeTvTitlesResponse?
-        tmdb.tv.alternativeTitles(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.alternativeTitles(for: gameOfThrones, completion: $0) }.value
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsChanges() {
+    func testReturnsChanges() throws {
         stubHelper.stubWithLocalFile(TV.changes(tvId: gameOfThrones))
 
-        var result: TVChangesResponse?
-        tmdb.tv.changes(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.changes(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsContentRatings() {
+    func testReturnsContentRatings() throws {
         stubHelper.stubWithLocalFile(TV.contentRatings(tvId: gameOfThrones))
 
-        var result: ContentRatingsResponse?
-        tmdb.tv.contentRatings(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.contentRatings(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsCredits() {
+    func testReturnsCredits() throws {
         stubHelper.stubWithLocalFile(TV.credits(tvId: gameOfThrones))
 
-        var result: TVCreditsResponse?
-        tmdb.tv.credits(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.credits(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsEpisodeGroups() {
+    func testReturnsEpisodeGroups() throws {
         stubHelper.stubWithLocalFile(TV.episodeGroups(tvId: 30983))
 
-        var result: EpisodeGroupsResponse?
-        tmdb.tv.episodeGroups(for: 30983) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.episodeGroups(for: 30983, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsExternalIds() {
+    func testReturnsExternalIds() throws {
         stubHelper.stubWithLocalFile(TV.externalIds(tvId: gameOfThrones))
 
-        var result: ExternalIds?
-        tmdb.tv.externalIds(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.externalIds(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsImages() {
+    func testReturnsImages() throws {
         stubHelper.stubWithLocalFile(TV.images(tvId: gameOfThrones))
 
-        var result: ImagesResponse?
-        tmdb.tv.images(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.images(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsKeywords() {
+    func testReturnsKeywords() throws {
         stubHelper.stubWithLocalFile(TV.keywords(tvId: gameOfThrones))
 
-        var result: TVKeywordsResponse?
-        tmdb.tv.keywords(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.keywords(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsRecommendations() {
+    func testReturnsRecommendations() throws {
         stubHelper.stubWithLocalFile(TV.recommendations(tvId: gameOfThrones, pageNumber: 1))
 
-        var result: RecommendationsResponse?
-        tmdb.tv.recommendations(for: gameOfThrones, pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.recommendations(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsReviews() {
+    func testReturnsReviews() throws {
         stubHelper.stubWithLocalFile(TV.reviews(tvId: gameOfThrones, pageNumber: 1))
 
-        var result: ReviewsResponse?
-        tmdb.tv.reviews(for: gameOfThrones, pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.reviews(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsScreenedTheatrically() {
+    func testReturnsScreenedTheatrically() throws {
         stubHelper.stubWithLocalFile(TV.screenedTheatrically(tvId: gameOfThrones))
 
-        var result: ScreenedTheatricallyResponse?
-        tmdb.tv.screenedTheatrically(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.screenedTheatrically(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsSimilarShows() {
+    func testReturnsSimilarShows() throws {
         stubHelper.stubWithLocalFile(TV.similarShows(tvId: gameOfThrones, pageNumber: 1))
 
-        var result: SimilarShowsResponse?
-        tmdb.tv.similarShows(for: gameOfThrones, pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.similarShows(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsTranslations() {
+    func testReturnsTranslations() throws {
         stubHelper.stubWithLocalFile(TV.translations(tvId: gameOfThrones))
 
-        var result: TranslationsResponse?
-        tmdb.tv.translations(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.translations(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsVideos() {
+    func testReturnsVideos() throws {
         stubHelper.stubWithLocalFile(TV.videos(tvId: gameOfThrones))
 
-        var result: VideosResponse?
-        tmdb.tv.videos(for: gameOfThrones) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.videos(for: gameOfThrones, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsLatestShows() {
+    func testReturnsLatestShows() throws {
         stubHelper.stubWithLocalFile(TV.latest)
 
-        var result: TVDetails?
-        tmdb.tv.latest { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.latest(completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsAiringToday() {
+    func testReturnsAiringToday() throws {
         stubHelper.stubWithLocalFile(TV.airingToday(pageNumber: 1))
 
-        var result: SimilarShowsResponse?
-        tmdb.tv.airingToday(pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.airingToday(pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsOnAirShows() {
+    func testReturnsOnAirShows() throws {
         stubHelper.stubWithLocalFile(TV.onTheAir(pageNumber: 1))
 
-        var result: SimilarShowsResponse?
-        tmdb.tv.onTheAir(pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.onTheAir(pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsPopular() {
+    func testReturnsPopular() throws {
         stubHelper.stubWithLocalFile(TV.popular(pageNumber: 1))
 
-        var result: SimilarShowsResponse?
-        tmdb.tv.popular(pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.popular(pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 
-    func testReturnsTopRated() {
+    func testReturnsTopRated() throws {
         stubHelper.stubWithLocalFile(TV.topRated(pageNumber: 1))
 
-        var result: SimilarShowsResponse?
-        tmdb.tv.topRated(pageNumber: 1) { res in
-            result = res.value
-        }
+        let result = try awaitFor { tmdb.tv.topRated(pageNumber: 1, completion: $0) }.value
+
         expect(result).toEventuallyNot(beNil())
     }
 }

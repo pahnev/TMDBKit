@@ -11,93 +11,75 @@ import XCTest
 @testable import TMDBKit
 
 class AccountEndpointTests: TMDBTestCase {
-    func testDetailsRequest() {
+    func testDetailsRequest() throws {
         stubHelper.stubWithLocalFile(Account.details)
 
-        var details: AccountDetails?
-        tmdb.account.details { result in
-            details = result.value
-        }
+        let details = try awaitFor { tmdb.account.details(completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testCreatedListsRequest() {
+    func testCreatedListsRequest() throws {
         stubHelper.stubWithLocalFile(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: ListsResponse?
-        tmdb.account.createdListsFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.createdListsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testFavoriteMoviesRequest() {
+    func testFavoriteMoviesRequest() throws {
         stubHelper.stubWithLocalFile(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: PopularMoviesResponse?
-        tmdb.account.favoriteMoviesFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.favoriteMoviesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testFavoriteTVShowsRequest() {
+    func testFavoriteTVShowsRequest() throws {
         stubHelper.stubWithLocalFile(Account.favoriteTVShows(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: SimilarShowsResponse?
-        tmdb.account.favoriteTVShowsFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.favoriteTVShowsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testRatedMoviesRequest() {
+    func testRatedMoviesRequest() throws {
         stubHelper.stubWithLocalFile(Account.ratedMovies(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: PopularMoviesResponse?
-        tmdb.account.ratedMoviesFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.ratedMoviesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testRatedTVShowsRequest() {
+    func testRatedTVShowsRequest() throws {
         stubHelper.stubWithLocalFile(Account.ratedTVShows(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: SimilarShowsResponse?
-        tmdb.account.ratedTVShowsFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.ratedTVShowsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testRatedTVEpisodesRequest() {
+    func testRatedTVEpisodesRequest() throws {
         stubHelper.stubWithLocalFile(Account.ratedTVEpisodes(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: EpisodeListResponse?
-        tmdb.account.ratedTVEpisodesFor(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.ratedTVEpisodesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testMovieWatchlistRequest() {
+    func testMovieWatchlistRequest() throws {
         stubHelper.stubWithLocalFile(Account.movieWatchlist(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: PopularMoviesResponse?
-        tmdb.account.movieWatchlist(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.movieWatchlist(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 
-    func testTVShowWatchlistRequest() {
+    func testTVShowWatchlistRequest() throws {
         stubHelper.stubWithLocalFile(Account.tvShowWatchlist(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil)))
 
-        var details: SimilarShowsResponse?
-        tmdb.account.tvShowWatchlist(accountId: 1, pageNumber: nil) { result in
-            details = result.value?.object
-        }
+        let details = try awaitFor { tmdb.account.tvShowWatchlist(accountId: 1, pageNumber: nil, completion: $0) }.value
+
         expect(details).toEventuallyNot(beNil())
     }
 }

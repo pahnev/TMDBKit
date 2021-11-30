@@ -10,40 +10,35 @@ import XCTest
 @testable import TMDBKit
 
 class TrendingEndpointTests: TMDBTestCase {
-    func testReturnsTrendingMovies() {
-        var response: TrendingResponse?
+    func testReturnsTrendingMovies() throws {
         stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day))
-        tmdb.trending.trending(.movie, withinLast: .day) { result in
-            response = result.value
-        }
+
+        let response = try awaitFor { tmdb.trending.trending(.movie, withinLast: .day, completion: $0) }.value
+
         expect(response).toEventuallyNot(beNil())
     }
 
-    func testReturnsTrendingTVShows() {
-        var response: TrendingResponse?
+    func testReturnsTrendingTVShows() throws {
         stubHelper.stubWithLocalFile(Trending.trending(mediaType: .tv, timeWindow: .day))
-        tmdb.trending.trending(.tv, withinLast: .day) { result in
-            response = result.value
-        }
+
+        let response = try awaitFor { tmdb.trending.trending(.tv, withinLast: .day, completion: $0) }.value
+
         expect(response).toEventuallyNot(beNil())
     }
 
-    func testReturnsTrendingPeople() {
-        var response: TrendingResponse?
+    func testReturnsTrendingPeople() throws {
         stubHelper.stubWithLocalFile(Trending.trending(mediaType: .person, timeWindow: .day))
 
-        tmdb.trending.trending(.person, withinLast: .day) { result in
-            response = result.value
-        }
+        let response = try awaitFor { tmdb.trending.trending(.person, withinLast: .day, completion: $0) }.value
+
         expect(response).toEventuallyNot(beNil())
     }
 
-    func testReturnsTrendingEverything() {
-        var response: TrendingResponse?
+    func testReturnsTrendingEverything() throws {
         stubHelper.stubWithLocalFile(Trending.trending(mediaType: .all, timeWindow: .day))
-        tmdb.trending.trending(.all, withinLast: .day) { result in
-            response = result.value
-        }
+
+        let response = try awaitFor { tmdb.trending.trending(.all, withinLast: .day, completion: $0) }.value
+
         expect(response).toEventuallyNot(beNil())
     }
 }

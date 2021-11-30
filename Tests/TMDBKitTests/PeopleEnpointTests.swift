@@ -12,85 +12,76 @@ import XCTest
 class PeopleEndpointTests: TMDBTestCase {
     private let personId = 1
 
-    func testReturnsPersonDetails() {
-        var person: PersonDetailsResponse?
+    func testReturnsPersonDetails() throws {
         stubHelper.stubWithLocalFile(People.details(personId: personId, append: nil))
-        tmdb.people.details(for: personId, appending: nil) { result in
-            person = result.value
-        }
+
+        let person = try awaitFor { tmdb.people.details(for: personId, appending: nil, completion: $0) }.value
+
         expect(person).toEventuallyNot(beNil())
         expect(person?.name).toEventually(equal("George Lucas"))
     }
 
-    func testReturnsPersonChanges() {
-        var changes: ChangesResponse?
+    func testReturnsPersonChanges() throws {
         stubHelper.stubWithLocalFile(People.changes(personId: personId))
-        tmdb.people.changes(for: personId) { result in
-            changes = result.value
-        }
+
+        let changes = try awaitFor { tmdb.people.changes(for: personId, completion: $0) }.value
+
         expect(changes).toEventuallyNot(beNil())
     }
 
-    func testReturnsMovieCredits() {
-        var credits: PersonCreditsResponse?
+    func testReturnsMovieCredits() throws {
         stubHelper.stubWithLocalFile(People.movieCredits(personId: personId))
-        tmdb.people.movieCredits(for: personId) { result in
-            credits = result.value
-        }
+
+        let credits = try awaitFor { tmdb.people.movieCredits(for: personId, completion: $0) }.value
+
         expect(credits).toEventuallyNot(beNil())
     }
 
-    func testReturnsTVCredits() {
-        var credits: PersonCreditsResponse?
+    func testReturnsTVCredits() throws {
         stubHelper.stubWithLocalFile(People.tvCredits(personId: personId))
-        tmdb.people.tvCredits(for: personId) { result in
-            credits = result.value
-        }
+
+        let credits = try awaitFor { tmdb.people.tvCredits(for: personId, completion: $0) }.value
+
         expect(credits).toEventuallyNot(beNil())
     }
 
-    func testReturnsCombinedCredits() {
-        var credits: PersonCreditsResponse?
+    func testReturnsCombinedCredits() throws {
         stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId))
-        tmdb.people.combinedCredits(for: personId) { result in
-            credits = result.value
-        }
+
+        let credits = try awaitFor { tmdb.people.combinedCredits(for: personId, completion: $0) }.value
+
         expect(credits).toEventuallyNot(beNil())
     }
 
-    func testReturnsExternalIds() {
-        var ids: ExternalIds?
+    func testReturnsExternalIds() throws {
         stubHelper.stubWithLocalFile(People.externalIds(personId: personId))
-        tmdb.people.externalIds(for: personId) { result in
-            ids = result.value
-        }
+
+        let ids = try awaitFor { tmdb.people.externalIds(for: personId, completion: $0) }.value
+
         expect(ids).toEventuallyNot(beNil())
     }
 
-    func testReturnsImages() {
-        var images: PersonImageResponse?
+    func testReturnsImages() throws {
         stubHelper.stubWithLocalFile(People.images(personId: personId))
-        tmdb.people.images(for: personId) { result in
-            images = result.value
-        }
+
+        let images = try awaitFor { tmdb.people.images(for: personId, completion: $0) }.value
+
         expect(images).toEventuallyNot(beNil())
     }
 
-    func testReturnsTaggedImages() {
-        var images: TaggedImageResponse?
+    func testReturnsTaggedImages() throws {
         stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
-        tmdb.people.taggedImages(for: personId) { result in
-            images = result.value
-        }
+
+        let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
+
         expect(images).toEventuallyNot(beNil())
     }
 
     func testTaggedImagesResponseParsing() throws {
-        var images: TaggedImageResponse?
         stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
-        tmdb.people.taggedImages(for: personId) { result in
-            images = result.value
-        }
+
+        let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
+
         expect(images).toEventuallyNot(beNil())
         expect(images?.id).to(equal(19))
         expect(images?.page).to(equal(1))
@@ -119,30 +110,27 @@ class PeopleEndpointTests: TMDBTestCase {
         }
     }
 
-    func testReturnsTranslations() {
-        var translations: PersonTranslationResponse?
+    func testReturnsTranslations() throws {
         stubHelper.stubWithLocalFile(People.translations(personId: personId))
-        tmdb.people.translations(for: personId) { result in
-            translations = result.value
-        }
+
+        let translations = try awaitFor { tmdb.people.translations(for: personId, completion: $0) }.value
+
         expect(translations).toEventuallyNot(beNil())
     }
 
-    func testReturnsLatest() {
-        var person: PersonDetailsResponse?
+    func testReturnsLatest() throws {
         stubHelper.stubWithLocalFile(People.latest)
-        tmdb.people.latest { result in
-            person = result.value
-        }
+
+        let person = try awaitFor { tmdb.people.latest(completion: $0) }.value
+
         expect(person).toEventuallyNot(beNil())
     }
 
-    func testReturnsPopular() {
-        var person: PopularPersonResponse?
+    func testReturnsPopular() throws {
         stubHelper.stubWithLocalFile(People.popular)
-        tmdb.people.popular { result in
-            person = result.value
-        }
+
+        let person = try awaitFor { tmdb.people.popular(completion: $0) }.value
+
         expect(person).toEventuallyNot(beNil())
     }
 }

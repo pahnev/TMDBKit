@@ -14,22 +14,18 @@ class MovieEndpointTests: TMDBTestCase {
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 
-    func testReturnsMovieDetails() {
+    func testReturnsMovieDetails() throws {
         stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil))
 
-        var movie: Movie?
-        tmdb.movies.details(for: allQuietMovieId, appending: nil) { result in
-            movie = result.value
-        }
+        let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: nil, completion: $0) }.value
+
         expect(movie).toEventuallyNot(beNil())
     }
 
-    func testReturnsMovieDetailsWithAllExtraDetails() {
+    func testReturnsMovieDetailsWithAllExtraDetails() throws {
         stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases))
-        var movie: Movie?
-        tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases) { result in
-            movie = result.value
-        }
+        let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases, completion: $0) }.value
+
         expect(movie?.reviews).toEventuallyNot(beNil())
         expect(movie?.videos).toEventuallyNot(beNil())
         expect(movie?.images).toEventuallyNot(beNil())
@@ -39,187 +35,151 @@ class MovieEndpointTests: TMDBTestCase {
         expect(movie?.translations).toEventuallyNot(beNil())
     }
 
-    func testReturnsAlternativeTitlesForMovie() {
+    func testReturnsAlternativeTitlesForMovie() throws {
         stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId))
 
-        var alternatives: AlternativeTitlesResponse?
-        tmdb.movies.alternativeTitles(for: allQuietMovieId) { result in
-            alternatives = result.value
-        }
+        let alternatives = try awaitFor { tmdb.movies.alternativeTitles(for: allQuietMovieId, completion: $0) }.value
+
         expect(alternatives).toEventuallyNot(beNil())
     }
 
-    func testReturnsChanges() {
+    func testReturnsChanges() throws {
         stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId))
 
-        var changes: ChangesResponse?
-        tmdb.movies.changes(for: allQuietMovieId) { result in
-            changes = result.value
-        }
+        let changes = try awaitFor { tmdb.movies.changes(for: allQuietMovieId, completion: $0) }.value
+
         expect(changes).toEventuallyNot(beNil())
     }
 
-    func testReturnsCredits() {
+    func testReturnsCredits() throws {
         stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId))
 
-        var credits: CreditsResponse?
-        tmdb.movies.credits(for: blackPantherMovieId) { result in
-            credits = result.value
-        }
+        let credits = try awaitFor { tmdb.movies.credits(for: blackPantherMovieId, completion: $0) }.value
+
         expect(credits).toEventuallyNot(beNil())
     }
 
-    func testReturnsExternalIds() {
+    func testReturnsExternalIds() throws {
         stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId))
 
-        var ids: ExternalIds?
-        tmdb.movies.externalIds(for: blackPantherMovieId) { result in
-            ids = result.value
-        }
+        let ids = try awaitFor { tmdb.movies.externalIds(for: blackPantherMovieId, completion: $0) }.value
+
         expect(ids).toEventuallyNot(beNil())
     }
 
-    func testReturnsMovieImages() {
+    func testReturnsMovieImages() throws {
         stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId))
 
-        var images: ImagesResponse?
-        tmdb.movies.images(for: blackPantherMovieId) { result in
-            images = result.value
-        }
+        let images = try awaitFor { tmdb.movies.images(for: blackPantherMovieId, completion: $0) }.value
+
         expect(images).toEventuallyNot(beNil())
     }
 
-    func testReturnsKeywords() {
+    func testReturnsKeywords() throws {
         stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId))
 
-        var words: KeywordsResponse?
-        tmdb.movies.keywords(for: blackPantherMovieId) { result in
-            words = result.value
-        }
+        let words = try awaitFor { tmdb.movies.keywords(for: blackPantherMovieId, completion: $0) }.value
+
         expect(words).toEventuallyNot(beNil())
     }
 
-    func testReturnsReleaseDates() {
+    func testReturnsReleaseDates() throws {
         stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId))
 
-        var dates: ReleaseDatesResponse?
-        tmdb.movies.releaseDates(for: blackPantherMovieId) { result in
-            dates = result.value
-        }
+        let dates = try awaitFor { tmdb.movies.releaseDates(for: blackPantherMovieId, completion: $0) }.value
+
         expect(dates).toEventuallyNot(beNil())
     }
 
-    func testReturnsVideos() {
+    func testReturnsVideos() throws {
         stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId))
 
-        var videos: VideosResponse?
-        tmdb.movies.videos(for: blackPantherMovieId) { result in
-            videos = result.value
-        }
+        let videos = try awaitFor { tmdb.movies.videos(for: blackPantherMovieId, completion: $0) }.value
+
         expect(videos).toEventuallyNot(beNil())
     }
 
-    func testReturnsTranslations() {
+    func testReturnsTranslations() throws {
         stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
 
-        var translations: TranslationsResponse?
-        tmdb.movies.translations(for: blackPantherMovieId) { result in
-            translations = result.value
-        }
+        let translations = try awaitFor { tmdb.movies.translations(for: blackPantherMovieId, completion: $0) }.value
+
         expect(translations).toEventuallyNot(beNil())
     }
 
-    func testReturnsRecommendations() {
+    func testReturnsRecommendations() throws {
         stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1))
 
-        var movies: PopularMoviesResponse?
-        tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1) { result in
-            movies = result.value
-        }
+        let movies = try awaitFor { tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
+
         expect(movies).toEventuallyNot(beNil())
     }
 
-    func testReturnsSimilarMovies() {
+    func testReturnsSimilarMovies() throws {
         stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1))
 
-        var movies: PopularMoviesResponse?
-        tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1) { result in
-            movies = result.value
-        }
+        let movies = try awaitFor { tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
+
         expect(movies).toEventuallyNot(beNil())
     }
 
-    func testReturnsReviews() {
+    func testReturnsReviews() throws {
         stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1))
 
-        var reviews: ReviewsResponse?
-        tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1) { result in
-            reviews = result.value
-        }
+        let reviews = try awaitFor { tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
+
         expect(reviews).toEventuallyNot(beNil())
     }
 
-    func testReturnsLists() {
+    func testReturnsLists() throws {
         stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1))
 
-        var lists: ListsResponse?
-        tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1) { result in
-            lists = result.value
-        }
+        let lists = try awaitFor { tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
+
         expect(lists).toEventuallyNot(beNil())
     }
 
-    func testReturnsNowPlayingMovies() {
+    func testReturnsNowPlayingMovies() throws {
         stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1))
 
-        var nowPlaying: NowPlayingMoviesResponse?
-        tmdb.movies.nowPlaying(pageNumber: 1) { result in
-            nowPlaying = result.value
-        }
+        let nowPlaying = try awaitFor { tmdb.movies.nowPlaying(pageNumber: 1, completion: $0) }.value
+
         expect(nowPlaying).toEventuallyNot(beNil())
     }
 
-    func testReturnsLatestMovie() {
+    func testReturnsLatestMovie() throws {
         stubHelper.stubWithLocalFile(Movies.latest)
 
-        var movie: Movie?
-        tmdb.movies.latest { result in
-            movie = result.value
-        }
+        let movie = try awaitFor { tmdb.movies.latest(completion: $0) }.value
+
         expect(movie).toEventuallyNot(beNil())
     }
 
-    func testReturnsPopularMovies() {
+    func testReturnsPopularMovies() throws {
         stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1))
 
-        var movies: PopularMoviesResponse?
-        tmdb.movies.popular(pageNumber: 1) { result in
-            movies = result.value
-        }
+        let movies = try awaitFor { tmdb.movies.popular(pageNumber: 1, completion: $0) }.value
+
         expect(movies).toEventuallyNot(beNil())
     }
 
-    func testReturnsTopRatedMovies() {
+    func testReturnsTopRatedMovies() throws {
         stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1))
 
-        var movies: PopularMoviesResponse?
-        tmdb.movies.topRated(pageNumber: 1) { result in
-            movies = result.value
-        }
+        let movies = try awaitFor { tmdb.movies.topRated(pageNumber: 1, completion: $0) }.value
+
         expect(movies).toEventuallyNot(beNil())
     }
 
-    func testReturnsUpcomingMovies() {
+    func testReturnsUpcomingMovies() throws {
         stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1))
 
-        var nowPlaying: NowPlayingMoviesResponse?
-        tmdb.movies.upcoming(pageNumber: 1) { result in
-            nowPlaying = result.value
-        }
+        let nowPlaying = try awaitFor { tmdb.movies.upcoming(pageNumber: 1, completion: $0) }.value
+
         expect(nowPlaying).toEventuallyNot(beNil())
     }
 
-    func testEndpointURLsAreConstructedProperly() {
+    func testEndpointURLsAreConstructedProperly() throws {
         assertURL(.accountStates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/account_states")
 
         assertURL(.alternativeTitles(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles")
@@ -265,7 +225,7 @@ class MovieEndpointTests: TMDBTestCase {
         assertURL(.videos(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/videos")
     }
 
-    func testDetailsEndpointURLAppendsDetails() {
+    func testDetailsEndpointURLAppendsDetails() throws {
         let credits = Movies.details(movieId: 1, append: [DetailsAppendable.credits])
         assertURL(credits, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=credits")
 
