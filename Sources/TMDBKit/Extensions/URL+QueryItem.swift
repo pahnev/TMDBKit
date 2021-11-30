@@ -30,6 +30,10 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: "page", value: "\(pageNumber)"))
     }
 
+    func appendingSearchQuery(_ query: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: "query", value: query))
+    }
+
     func appendingAccountId(_ accountId: Int?) -> URL {
         appendingPathComponent(String(accountId ?? 0))
     }
