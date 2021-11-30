@@ -12,7 +12,7 @@ extension XCTestCase {
         let expectation = self.expectation(description: "Async call")
         var result: T?
 
-        function() { value in
+        function { value in
             result = value
             expectation.fulfill()
         }

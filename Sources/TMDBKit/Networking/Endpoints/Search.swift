@@ -16,7 +16,7 @@ enum Search: Endpoint {
     case multiSearch(SearchParam)
     case people(SearchParam)
     case tvShows(SearchParam)
- 
+
     var url: URL {
         let search = baseURL.appendingPathComponent("search")
         switch self {

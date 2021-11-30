@@ -24,8 +24,8 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor {
             tmdb.tv.details(for: gameOfThrones,
-                               appending: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)],
-                               completion: $0)
+                            appending: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)],
+                            completion: $0)
         }.value
 
         expect(result?.reviews).toEventuallyNot(beNil())
