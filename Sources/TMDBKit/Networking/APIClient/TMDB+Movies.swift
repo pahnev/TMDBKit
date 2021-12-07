@@ -24,8 +24,16 @@ public extension TMDB {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.details(movieId: movieId, append: details, language: language), completion: completion)
         }
 
-        public func accountStates(for movieId: Int) {
-            // TODO:
+        /// Grab the following account states for a session:
+        /// • Movie rating
+        /// • If it belongs to your watchlist
+        /// • If it belongs to your favourite list
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie`.
+        ///   - completion: Result of a `AccountState` or `TMDBError`.
+        public func accountStates(for movieId: Int, completion: @escaping TMDBResult<AccountState>) {
+            tmdb.authenticatedRequestAndParse(Movies.accountStates(movieId: movieId), completion: completion)
         }
 
         /// Get all of the alternative titles for a movie. By default returns all title for all countries.

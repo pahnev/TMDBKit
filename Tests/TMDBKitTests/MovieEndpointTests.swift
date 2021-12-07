@@ -35,6 +35,23 @@ class MovieEndpointTests: TMDBTestCase {
         expect(movie?.translations).toEventuallyNot(beNil())
     }
 
+    func testReturnsAccountsStatesForMovie() throws {
+        stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId))
+
+        let result = try awaitFor { tmdb.movies.accountStates(for: blackPantherMovieId, completion: $0) }.value
+        expect(result).toEventuallyNot(beNil())
+        expect(result?.id).toEventually(be(284054))
+        expect(result?.rated).toEventually(beNil())
+    }
+
+    func testReturnsAccountsStatesForMovieWithRating() throws {
+        stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId))
+
+        let result = try awaitFor { tmdb.movies.accountStates(for: allQuietMovieId, completion: $0) }.value
+        expect(result).toEventuallyNot(beNil())
+        expect(result?.rated?.value).toEventually(be(3.0))
+    }
+
     func testReturnsAlternativeTitlesForMovie() throws {
         stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil))
 
