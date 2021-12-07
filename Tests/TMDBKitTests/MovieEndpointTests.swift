@@ -15,7 +15,7 @@ class MovieEndpointTests: TMDBTestCase {
     let allQuietMovieId = 143
 
     func testReturnsMovieDetails() throws {
-        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil))
+        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil))
 
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: nil, completion: $0) }.value
 
@@ -23,7 +23,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieDetailsWithAllExtraDetails() throws {
-        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases))
+        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil))
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases, completion: $0) }.value
 
         expect(movie?.reviews).toEventuallyNot(beNil())
@@ -36,7 +36,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAlternativeTitlesForMovie() throws {
-        stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId))
+        stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil))
 
         let alternatives = try awaitFor { tmdb.movies.alternativeTitles(for: allQuietMovieId, completion: $0) }.value
 
@@ -52,7 +52,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsCredits() throws {
-        stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId))
+        stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId, language: nil))
 
         let credits = try awaitFor { tmdb.movies.credits(for: blackPantherMovieId, completion: $0) }.value
 
@@ -68,7 +68,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieImages() throws {
-        stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId))
+        stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId, language: nil))
 
         let images = try awaitFor { tmdb.movies.images(for: blackPantherMovieId, completion: $0) }.value
 
@@ -92,7 +92,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsVideos() throws {
-        stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId))
+        stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId, language: nil))
 
         let videos = try awaitFor { tmdb.movies.videos(for: blackPantherMovieId, completion: $0) }.value
 
@@ -108,7 +108,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsRecommendations() throws {
-        stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let movies = try awaitFor { tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -116,7 +116,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsSimilarMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let movies = try awaitFor { tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -124,7 +124,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsReviews() throws {
-        stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let reviews = try awaitFor { tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -132,7 +132,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLists() throws {
-        stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let lists = try awaitFor { tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -140,7 +140,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsNowPlayingMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil))
 
         let nowPlaying = try awaitFor { tmdb.movies.nowPlaying(pageNumber: 1, completion: $0) }.value
 
@@ -148,7 +148,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLatestMovie() throws {
-        stubHelper.stubWithLocalFile(Movies.latest)
+        stubHelper.stubWithLocalFile(Movies.latest(language: nil))
 
         let movie = try awaitFor { tmdb.movies.latest(completion: $0) }.value
 
@@ -156,7 +156,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPopularMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1, language: nil, region: nil))
 
         let movies = try awaitFor { tmdb.movies.popular(pageNumber: 1, completion: $0) }.value
 
@@ -164,7 +164,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTopRatedMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1, language: nil, region: nil))
 
         let movies = try awaitFor { tmdb.movies.topRated(pageNumber: 1, completion: $0) }.value
 
@@ -172,7 +172,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsUpcomingMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1))
+        stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1, language: nil, region: nil))
 
         let nowPlaying = try awaitFor { tmdb.movies.upcoming(pageNumber: 1, completion: $0) }.value
 
@@ -182,81 +182,84 @@ class MovieEndpointTests: TMDBTestCase {
     func testEndpointURLsAreConstructedProperly() throws {
         assertURL(.accountStates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/account_states")
 
-        assertURL(.alternativeTitles(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles")
+        assertURL(.alternativeTitles(movieId: 1, country: "fi"), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles?country=fi")
 
         assertURL(.changes(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/changes")
 
-        assertURL(.credits(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/credits")
+        assertURL(.credits(movieId: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/credits?language=fi")
 
         assertURL(.deleteRating(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/rating")
 
-        assertURL(.details(movieId: 1, append: nil), matches: "https://api.themoviedb.org/3/movie/1")
+        assertURL(.details(movieId: 1, append: nil, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1?language=fi")
 
         assertURL(.externalIds(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/external_ids")
 
-        assertURL(.images(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/images")
+        assertURL(.images(movieId: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/images?language=fi")
 
         assertURL(.keywords(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/keywords")
 
-        assertURL(.latest, matches: "https://api.themoviedb.org/3/movie/latest")
+        assertURL(.latest(language: "fi"), matches: "https://api.themoviedb.org/3/movie/latest?language=fi")
 
-        assertURL(.lists(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/lists?page=1")
+        assertURL(.lists(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/lists?page=1&language=fi")
 
-        assertURL(.nowPlaying(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/now_playing?page=1")
+        assertURL(.nowPlaying(pageNumber: 1, language: "fi", region: "fi"), matches: "https://api.themoviedb.org/3/movie/now_playing?page=1&language=fi&region=fi")
 
-        assertURL(.popular(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/popular?page=1")
+        assertURL(.popular(pageNumber: 1, language: "fi", region: "fi"), matches: "https://api.themoviedb.org/3/movie/popular?page=1&language=fi&region=fi")
 
         assertURL(.rateMovie(rating: 1, movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/rating")
 
-        assertURL(.recommendations(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/recommendations?page=1")
+        assertURL(.recommendations(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/recommendations?page=1&language=fi")
 
         assertURL(.releaseDates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/release_dates")
 
-        assertURL(.reviews(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/reviews?page=1")
+        assertURL(.reviews(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/reviews?page=1&language=fi")
 
-        assertURL(.similarMovies(movieId: 1, pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/1/similar_movies?page=1")
+        assertURL(.similarMovies(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/similar_movies?page=1&language=fi")
 
-        assertURL(.topRated(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/top_rated?page=1")
+        assertURL(.topRated(pageNumber: 1, language: "fi", region: "fi"), matches: "https://api.themoviedb.org/3/movie/top_rated?page=1&language=fi&region=fi")
 
         assertURL(.translations(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/translations")
 
-        assertURL(.upcoming(pageNumber: 1), matches: "https://api.themoviedb.org/3/movie/upcoming?page=1")
+        assertURL(.upcoming(pageNumber: 1, language: "fi", region: "fi"), matches: "https://api.themoviedb.org/3/movie/upcoming?page=1&language=fi&region=fi")
 
-        assertURL(.videos(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/videos")
+        assertURL(.videos(movieId: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/videos?language=fi")
     }
 
     func testDetailsEndpointURLAppendsDetails() throws {
-        let credits = Movies.details(movieId: 1, append: [DetailsAppendable.credits])
+        let credits = Movies.details(movieId: 1, append: [DetailsAppendable.credits], language: nil)
         assertURL(credits, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=credits")
 
-        let similar = Movies.details(movieId: 1, append: [DetailsAppendable.similar])
+        let creditsWithLang = Movies.details(movieId: 1, append: [DetailsAppendable.credits], language: "fi")
+        assertURL(creditsWithLang, matches: "https://api.themoviedb.org/3/movie/1?language=fi&append_to_response=credits")
+
+        let similar = Movies.details(movieId: 1, append: [DetailsAppendable.similar], language: nil)
         assertURL(similar, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=similar")
 
-        let recommendations = Movies.details(movieId: 1, append: [DetailsAppendable.recommendations])
-        assertURL(recommendations, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=recommendations")
+        let recommendations = Movies.details(movieId: 1, append: [DetailsAppendable.recommendations], language: "fi")
+        assertURL(recommendations, matches: "https://api.themoviedb.org/3/movie/1?language=fi&append_to_response=recommendations")
 
-        let translations = Movies.details(movieId: 1, append: [DetailsAppendable.translations])
-        assertURL(translations, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=translations")
+        let translations = Movies.details(movieId: 1, append: [DetailsAppendable.translations], language: "fi")
+        assertURL(translations, matches: "https://api.themoviedb.org/3/movie/1?language=fi&append_to_response=translations")
 
-        let reviews = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: nil)])
-        assertURL(reviews, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=reviews")
+        let reviews = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: nil)], language: "fi")
+        assertURL(reviews, matches: "https://api.themoviedb.org/3/movie/1?language=fi&append_to_response=reviews")
 
-        let reviews2 = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: "en")])
+        let reviews2 = Movies.details(movieId: 1, append: [DetailsAppendable.reviews(language: "en")], language: nil)
         assertURL(reviews2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=reviews&language=en")
 
-        let videos = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: nil)])
+        let videos = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: nil)], language: nil)
         assertURL(videos, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=videos")
 
-        let videos2 = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: "en")])
+        let videos2 = Movies.details(movieId: 1, append: [DetailsAppendable.videos(language: "en")], language: nil)
         assertURL(videos2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=videos&language=en")
 
-        let images = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: nil)])
+        let images = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: nil)], language: nil)
         assertURL(images, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images")
 
-        let images2 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en"])])
+        let images2 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en"])], language: nil)
         assertURL(images2, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en")
 
-        let images3 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en", "fi"])])
+        let images3 = Movies.details(movieId: 1, append: [DetailsAppendable.images(languages: ["en", "fi"])], language: nil)
         assertURL(images3, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en,fi")
     }
 

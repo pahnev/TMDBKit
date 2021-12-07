@@ -38,6 +38,27 @@ extension URL {
         appendingPathComponent(String(accountId ?? 0))
     }
 
+    func appendingLanguage(_ language: String?) -> URL {
+        guard let language = language else {
+            return self
+        }
+        return appendingQueryItem(URLQueryItem(name: "language", value: language))
+    }
+
+    func appendingCountry(_ country: String?) -> URL {
+        guard let country = country else {
+            return self
+        }
+        return appendingQueryItem(URLQueryItem(name: "country", value: country))
+    }
+
+    func appendingRegion(_ region: String?) -> URL {
+        guard let region = region else {
+            return self
+        }
+        return appendingQueryItem(URLQueryItem(name: "region", value: region))
+    }
+
     func appendingSortedPagination(_ pagination: SortedPagination) -> URL {
         // TODO: Append sorting info
         if let page = pagination.page {
