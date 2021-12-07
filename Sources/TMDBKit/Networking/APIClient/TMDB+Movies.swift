@@ -191,9 +191,20 @@ public extension TMDB {
             tmdb.fetchObject(ofType: VideosResponse.self, endpoint: Movies.videos(movieId: movieId, language: language), completion: completion)
         }
 
-        public func watchProviders() {
-            // TODO: Implement
-            fatalError("TODO")
+        /// Powered by our partnership with JustWatch, you can query this method to get a list of the availabilities per country by provider.
+        ///
+        /// This is not going to return full deep links, but rather, it's just enough information to display what's available where.
+        ///
+        /// You can link to the provided TMDB URL to help support TMDB and provide the actual deep links to the content.
+        ///
+        /// - NOTE: In order to use this data you must attribute the source of the data as JustWatch.
+        /// If TMDB finds any usage not complying with these terms we will revoke access to the API.
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie`.
+        ///   - completion: Result of a `VideosResponse` or `TMDBError`.
+        public func watchProviders(for movieId: Int, completion: @escaping TMDBResult<WatchProviderResponse>) {
+            tmdb.fetchObject(ofType: WatchProviderResponse.self, endpoint: Movies.watchProviders(movieId: movieId), completion: completion)
         }
 
         /// Get the most newly created movie. This is a live response and will continuously change

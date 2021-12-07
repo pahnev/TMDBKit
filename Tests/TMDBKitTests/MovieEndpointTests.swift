@@ -116,6 +116,19 @@ class MovieEndpointTests: TMDBTestCase {
         expect(videos).toEventuallyNot(beNil())
     }
 
+    func testReturnsWatchProviders() throws {
+        stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId))
+
+        let providers = try awaitFor { tmdb.movies.watchProviders(for: blackPantherMovieId, completion: $0) }.value
+        expect(providers).toEventuallyNot(beNil())
+
+        let finnishProviders = providers?.results?.fi
+        expect(finnishProviders?.link).toEventually(equal("https://www.themoviedb.org/movie/284054-black-panther/watch?locale=FI"))
+        expect(finnishProviders?.buy?.count).toEventually(equal(8))
+        expect(finnishProviders?.rent?.count).toEventually(equal(5))
+        expect(finnishProviders?.flatrate?.count).toEventually(equal(1))
+    }
+
     func testReturnsTranslations() throws {
         stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
 

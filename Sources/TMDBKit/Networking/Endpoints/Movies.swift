@@ -61,6 +61,7 @@ enum Movies: Endpoint {
 
     case upcoming(pageNumber: PageNumber, language: String?, region: String?)
     case videos(movieId: Int, language: String?)
+    case watchProviders(movieId: Int)
 
     var httpMethod: HTTPMethod {
         switch self {
@@ -74,6 +75,7 @@ enum Movies: Endpoint {
              .keywords,
              .releaseDates,
              .videos,
+             .watchProviders,
              .translations,
              .recommendations,
              .similarMovies,
@@ -104,6 +106,7 @@ enum Movies: Endpoint {
              .keywords,
              .releaseDates,
              .videos,
+             .watchProviders,
              .translations,
              .recommendations,
              .similarMovies,
@@ -133,6 +136,7 @@ enum Movies: Endpoint {
              .keywords,
              .releaseDates,
              .videos,
+             .watchProviders,
              .translations,
              .recommendations,
              .similarMovies,
@@ -192,6 +196,8 @@ enum Movies: Endpoint {
             return movies
                 .appendingPathComponent("\(movieId)/videos")
                 .appendingLanguage(lang)
+        case .watchProviders(let movieId):
+            return movies.appendingPathComponent("\(movieId)/watch/providers")
         case .translations(let movieId):
             return movies.appendingPathComponent("\(movieId)/translations")
         case .recommendations(let movieId, let page, let lang):
