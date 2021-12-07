@@ -12,6 +12,7 @@ public struct AccountState: CodableEquatable {
     public struct Rating: CodableEquatable {
         public let value: Double
     }
+
     public let id: Int
     public let favorite: Bool
     public let rated: Rating?

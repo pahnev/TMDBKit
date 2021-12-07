@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pahnev, Kirill on 7.12.2021.
 //
@@ -28,10 +28,10 @@ public struct ProviderResult: CodableEquatable {
 
 public struct Results: CodableEquatable {
     public let ar, at, au, be, bg, bo, br, ca, ch, cl, co, cr, cz,
-        de, dk, ec, ee, es, fi, fr, gb, gr, gt, hk, hn, hu,
-        id, ie, iN, it, jp, kr, lt, lv, mx, my,
-        nl, no, nz, pe, ph, pl, pt, py, ro, ru, se,
-        sg, th, tr, us, ve, za: ProviderResult?
+               de, dk, ec, ee, es, fi, fr, gb, gr, gt, hk, hn, hu,
+               id, ie, iN, it, jp, kr, lt, lv, mx, my,
+               nl, no, nz, pe, ph, pl, pt, py, ro, ru, se,
+               sg, th, tr, us, ve, za: ProviderResult?
 
     enum CodingKeys: String, CodingKey {
         case ar = "AR"
