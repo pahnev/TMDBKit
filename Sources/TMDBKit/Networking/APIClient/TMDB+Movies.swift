@@ -11,6 +11,8 @@ public extension TMDB {
     struct MovieEndpoints {
         let tmdb: TMDB
 
+        // MARK: GET
+
         /// Get the primary information about a movie
         ///
         /// - Parameters:
@@ -92,6 +94,32 @@ public extension TMDB {
             tmdb.fetchObject(ofType: KeywordsResponse.self, endpoint: Movies.keywords(movieId: movieId), completion: completion)
         }
 
+        /// Get a list of lists that this movie belongs to.
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie`.
+        ///   - pageNumber: The page number to fetch.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - completion: Result of a `ListsResponse` or `TMDBError`.
+        public func lists(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<ListsResponse>) {
+            tmdb.fetchObject(ofType: ListsResponse.self,
+                             endpoint: Movies.lists(movieId: movieId, pageNumber: pageNumber, language: language),
+                             completion: completion)
+        }
+
+        /// Get a list of recommended movies for a movie.
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie`.
+        ///   - pageNumber: The page number to fetch.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - completion: Result of a `PopularMoviesResponse` or `TMDBError`.
+        public func recommendations(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<PopularMoviesResponse>) {
+            tmdb.fetchObject(ofType: PopularMoviesResponse.self,
+                             endpoint: Movies.recommendations(movieId: movieId, pageNumber: pageNumber, language: language),
+                             completion: completion)
+        }
+
         /// Get the release date along with the certification for a movie.
         /// Release dates support different types:
         /// 1. Premiere
@@ -108,41 +136,16 @@ public extension TMDB {
             tmdb.fetchObject(ofType: ReleaseDatesResponse.self, endpoint: Movies.releaseDates(movieId: movieId), completion: completion)
         }
 
-        /// Get the videos that have been added to a movie.
-        ///
-        /// - Parameters:
-        ///   - movieId: The id of the `Movie`.
-        ///   - language: A language string in ISO 639-1 format, to get videos for specific language.
-        ///   Can include multiple languages, as long as the languages are comma separated like so: `en,es`.
-        ///   Defaults to `en-US`.
-        ///   - completion: Result of a `VideosResponse` or `TMDBError`.
-        public func videos(for movieId: Int, language: String? = nil, completion: @escaping TMDBResult<VideosResponse>) {
-            tmdb.fetchObject(ofType: VideosResponse.self, endpoint: Movies.videos(movieId: movieId, language: language), completion: completion)
-        }
-
-        public func watchProviders() {
-            // TODO: Implement
-            fatalError("TODO")
-        }
-
-        /// Get a list of translations that have been created for a movie.
-        /// - Parameters:
-        ///   - movieId: The id of the `Movie`.
-        ///   - completion: Result of a `TranslationsResponse` or `TMDBError`.
-        public func translations(for movieId: Int, completion: @escaping TMDBResult<TranslationsResponse>) {
-            tmdb.fetchObject(ofType: TranslationsResponse.self, endpoint: Movies.translations(movieId: movieId), completion: completion)
-        }
-
-        /// Get a list of recommended movies for a movie.
+        /// Get the user reviews for a movie.
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
         ///   - pageNumber: The page number to fetch.
         ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
-        ///   - completion: Result of a `PopularMoviesResponse` or `TMDBError`.
-        public func recommendations(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<PopularMoviesResponse>) {
-            tmdb.fetchObject(ofType: PopularMoviesResponse.self,
-                             endpoint: Movies.recommendations(movieId: movieId, pageNumber: pageNumber, language: language),
+        ///   - completion: Result of a `ReviewsResponse` or `TMDBError`.
+        public func reviews(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<ReviewsResponse>) {
+            tmdb.fetchObject(ofType: ReviewsResponse.self,
+                             endpoint: Movies.reviews(movieId: movieId, pageNumber: pageNumber, language: language),
                              completion: completion)
         }
 
@@ -160,30 +163,29 @@ public extension TMDB {
                              completion: completion)
         }
 
-        /// Get the user reviews for a movie.
-        ///
+        /// Get a list of translations that have been created for a movie.
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
-        ///   - pageNumber: The page number to fetch.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
-        ///   - completion: Result of a `ReviewsResponse` or `TMDBError`.
-        public func reviews(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<ReviewsResponse>) {
-            tmdb.fetchObject(ofType: ReviewsResponse.self,
-                             endpoint: Movies.reviews(movieId: movieId, pageNumber: pageNumber, language: language),
-                             completion: completion)
+        ///   - completion: Result of a `TranslationsResponse` or `TMDBError`.
+        public func translations(for movieId: Int, completion: @escaping TMDBResult<TranslationsResponse>) {
+            tmdb.fetchObject(ofType: TranslationsResponse.self, endpoint: Movies.translations(movieId: movieId), completion: completion)
         }
 
-        /// Get a list of lists that this movie belongs to.
+        /// Get the videos that have been added to a movie.
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
-        ///   - pageNumber: The page number to fetch.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
-        ///   - completion: Result of a `ListsResponse` or `TMDBError`.
-        public func lists(for movieId: Int, pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<ListsResponse>) {
-            tmdb.fetchObject(ofType: ListsResponse.self,
-                             endpoint: Movies.lists(movieId: movieId, pageNumber: pageNumber, language: language),
-                             completion: completion)
+        ///   - language: A language string in ISO 639-1 format, to get videos for specific language.
+        ///   Can include multiple languages, as long as the languages are comma separated like so: `en,es`.
+        ///   Defaults to `en-US`.
+        ///   - completion: Result of a `VideosResponse` or `TMDBError`.
+        public func videos(for movieId: Int, language: String? = nil, completion: @escaping TMDBResult<VideosResponse>) {
+            tmdb.fetchObject(ofType: VideosResponse.self, endpoint: Movies.videos(movieId: movieId, language: language), completion: completion)
+        }
+
+        public func watchProviders() {
+            // TODO: Implement
+            fatalError("TODO")
         }
 
         /// Get the most newly created movie. This is a live response and will continuously change
@@ -206,17 +208,6 @@ public extension TMDB {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.nowPlaying(pageNumber: pageNumber, language: language, region: region), completion: completion)
         }
 
-        /// Get the top rated movies on TMDb.
-        ///
-        /// - Parameters:
-        ///   - pageNumber: The page number to fetch.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
-        ///   - region: A country code in ISO 3166-1 format, to filter the results for that country.
-        ///   - completion: Result of a `PopularMoviesResponse` or `TMDBError`.
-        public func topRated(pageNumber: PageNumber, language: String? = nil, region: String? = nil, completion: @escaping TMDBResult<PopularMoviesResponse>) {
-            tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.topRated(pageNumber: pageNumber, language: language, region: region), completion: completion)
-        }
-
         /// Get a list of the current popular movies on TMDb. This list updates daily.
         ///
         /// - Parameters:
@@ -228,26 +219,15 @@ public extension TMDB {
             tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.popular(pageNumber: pageNumber, language: language, region: region), completion: completion)
         }
 
-        /// Rate a movie.
-        /// A valid session or guest session ID is required.
+        /// Get the top rated movies on TMDb.
         ///
         /// - Parameters:
-        ///   - movieId: The id of the `Movie` to rate.
-        ///   - rating: The rating. The value is expected to be between 0.5 and 10.0.
-        ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), completion: completion)
-        }
-
-
-        /// Remove your rating for a movie.
-        /// A valid session or guest session ID is required.
-        ///
-        /// - Parameters:
-        ///   - movieId: The id of the `Movie`.
-        ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
+        ///   - pageNumber: The page number to fetch.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - region: A country code in ISO 3166-1 format, to filter the results for that country.
+        ///   - completion: Result of a `PopularMoviesResponse` or `TMDBError`.
+        public func topRated(pageNumber: PageNumber, language: String? = nil, region: String? = nil, completion: @escaping TMDBResult<PopularMoviesResponse>) {
+            tmdb.fetchObject(ofType: PopularMoviesResponse.self, endpoint: Movies.topRated(pageNumber: pageNumber, language: language, region: region), completion: completion)
         }
 
         /// Get a list of upcoming movies in theatres. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
@@ -260,6 +240,31 @@ public extension TMDB {
         ///   - completion: Result of a `NowPlayingMoviesResponse` or `TMDBError`.
         public func upcoming(pageNumber: PageNumber, language: String? = nil, region: String? = nil, completion: @escaping TMDBResult<NowPlayingMoviesResponse>) {
             tmdb.fetchObject(ofType: NowPlayingMoviesResponse.self, endpoint: Movies.upcoming(pageNumber: pageNumber, language: language, region: region), completion: completion)
+        }
+
+        // MARK: POST
+
+        /// Rate a movie.
+        /// A valid session or guest session ID is required.
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie` to rate.
+        ///   - rating: The rating. The value is expected to be between 0.5 and 10.0.
+        ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
+        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), completion: completion)
+        }
+
+        // MARK: DELETE
+
+        /// Remove your rating for a movie.
+        /// A valid session or guest session ID is required.
+        ///
+        /// - Parameters:
+        ///   - movieId: The id of the `Movie`.
+        ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
+        public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
         }
     }
 }
