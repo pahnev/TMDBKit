@@ -103,7 +103,6 @@ public struct TVEndpoints {
                          completion: completion)
     }
 
-
     /// Get all of the episode groups that have been created for a TV show. With a group ID you can call the get TV episode group details method.
     ///
     /// - Parameters:
@@ -115,7 +114,6 @@ public struct TVEndpoints {
                          endpoint: TV.episodeGroups(tvId: tvId, language: language),
                          completion: completion)
     }
-
 
     /// Get the external ids for a TV show. We currently support the following external sources.
     ///

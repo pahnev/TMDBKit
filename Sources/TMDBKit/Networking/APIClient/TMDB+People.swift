@@ -13,7 +13,6 @@ public extension TMDB {
 
         /// Get the primary person details by id.
 
-
         /// Get the primary person details by id.
         /// - Parameters:
         ///   - personId: The id of the Person.
@@ -27,7 +26,6 @@ public extension TMDB {
 
         /// Get the changes for a person. By default only the last 24 hours are returned.
         /// You can query up to 14 days in a single query by using the start_date and end_date query parameters.
-
 
         /// Get the changes for a person. By default only the last 24 hours are returned.
         /// You can query up to 14 days in a single query by using the start_date and end_date query parameters.

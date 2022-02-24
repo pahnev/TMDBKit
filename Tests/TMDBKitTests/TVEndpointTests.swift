@@ -224,6 +224,5 @@ class TVEndpointTests: TMDBTestCase {
         let result = try awaitFor { tmdb.tv.watchProviders(for: gameOfThrones, completion: $0) }.value
 
         expect(result).toEventuallyNot(beNil())
-
     }
 }

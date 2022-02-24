@@ -63,7 +63,6 @@ enum TV: Endpoint {
     // DELETE
     case deleteRating(tvId: Int)
 
-
     var httpMethod: HTTPMethod {
         switch self {
         case .details,

@@ -50,7 +50,6 @@ public struct AggregateCast: CodableEquatable {
     public let popularity: Double
     public let profilePath: String?
     public let totalEpisodeCount: Int
-
 }
 
 public struct AggregateCrew: CodableEquatable {
