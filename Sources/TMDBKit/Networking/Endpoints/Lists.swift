@@ -15,7 +15,7 @@ enum Lists: Endpoint {
     }
 
     case createList(list: List)
-    case details(listId: String)
+    case details(listId: String, language: String?)
     case itemStatus(listId: String, movieId: Int)
     case addMovie(listId: String, mediaId: Int)
     case removeMovie(listId: String, mediaId: Int)
@@ -69,8 +69,10 @@ enum Lists: Endpoint {
     var url: URL {
         let lists = baseURL.appendingPathComponent("list")
         switch self {
-        case .details(let listId):
-            return lists.appendingPathComponent("\(listId)")
+        case .details(let listId, let language):
+            return lists
+                .appendingPathComponent("\(listId)")
+                .appendingLanguage(language)
         case .itemStatus(let listId, let movieId):
             return lists
                 .appendingPathComponent("\(listId)/item_status")
