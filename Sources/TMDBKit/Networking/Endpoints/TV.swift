@@ -9,89 +9,66 @@
 import Foundation
 
 enum TV: Endpoint {
-    case accountStates(tvId: Int)
+    case accountStates(tvId: Int, language: String?)
 
-    case alternativeTitles(tvId: Int)
+    case alternativeTitles(tvId: Int, language: String?)
 
-    case details(tvId: Int, append: [DetailsAppendable]?)
+    case details(tvId: Int, language: String?, append: [DetailsAppendable]?)
 
-    case changes(tvId: Int)
+    case aggregateCredits(tvId: Int, language: String?)
 
-    case contentRatings(tvId: Int)
+    case changes(tvId: Int, pageNumber: PageNumber)
 
-    case credits(tvId: Int)
+    case contentRatings(tvId: Int, language: String?)
 
-    case episodeGroups(tvId: Int)
+    case credits(tvId: Int, language: String?)
 
-    case externalIds(tvId: Int)
+    case episodeGroups(tvId: Int, language: String?)
 
-    case images(tvId: Int)
+    case externalIds(tvId: Int, language: String?)
+
+    case images(tvId: Int, language: String?)
 
     case keywords(tvId: Int)
 
-    case recommendations(tvId: Int, pageNumber: PageNumber)
+    case recommendations(tvId: Int, pageNumber: PageNumber, language: String?)
 
-    case reviews(tvId: Int, pageNumber: PageNumber)
+    case reviews(tvId: Int, pageNumber: PageNumber, language: String?)
 
     /// Get a list of seasons or episodes that have been screened in a film festival or theatre
     case screenedTheatrically(tvId: Int)
 
-    case similarShows(tvId: Int, pageNumber: PageNumber)
+    case similarShows(tvId: Int, pageNumber: PageNumber, language: String?)
 
     case translations(tvId: Int)
 
-    case videos(tvId: Int)
+    case videos(tvId: Int, language: String?)
 
-    case latest
+    case watchProviders(tvId: Int)
 
-    case rateShow(tvId: Int, rating: Double)
+    case latest(language: String?)
 
-    case deleteRating(tvId: Int)
+    case airingToday(pageNumber: PageNumber, language: String?)
 
-    case popular(pageNumber: PageNumber)
+    case onTheAir(pageNumber: PageNumber, language: String?)
+
+    case popular(pageNumber: PageNumber, language: String?)
 
     /// Get the top rated movies on TMDb.
-    case topRated(pageNumber: PageNumber)
+    case topRated(pageNumber: PageNumber, language: String?)
 
-    case airingToday(pageNumber: PageNumber)
+    // POST
+    case rateShow(tvId: Int, rating: Double)
 
-    case onTheAir(pageNumber: PageNumber)
+    // DELETE
+    case deleteRating(tvId: Int)
+
 
     var httpMethod: HTTPMethod {
         switch self {
         case .details,
              .accountStates,
-             .alternativeTitles,
-             .changes,
-             .credits,
-             .episodeGroups,
-             .onTheAir,
-             .contentRatings,
-             .screenedTheatrically,
-             .similarShows,
-             .videos,
-             .airingToday,
-             .externalIds,
-             .images,
-             .keywords,
-             .translations,
-             .recommendations,
-             .reviews,
-             .popular,
-             .latest,
-             .topRated:
-            return .GET
-        case .rateShow:
-            return .POST
-        case .deleteRating:
-            return .DELETE
-        }
-    }
-
-    var httpBody: Data? {
-        switch self {
-        case .details,
-             .accountStates,
+             .aggregateCredits,
              .alternativeTitles,
              .changes,
              .credits,
@@ -111,17 +88,20 @@ enum TV: Endpoint {
              .popular,
              .latest,
              .topRated,
-             .deleteRating:
-            return nil
-        case .rateShow(let rating, _):
-            return try! JSONEncoder().encode(["value": rating])
+             .watchProviders:
+            return .GET
+        case .rateShow:
+            return .POST
+        case .deleteRating:
+            return .DELETE
         }
     }
 
-    var requestHeaders: [String: String] {
+    var httpBody: Data? {
         switch self {
         case .details,
              .accountStates,
+             .aggregateCredits,
              .alternativeTitles,
              .changes,
              .credits,
@@ -140,7 +120,40 @@ enum TV: Endpoint {
              .reviews,
              .popular,
              .latest,
-             .topRated:
+             .topRated,
+             .deleteRating,
+             .watchProviders:
+            return nil
+        case .rateShow(let rating, _):
+            return try! JSONEncoder().encode(["value": rating])
+        }
+    }
+
+    var requestHeaders: [String: String] {
+        switch self {
+        case .details,
+             .accountStates,
+             .aggregateCredits,
+             .alternativeTitles,
+             .changes,
+             .credits,
+             .episodeGroups,
+             .onTheAir,
+             .contentRatings,
+             .screenedTheatrically,
+             .similarShows,
+             .videos,
+             .airingToday,
+             .externalIds,
+             .images,
+             .keywords,
+             .translations,
+             .recommendations,
+             .reviews,
+             .popular,
+             .latest,
+             .topRated,
+             .watchProviders:
             return [:]
         case .rateShow, .deleteRating:
             return ["Content-Type": "application/json;charset=utf-8"]
@@ -151,8 +164,10 @@ enum TV: Endpoint {
         let tv = baseURL.appendingPathComponent("tv")
 
         switch self {
-        case .details(let tvId, let append):
-            let tvDetails = tv.appendingPathComponent("\(tvId)")
+        case .details(let tvId, let language, let append):
+            let tvDetails = tv
+                .appendingPathComponent("\(tvId)")
+                .appendingLanguage(language)
             if let append = append {
                 let appendEndpoints = append.map { $0.name }.joined(separator: ",")
                 let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
@@ -162,56 +177,98 @@ enum TV: Endpoint {
                     .appendingQueryItems(query)
             }
             return tvDetails
-        case .accountStates(let tvId):
-            return tv.appendingPathComponent("\(tvId)/account_states")
-        case .alternativeTitles(let tvId):
-            return tv.appendingPathComponent("\(tvId)/alternative_titles")
-        case .changes(let tvId):
-            return tv.appendingPathComponent("\(tvId)/changes")
-        case .credits(let tvId):
-            return tv.appendingPathComponent("\(tvId)/credits")
-        case .episodeGroups(let tvId):
-            return tv.appendingPathComponent("\(tvId)/episode_groups")
-        case .externalIds(let tvId):
-            return tv.appendingPathComponent("\(tvId)/external_ids")
-        case .images(let tvId):
-            return tv.appendingPathComponent("\(tvId)/images")
+        case .accountStates(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/account_states")
+                .appendingLanguage(language)
+        case .aggregateCredits(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/aggregate_credits")
+                .appendingLanguage(language)
+        case .alternativeTitles(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/alternative_titles")
+                .appendingLanguage(language)
+        case .changes(let tvId, let pageNumber):
+            return tv
+                .appendingPathComponent("\(tvId)/changes")
+                .appendingPage(pageNumber)
+        case .credits(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/credits")
+                .appendingLanguage(language)
+        case .episodeGroups(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/episode_groups")
+                .appendingLanguage(language)
+        case .externalIds(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/external_ids")
+                .appendingLanguage(language)
+        case .images(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/images")
+                .appendingLanguage(language)
         case .keywords(let tvId):
             return tv.appendingPathComponent("\(tvId)/keywords")
-        case .videos(let tvId):
-            return tv.appendingPathComponent("\(tvId)/videos")
+        case .videos(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/videos")
+                .appendingLanguage(language)
         case .translations(let tvId):
             return tv.appendingPathComponent("\(tvId)/translations")
-        case .recommendations(let tvId, let page):
+        case .recommendations(let tvId, let page, let language):
             return tv
                 .appendingPathComponent("\(tvId)/recommendations")
                 .appendingPage(page)
-        case .similarShows(let tvId, let page):
+                .appendingLanguage(language)
+        case .similarShows(let tvId, let page, let language):
             return tv
                 .appendingPathComponent("\(tvId)/similar")
                 .appendingPage(page)
-        case .reviews(let tvId, let page):
+                .appendingLanguage(language)
+        case .reviews(let tvId, let page, let language):
             return tv
                 .appendingPathComponent("\(tvId)/reviews")
                 .appendingPage(page)
+                .appendingLanguage(language)
+        case .popular(let page, let language):
+            return tv
+                .appendingPathComponent("popular")
+                .appendingPage(page)
+                .appendingLanguage(language)
+        case .latest(let language):
+            return tv
+                .appendingPathComponent("latest")
+                .appendingLanguage(language)
+        case .topRated(let page, let language):
+            return tv
+                .appendingPathComponent("top_rated")
+                .appendingPage(page)
+                .appendingLanguage(language)
+        case .airingToday(let page, let language):
+            return tv
+                .appendingPathComponent("airing_today")
+                .appendingPage(page)
+                .appendingLanguage(language)
+        case .onTheAir(let page, let language):
+            return tv
+                .appendingPathComponent("on_the_air")
+                .appendingPage(page)
+                .appendingLanguage(language)
+        case .contentRatings(let tvId, let language):
+            return tv
+                .appendingPathComponent("\(tvId)/content_ratings")
+                .appendingLanguage(language)
+        case .screenedTheatrically(let tvId):
+            return tv
+                .appendingPathComponent("\(tvId)/screened_theatrically")
+        case .watchProviders(let tvId):
+            return tv.appendingPathComponent("\(tvId)/watch/providers")
         case .rateShow(let tvId, _):
             return tv.appendingPathComponent("\(tvId)/rating")
         case .deleteRating(let tvId):
             return tv.appendingPathComponent("\(tvId)/rating")
-        case .popular(let page):
-            return tv.appendingPathComponent("popular").appendingPage(page)
-        case .latest:
-            return tv.appendingPathComponent("latest")
-        case .topRated(let page):
-            return tv.appendingPathComponent("top_rated").appendingPage(page)
-        case .airingToday(let page):
-            return tv.appendingPathComponent("airing_today").appendingPage(page)
-        case .onTheAir(let page):
-            return tv.appendingPathComponent("on_the_air").appendingPage(page)
-        case .contentRatings(let tvId):
-            return tv.appendingPathComponent("\(tvId)/content_ratings")
-        case .screenedTheatrically(let tvId):
-            return tv.appendingPathComponent("\(tvId)/screened_theatrically")
         }
     }
 }
