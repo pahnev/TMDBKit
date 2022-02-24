@@ -34,30 +34,30 @@ struct WatchlistMedia: CodableEquatable {
     let watchlist: Bool
 }
 
+public enum SortDirection {
+    case ascending, descending
+}
+
+public enum Sort {
+    case createdAt(SortDirection)
+}
+
 struct SortedPagination {
-    enum SortDirection {
-        case ascending, descending
-    }
-
-    enum Sort {
-        case createdAt(SortDirection)
-    }
-
     let sortBy: Sort?
     let page: PageNumber?
 }
 
 enum Account: Endpoint {
     case details
-    case createdLists(accountId: Int?, pagination: SortedPagination)
-    case favoriteMovies(accountId: Int?, pagination: SortedPagination)
-    case favoriteTVShows(accountId: Int?, pagination: SortedPagination)
+    case createdLists(accountId: Int?, pagination: SortedPagination, language: String?)
+    case favoriteMovies(accountId: Int?, pagination: SortedPagination, language: String?)
+    case favoriteTVShows(accountId: Int?, pagination: SortedPagination, language: String?)
+    case ratedMovies(accountId: Int?, pagination: SortedPagination, language: String?)
+    case ratedTVShows(accountId: Int?, pagination: SortedPagination, language: String?)
+    case ratedTVEpisodes(accountId: Int?, pagination: SortedPagination, language: String?)
+    case movieWatchlist(accountId: Int?, pagination: SortedPagination, language: String?)
+    case tvShowWatchlist(accountId: Int?, pagination: SortedPagination, language: String?)
     case markFavorite(accountId: Int?, media: FavoriteMedia)
-    case ratedMovies(accountId: Int?, pagination: SortedPagination)
-    case ratedTVShows(accountId: Int?, pagination: SortedPagination)
-    case ratedTVEpisodes(accountId: Int?, pagination: SortedPagination)
-    case movieWatchlist(accountId: Int?, pagination: SortedPagination)
-    case tvShowWatchlist(accountId: Int?, pagination: SortedPagination)
     case addToWatchlist(accountId: Int?, media: WatchlistMedia)
 
     var httpMethod: HTTPMethod {
@@ -125,50 +125,58 @@ enum Account: Endpoint {
         switch self {
         case .details:
             return account
-        case .createdLists(let accountId, pagination: let pagination):
+        case .createdLists(let accountId, let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("lists")
                 .appendingSortedPagination(pagination)
-        case .favoriteMovies(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .favoriteMovies(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("favorite/movies")
                 .appendingSortedPagination(pagination)
-        case .favoriteTVShows(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .favoriteTVShows(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("favorite/tv")
                 .appendingSortedPagination(pagination)
-        case .markFavorite(let accountId, _):
-            return account
-                .appendingAccountId(accountId)
-                .appendingPathComponent("favorite")
-        case .ratedMovies(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .ratedMovies(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("rated/movies")
                 .appendingSortedPagination(pagination)
-        case .ratedTVShows(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .ratedTVShows(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("rated/tv")
                 .appendingSortedPagination(pagination)
-        case .ratedTVEpisodes(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .ratedTVEpisodes(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("rated/tv/episodes")
                 .appendingSortedPagination(pagination)
-        case .movieWatchlist(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .movieWatchlist(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("watchlist/movies")
                 .appendingSortedPagination(pagination)
-        case .tvShowWatchlist(let accountId, pagination: let pagination):
+                .appendingLanguage(language)
+        case .tvShowWatchlist(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("watchlist/tv")
                 .appendingSortedPagination(pagination)
+                .appendingLanguage(language)
+        case .markFavorite(let accountId, _):
+            return account
+                .appendingAccountId(accountId)
+                .appendingPathComponent("favorite")
         case .addToWatchlist(let accountId, _):
             return account
                 .appendingAccountId(accountId)

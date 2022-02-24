@@ -24,10 +24,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose lists to fetch. Nil by default will return the logged in user's lists.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `ListsResponse` or `TMDBError`
-        public func createdListsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<ListsResponse>>) {
+        public func createdListsFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<ListsResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.createdLists(accountId: accountId,
-                                                                            pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                            pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                            language: language),
                                                   completion: completion)
         }
 
@@ -36,10 +39,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose favorite movies fetch. Nil by default will return the logged in user's favorite movies.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `HTTPResponseContaining<PopularMoviesResponse>` or `TMDBError`
-        public func favoriteMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
+        public func favoriteMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.favoriteMovies(accountId: accountId,
-                                                                              pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                              pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                              language: language),
                                                   completion: completion)
         }
 
@@ -48,10 +54,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose favorite TV shows fetch. Nil by default will return the logged in user's favorite TV shows.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
-        public func favoriteTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
+        public func favoriteTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.favoriteTVShows(accountId: accountId,
-                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                               pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                               language: language),
                                                   completion: completion)
         }
 
@@ -60,10 +69,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose rated movies fetch. Nil by default will return the logged in user's rated movies.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `PopularMoviesResponse` or `TMDBError`
-        public func ratedMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
+        public func ratedMoviesFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.ratedMovies(accountId: accountId,
-                                                                           pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                           pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                           language: language),
                                                   completion: completion)
         }
 
@@ -72,10 +84,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose rated TV shows fetch. Nil by default will return the logged in user's rated TV shows.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
-        public func ratedTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
+        public func ratedTVShowsFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.ratedTVShows(accountId: accountId,
-                                                                            pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                            pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                            language: language),
                                                   completion: completion)
         }
 
@@ -84,10 +99,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose rated TV episodes fetch. Nil by default will return the logged in user's rated TV episodes.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `EpisodeListResponse` or `TMDBError`
-        public func ratedTVEpisodesFor(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<EpisodeListResponse>>) {
+        public func ratedTVEpisodesFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<EpisodeListResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.ratedTVEpisodes(accountId: accountId,
-                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                               pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                               language: language),
                                                   completion: completion)
         }
 
@@ -96,10 +114,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose movie watchlist to fetch. Nil by default will return the logged in user's movie watchlist.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `PopularMoviesResponse` or `TMDBError`
-        public func movieWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
+        public func movieWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<PopularMoviesResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.movieWatchlist(accountId: accountId,
-                                                                              pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                              pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                              language: language),
                                                   completion: completion)
         }
 
@@ -108,10 +129,13 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose TV show watchlist to fetch. Nil by default will return the logged in user's TV show watchlist.
         ///   - pageNumber: The number of the page if fetching paginated results.
+        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - sortBy: Sort the results.
         ///   - completion: Result of `SimilarShowsResponse` or `TMDBError`
-        public func tvShowWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
+        public func tvShowWatchlist(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<SimilarShowsResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.tvShowWatchlist(accountId: accountId,
-                                                                               pagination: SortedPagination(sortBy: nil, page: pageNumber)),
+                                                                               pagination: SortedPagination(sortBy: sortBy, page: pageNumber),
+                                                                               language: language),
                                                   completion: completion)
         }
 
