@@ -13,7 +13,7 @@ class PeopleEndpointTests: TMDBTestCase {
     private let personId = 1
 
     func testReturnsPersonDetails() throws {
-        stubHelper.stubWithLocalFile(People.details(personId: personId, append: nil))
+        stubHelper.stubWithLocalFile(People.details(personId: personId, language: nil, append: nil))
 
         let person = try awaitFor { tmdb.people.details(for: personId, appending: nil, completion: $0) }.value
 
@@ -22,7 +22,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPersonChanges() throws {
-        stubHelper.stubWithLocalFile(People.changes(personId: personId))
+        stubHelper.stubWithLocalFile(People.changes(personId: personId, pageNumber: 1))
 
         let changes = try awaitFor { tmdb.people.changes(for: personId, completion: $0) }.value
 
@@ -30,7 +30,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieCredits() throws {
-        stubHelper.stubWithLocalFile(People.movieCredits(personId: personId))
+        stubHelper.stubWithLocalFile(People.movieCredits(personId: personId, language: nil))
 
         let credits = try awaitFor { tmdb.people.movieCredits(for: personId, completion: $0) }.value
 
@@ -38,7 +38,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTVCredits() throws {
-        stubHelper.stubWithLocalFile(People.tvCredits(personId: personId))
+        stubHelper.stubWithLocalFile(People.tvCredits(personId: personId, language: nil))
 
         let credits = try awaitFor { tmdb.people.tvCredits(for: personId, completion: $0) }.value
 
@@ -46,7 +46,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsCombinedCredits() throws {
-        stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId))
+        stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId, language: nil))
 
         let credits = try awaitFor { tmdb.people.combinedCredits(for: personId, completion: $0) }.value
 
@@ -54,7 +54,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsExternalIds() throws {
-        stubHelper.stubWithLocalFile(People.externalIds(personId: personId))
+        stubHelper.stubWithLocalFile(People.externalIds(personId: personId, language: nil))
 
         let ids = try awaitFor { tmdb.people.externalIds(for: personId, completion: $0) }.value
 
@@ -70,7 +70,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTaggedImages() throws {
-        stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
+        stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil))
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
@@ -78,7 +78,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testTaggedImagesResponseParsing() throws {
-        stubHelper.stubWithLocalFile(People.taggedImages(personId: personId))
+        stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil))
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
@@ -111,7 +111,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTranslations() throws {
-        stubHelper.stubWithLocalFile(People.translations(personId: personId))
+        stubHelper.stubWithLocalFile(People.translations(personId: personId, language: nil))
 
         let translations = try awaitFor { tmdb.people.translations(for: personId, completion: $0) }.value
 
@@ -119,7 +119,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLatest() throws {
-        stubHelper.stubWithLocalFile(People.latest)
+        stubHelper.stubWithLocalFile(People.latest(language: nil))
 
         let person = try awaitFor { tmdb.people.latest(completion: $0) }.value
 
@@ -127,7 +127,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPopular() throws {
-        stubHelper.stubWithLocalFile(People.popular)
+        stubHelper.stubWithLocalFile(People.popular(pageNumber: 1, language: nil))
 
         let person = try awaitFor { tmdb.people.popular(completion: $0) }.value
 
