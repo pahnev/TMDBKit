@@ -11,7 +11,7 @@ public struct Review: CodableEquatable {
     public struct AuthorDetails: CodableEquatable {
         public let avatarPath: String?
         public let name: String
-        public let rating: Int?
+        public let rating: Double?
     }
 
     public let id: String
