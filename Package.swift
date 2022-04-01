@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -17,9 +17,18 @@ let package = Package(
     targets: [
         .target(
             name: "TMDBKit",
-            dependencies: []),
+            dependencies: [],
+            exclude: ["Info.plist"]
+        ),
         .testTarget(
             name: "TMDBKitTests",
-            dependencies: ["TMDBKit", "OHHTTPStubsSwift", "Nimble"]),
+            dependencies: [
+                "TMDBKit",
+                .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
+                .product(name: "Nimble", package: "Nimble"),
+            ],
+            exclude: ["Info.plist"],
+            resources: [.process("Fixtures")]
+        ),
     ]
 )
