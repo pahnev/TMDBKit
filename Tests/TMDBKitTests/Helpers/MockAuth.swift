@@ -10,7 +10,9 @@ import TMDBKit
 
 struct MockAuth: Authenticator {
     var apiKey: String {
-        return "123"
+//        return "e8d272ad21f324980fa9c7f876b1fe1b"
+
+        return "e8d272ad21f324980fa9c7f876b1fe1b"
     }
 
     var sessionId: String? {

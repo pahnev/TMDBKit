@@ -20,7 +20,11 @@ extension URL {
         return urlComps.url!
     }
 
-    func appendingQueryItems(_ queryItems: [URLQueryItem]) -> URL {
+    func appendingQueryItems(_ queryItems: [URLQueryItem]?) -> URL {
+        guard let queryItems = queryItems else {
+            return self
+        }
+
         var url = self
         queryItems.forEach { url = url.appendingQueryItem($0) }
         return url
