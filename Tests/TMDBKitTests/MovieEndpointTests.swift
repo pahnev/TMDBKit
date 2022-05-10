@@ -14,7 +14,7 @@ class MovieEndpointTests: TMDBTestCase {
     let allQuietMovieId = 143
 
     func testReturnsMovieDetails() throws {
-        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil))
 
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: nil, completion: $0) }.value
 
@@ -22,7 +22,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieDetailsWithAllExtraDetails() throws {
-        stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil))
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases, completion: $0) }.value
 
         XCTAssertNotNil(movie?.reviews)
@@ -35,7 +35,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAccountsStatesForMovie() throws {
-        stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: blackPantherMovieId, completion: $0) }.value
 
@@ -45,7 +45,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAccountsStatesForMovieWithRating() throws {
-        stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId))
+        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: allQuietMovieId, completion: $0) }.value
 
@@ -54,7 +54,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAlternativeTitlesForMovie() throws {
-        stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil))
+        try stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil))
 
         let alternatives = try awaitFor { tmdb.movies.alternativeTitles(for: allQuietMovieId, completion: $0) }.value
 
@@ -62,7 +62,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsChanges() throws {
-        stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId))
+        try stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId))
 
         let changes = try awaitFor { tmdb.movies.changes(for: allQuietMovieId, completion: $0) }.value
 
@@ -70,7 +70,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsCredits() throws {
-        stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId, language: nil))
 
         let credits = try awaitFor { tmdb.movies.credits(for: blackPantherMovieId, completion: $0) }.value
 
@@ -78,7 +78,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsExternalIds() throws {
-        stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId))
 
         let ids = try awaitFor { tmdb.movies.externalIds(for: blackPantherMovieId, completion: $0) }.value
 
@@ -86,7 +86,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieImages() throws {
-        stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId, language: nil))
 
         let images = try awaitFor { tmdb.movies.images(for: blackPantherMovieId, completion: $0) }.value
 
@@ -94,7 +94,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsKeywords() throws {
-        stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId))
 
         let words = try awaitFor { tmdb.movies.keywords(for: blackPantherMovieId, completion: $0) }.value
 
@@ -102,7 +102,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsReleaseDates() throws {
-        stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId))
 
         let dates = try awaitFor { tmdb.movies.releaseDates(for: blackPantherMovieId, completion: $0) }.value
 
@@ -110,7 +110,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsVideos() throws {
-        stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId, language: nil))
 
         let videos = try awaitFor { tmdb.movies.videos(for: blackPantherMovieId, completion: $0) }.value
 
@@ -118,7 +118,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsWatchProviders() throws {
-        stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId))
 
         let providers = try awaitFor { tmdb.movies.watchProviders(for: blackPantherMovieId, completion: $0) }.value
         XCTAssertNotNil(providers)
@@ -131,7 +131,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTranslations() throws {
-        stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
 
         let translations = try awaitFor { tmdb.movies.translations(for: blackPantherMovieId, completion: $0) }.value
 
@@ -139,7 +139,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsRecommendations() throws {
-        stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let movies = try awaitFor { tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -147,7 +147,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsSimilarMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let movies = try awaitFor { tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -155,7 +155,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsReviews() throws {
-        stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let reviews = try awaitFor { tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -163,7 +163,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLists() throws {
-        stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
         let lists = try awaitFor { tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
@@ -171,7 +171,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsNowPlayingMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil))
 
         let nowPlaying = try awaitFor { tmdb.movies.nowPlaying(pageNumber: 1, completion: $0) }.value
 
@@ -179,7 +179,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLatestMovie() throws {
-        stubHelper.stubWithLocalFile(Movies.latest(language: nil))
+        try stubHelper.stubWithLocalFile(Movies.latest(language: nil))
 
         let movie = try awaitFor { tmdb.movies.latest(completion: $0) }.value
 
@@ -187,7 +187,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPopularMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1, language: nil, region: nil))
 
         let movies = try awaitFor { tmdb.movies.popular(pageNumber: 1, completion: $0) }.value
 
@@ -195,7 +195,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTopRatedMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1, language: nil, region: nil))
 
         let movies = try awaitFor { tmdb.movies.topRated(pageNumber: 1, completion: $0) }.value
 
@@ -203,7 +203,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsUpcomingMovies() throws {
-        stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1, language: nil, region: nil))
 
         let nowPlaying = try awaitFor { tmdb.movies.upcoming(pageNumber: 1, completion: $0) }.value
 

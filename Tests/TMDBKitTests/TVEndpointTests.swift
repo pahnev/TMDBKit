@@ -12,7 +12,7 @@ class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
 
     func testReturnsDetails() throws {
-        stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: nil))
+        try stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: nil))
 
         let result = try awaitFor { tmdb.tv.details(for: gameOfThrones, appending: nil, completion: $0) }.value
 
@@ -20,7 +20,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsDetailsWithAppendedData() throws {
-        stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]))
+        try stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: [.reviews(language: nil), .videos(language: nil), .images(languages: nil)]))
 
         let result = try awaitFor {
             tmdb.tv.details(for: gameOfThrones,
@@ -55,7 +55,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func test_accountStates() throws {
-        stubHelper.stubWithLocalFile(TV.accountStates(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.accountStates(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.accountStates(for: gameOfThrones, completion: $0) }.value
 
@@ -63,7 +63,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func test_aggregateCredits() throws {
-        stubHelper.stubWithLocalFile(TV.aggregateCredits(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.aggregateCredits(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.aggregateCredits(for: gameOfThrones, completion: $0) }.value
 
@@ -71,7 +71,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAlternativeTitles() throws {
-        stubHelper.stubWithLocalFile(TV.alternativeTitles(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.alternativeTitles(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.alternativeTitles(for: gameOfThrones, completion: $0) }.value
 
@@ -79,7 +79,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsChanges() throws {
-        stubHelper.stubWithLocalFile(TV.changes(tvId: gameOfThrones, pageNumber: 1))
+        try stubHelper.stubWithLocalFile(TV.changes(tvId: gameOfThrones, pageNumber: 1))
 
         let result = try awaitFor { tmdb.tv.changes(for: gameOfThrones, completion: $0) }.value
 
@@ -87,7 +87,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsContentRatings() throws {
-        stubHelper.stubWithLocalFile(TV.contentRatings(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.contentRatings(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.contentRatings(for: gameOfThrones, completion: $0) }.value
 
@@ -95,7 +95,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsCredits() throws {
-        stubHelper.stubWithLocalFile(TV.credits(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.credits(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.credits(for: gameOfThrones, completion: $0) }.value
 
@@ -103,7 +103,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsEpisodeGroups() throws {
-        stubHelper.stubWithLocalFile(TV.episodeGroups(tvId: 30983, language: nil))
+        try stubHelper.stubWithLocalFile(TV.episodeGroups(tvId: 30983, language: nil))
 
         let result = try awaitFor { tmdb.tv.episodeGroups(for: 30983, completion: $0) }.value
 
@@ -111,7 +111,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsExternalIds() throws {
-        stubHelper.stubWithLocalFile(TV.externalIds(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.externalIds(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.externalIds(for: gameOfThrones, completion: $0) }.value
 
@@ -119,7 +119,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsImages() throws {
-        stubHelper.stubWithLocalFile(TV.images(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.images(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.images(for: gameOfThrones, completion: $0) }.value
 
@@ -127,7 +127,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsKeywords() throws {
-        stubHelper.stubWithLocalFile(TV.keywords(tvId: gameOfThrones))
+        try stubHelper.stubWithLocalFile(TV.keywords(tvId: gameOfThrones))
 
         let result = try awaitFor { tmdb.tv.keywords(for: gameOfThrones, completion: $0) }.value
 
@@ -135,7 +135,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsRecommendations() throws {
-        stubHelper.stubWithLocalFile(TV.recommendations(tvId: gameOfThrones, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.recommendations(tvId: gameOfThrones, pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.recommendations(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
@@ -143,7 +143,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsReviews() throws {
-        stubHelper.stubWithLocalFile(TV.reviews(tvId: gameOfThrones, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.reviews(tvId: gameOfThrones, pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.reviews(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
@@ -151,7 +151,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsScreenedTheatrically() throws {
-        stubHelper.stubWithLocalFile(TV.screenedTheatrically(tvId: gameOfThrones))
+        try stubHelper.stubWithLocalFile(TV.screenedTheatrically(tvId: gameOfThrones))
 
         let result = try awaitFor { tmdb.tv.screenedTheatrically(for: gameOfThrones, completion: $0) }.value
 
@@ -159,7 +159,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsSimilarShows() throws {
-        stubHelper.stubWithLocalFile(TV.similarShows(tvId: gameOfThrones, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.similarShows(tvId: gameOfThrones, pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.similarShows(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
@@ -167,7 +167,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTranslations() throws {
-        stubHelper.stubWithLocalFile(TV.translations(tvId: gameOfThrones))
+        try stubHelper.stubWithLocalFile(TV.translations(tvId: gameOfThrones))
 
         let result = try awaitFor { tmdb.tv.translations(for: gameOfThrones, completion: $0) }.value
 
@@ -175,7 +175,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsVideos() throws {
-        stubHelper.stubWithLocalFile(TV.videos(tvId: gameOfThrones, language: nil))
+        try stubHelper.stubWithLocalFile(TV.videos(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.videos(for: gameOfThrones, completion: $0) }.value
 
@@ -183,7 +183,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsLatestShows() throws {
-        stubHelper.stubWithLocalFile(TV.latest(language: nil))
+        try stubHelper.stubWithLocalFile(TV.latest(language: nil))
 
         let result = try awaitFor { tmdb.tv.latest(completion: $0) }.value
 
@@ -191,7 +191,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsAiringToday() throws {
-        stubHelper.stubWithLocalFile(TV.airingToday(pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.airingToday(pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.airingToday(pageNumber: 1, completion: $0) }.value
 
@@ -199,7 +199,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsOnAirShows() throws {
-        stubHelper.stubWithLocalFile(TV.onTheAir(pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.onTheAir(pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.onTheAir(pageNumber: 1, completion: $0) }.value
 
@@ -207,7 +207,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPopular() throws {
-        stubHelper.stubWithLocalFile(TV.popular(pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.popular(pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.popular(pageNumber: 1, completion: $0) }.value
 
@@ -215,7 +215,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTopRated() throws {
-        stubHelper.stubWithLocalFile(TV.topRated(pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(TV.topRated(pageNumber: 1, language: nil))
 
         let result = try awaitFor { tmdb.tv.topRated(pageNumber: 1, completion: $0) }.value
 
@@ -223,7 +223,7 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func test_watchProviders() throws {
-        stubHelper.stubWithLocalFile(TV.watchProviders(tvId: gameOfThrones))
+        try stubHelper.stubWithLocalFile(TV.watchProviders(tvId: gameOfThrones))
 
         let result = try awaitFor { tmdb.tv.watchProviders(for: gameOfThrones, completion: $0) }.value
 

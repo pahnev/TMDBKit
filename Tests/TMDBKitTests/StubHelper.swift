@@ -7,23 +7,22 @@
 //
 
 import Foundation
-import OHHTTPStubs
-import OHHTTPStubsSwift
-
 @testable import TMDBKit
+import XCTest
 
 class StubHelper {
-    func stubWithLocalFile(_ endpoint: Endpoint) {
-        print(endpoint.url.path)
-        var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
+    func stubWithLocalFile(_ endpoint: Endpoint) throws {
+        print("🗣 STUBBING: \(endpoint.url.path) ")
 
-        stub(condition: isPath(endpoint.url.path)) { _ in
-            // Append only append query, ignore pagination and other things
+        MockURLProtocol.requestHandler = { request in
+            var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
             if let query = endpoint.url.query, query.contains("append_to_response") {
                 fileName.append("?\(query)")
             }
-            let file = self.fixtureCache["v\(fileName).json"]
-            return HTTPStubsResponse(data: try! Data(contentsOf: file!), statusCode: 200, headers: [:])
+            let file = try XCTUnwrap(self.fixtureCache["v\(fileName).json"])
+            let data = try Data(contentsOf: file)
+
+            return (HTTPURLResponse(url: endpoint.url, statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
         }
     }
 
