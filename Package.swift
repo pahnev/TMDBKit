@@ -11,7 +11,6 @@ let package = Package(
             targets: ["TMDBKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", .upToNextMajor(from: "9.1.0"))
     ],
     targets: [
         .target(
@@ -19,6 +18,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "TMDBKitTests",
-            dependencies: ["TMDBKit", "OHHTTPStubsSwift"]),
+            dependencies: ["TMDBKit"]),
     ]
 )
