@@ -13,13 +13,50 @@ class TMDBTestCase: XCTestCase {
     var tmdb: TMDB!
 
     override func setUp() {
-        guard let tmdb = try? TMDB(authenticator: MockAuth()) else { preconditionFailure() }
-        self.tmdb = tmdb
         super.setUp()
+
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self] + (config.protocolClasses ?? [])
+        let urlSession = URLSession(configuration: config)
+
+        let auth = MockAuth()
+        let networkClient = NetworkClient(authenticator: auth, urlSession: urlSession)
+
+        tmdb = TMDB(authenticator: auth, networkClient: networkClient)
     }
 
     override func tearDown() {
         tmdb.clearCaches()
         super.tearDown()
     }
+}
+
+
+final class MockURLProtocol: URLProtocol {
+    static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+
+    override class func canInit(with request: URLRequest) -> Bool {
+        true
+    }
+
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+        request
+    }
+
+    override func startLoading() {
+        guard let handler = MockURLProtocol.requestHandler else {
+            XCTFail("Received unexpected request with no handler set")
+            return
+        }
+        do {
+            let (response, data) = try handler(request)
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch {
+            client?.urlProtocol(self, didFailWithError: error)
+        }
+    }
+
+    override func stopLoading() {}
 }
