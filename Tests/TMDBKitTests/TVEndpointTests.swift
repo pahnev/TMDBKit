@@ -5,7 +5,6 @@
 //  Created by Kirill Pahnev on 01/12/2019.
 //
 
-import Nimble
 import XCTest
 @testable import TMDBKit
 
@@ -16,7 +15,8 @@ class TVEndpointTests: TMDBTestCase {
         stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: nil))
 
         let result = try awaitFor { tmdb.tv.details(for: gameOfThrones, appending: nil, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
+
+        XCTAssertNotNil(result)
     }
 
     func testReturnsDetailsWithAppendedData() throws {
@@ -28,9 +28,9 @@ class TVEndpointTests: TMDBTestCase {
                             completion: $0)
         }.value
 
-        expect(result?.reviews).toEventuallyNot(beNil())
-        expect(result?.videos).toEventuallyNot(beNil())
-        expect(result?.images).toEventuallyNot(beNil())
+        XCTAssertNotNil(result?.reviews)
+        XCTAssertNotNil(result?.videos)
+        XCTAssertNotNil(result?.images)
     }
 
     func testDetailsURL() throws {
@@ -58,20 +58,24 @@ class TVEndpointTests: TMDBTestCase {
         stubHelper.stubWithLocalFile(TV.accountStates(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.accountStates(for: gameOfThrones, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
+
+        XCTAssertNotNil(result)
     }
 
     func test_aggregateCredits() throws {
         stubHelper.stubWithLocalFile(TV.aggregateCredits(tvId: gameOfThrones, language: nil))
+
         let result = try awaitFor { tmdb.tv.aggregateCredits(for: gameOfThrones, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
+
+        XCTAssertNotNil(result)
     }
 
     func testReturnsAlternativeTitles() throws {
         stubHelper.stubWithLocalFile(TV.alternativeTitles(tvId: gameOfThrones, language: nil))
 
         let result = try awaitFor { tmdb.tv.alternativeTitles(for: gameOfThrones, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
+
+        XCTAssertNotNil(result)
     }
 
     func testReturnsChanges() throws {
@@ -79,7 +83,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.changes(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsContentRatings() throws {
@@ -87,7 +91,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.contentRatings(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsCredits() throws {
@@ -95,7 +99,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.credits(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsEpisodeGroups() throws {
@@ -103,7 +107,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.episodeGroups(for: 30983, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsExternalIds() throws {
@@ -111,7 +115,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.externalIds(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsImages() throws {
@@ -119,7 +123,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.images(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsKeywords() throws {
@@ -127,7 +131,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.keywords(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsRecommendations() throws {
@@ -135,7 +139,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.recommendations(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsReviews() throws {
@@ -143,7 +147,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.reviews(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsScreenedTheatrically() throws {
@@ -151,7 +155,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.screenedTheatrically(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsSimilarShows() throws {
@@ -159,7 +163,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.similarShows(for: gameOfThrones, pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsTranslations() throws {
@@ -167,7 +171,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.translations(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsVideos() throws {
@@ -175,7 +179,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.videos(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsLatestShows() throws {
@@ -183,7 +187,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.latest(completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsAiringToday() throws {
@@ -191,7 +195,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.airingToday(pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsOnAirShows() throws {
@@ -199,7 +203,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.onTheAir(pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsPopular() throws {
@@ -207,7 +211,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.popular(pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func testReturnsTopRated() throws {
@@ -215,7 +219,7 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.topRated(pageNumber: 1, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 
     func test_watchProviders() throws {
@@ -223,6 +227,6 @@ class TVEndpointTests: TMDBTestCase {
 
         let result = try awaitFor { tmdb.tv.watchProviders(for: gameOfThrones, completion: $0) }.value
 
-        expect(result).toEventuallyNot(beNil())
+        XCTAssertNotNil(result)
     }
 }

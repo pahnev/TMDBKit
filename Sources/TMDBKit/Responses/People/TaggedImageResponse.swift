@@ -1,6 +1,6 @@
 //
 //  TaggedImageResponse.swift
-//  Nimble
+//  TMDBKit
 //
 //  Created by Pahnev, Kirill on 15/11/2019.
 //

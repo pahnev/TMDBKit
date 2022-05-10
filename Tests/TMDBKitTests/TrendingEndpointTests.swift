@@ -5,7 +5,6 @@
 //  Created by Pahnev, Kirill on 16/11/2019.
 //
 
-import Nimble
 import XCTest
 @testable import TMDBKit
 
@@ -15,7 +14,7 @@ class TrendingEndpointTests: TMDBTestCase {
 
         let response = try awaitFor { tmdb.trending.trending(.movie, withinLast: .day, completion: $0) }.value
 
-        expect(response).toEventuallyNot(beNil())
+        XCTAssertNotNil(response)
     }
 
     func testReturnsTrendingTVShows() throws {
@@ -23,7 +22,7 @@ class TrendingEndpointTests: TMDBTestCase {
 
         let response = try awaitFor { tmdb.trending.trending(.tv, withinLast: .day, completion: $0) }.value
 
-        expect(response).toEventuallyNot(beNil())
+        XCTAssertNotNil(response)
     }
 
     func testReturnsTrendingPeople() throws {
@@ -31,7 +30,7 @@ class TrendingEndpointTests: TMDBTestCase {
 
         let response = try awaitFor { tmdb.trending.trending(.person, withinLast: .day, completion: $0) }.value
 
-        expect(response).toEventuallyNot(beNil())
+        XCTAssertNotNil(response)
     }
 
     func testReturnsTrendingEverything() throws {
@@ -39,6 +38,6 @@ class TrendingEndpointTests: TMDBTestCase {
 
         let response = try awaitFor { tmdb.trending.trending(.all, withinLast: .day, completion: $0) }.value
 
-        expect(response).toEventuallyNot(beNil())
+        XCTAssertNotNil(response)
     }
 }

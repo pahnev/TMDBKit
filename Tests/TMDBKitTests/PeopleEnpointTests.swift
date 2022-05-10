@@ -5,7 +5,6 @@
 //  Created by Pahnev, Kirill on 14/11/2019.
 //
 
-import Nimble
 import XCTest
 @testable import TMDBKit
 
@@ -17,8 +16,8 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let person = try awaitFor { tmdb.people.details(for: personId, appending: nil, completion: $0) }.value
 
-        expect(person).toEventuallyNot(beNil())
-        expect(person?.name).toEventually(equal("George Lucas"))
+        XCTAssertNotNil(person)
+        XCTAssertEqual(person?.name, "George Lucas")
     }
 
     func testReturnsPersonChanges() throws {
@@ -26,7 +25,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let changes = try awaitFor { tmdb.people.changes(for: personId, completion: $0) }.value
 
-        expect(changes).toEventuallyNot(beNil())
+        XCTAssertNotNil(changes)
     }
 
     func testReturnsMovieCredits() throws {
@@ -34,7 +33,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let credits = try awaitFor { tmdb.people.movieCredits(for: personId, completion: $0) }.value
 
-        expect(credits).toEventuallyNot(beNil())
+        XCTAssertNotNil(credits)
     }
 
     func testReturnsTVCredits() throws {
@@ -42,7 +41,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let credits = try awaitFor { tmdb.people.tvCredits(for: personId, completion: $0) }.value
 
-        expect(credits).toEventuallyNot(beNil())
+        XCTAssertNotNil(credits)
     }
 
     func testReturnsCombinedCredits() throws {
@@ -50,7 +49,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let credits = try awaitFor { tmdb.people.combinedCredits(for: personId, completion: $0) }.value
 
-        expect(credits).toEventuallyNot(beNil())
+        XCTAssertNotNil(credits)
     }
 
     func testReturnsExternalIds() throws {
@@ -58,7 +57,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let ids = try awaitFor { tmdb.people.externalIds(for: personId, completion: $0) }.value
 
-        expect(ids).toEventuallyNot(beNil())
+        XCTAssertNotNil(ids)
     }
 
     func testReturnsImages() throws {
@@ -66,7 +65,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let images = try awaitFor { tmdb.people.images(for: personId, completion: $0) }.value
 
-        expect(images).toEventuallyNot(beNil())
+        XCTAssertNotNil(images)
     }
 
     func testReturnsTaggedImages() throws {
@@ -74,7 +73,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
-        expect(images).toEventuallyNot(beNil())
+        XCTAssertNotNil(images)
     }
 
     func testTaggedImagesResponseParsing() throws {
@@ -82,31 +81,30 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
-        expect(images).toEventuallyNot(beNil())
-        expect(images?.id).to(equal(19))
-        expect(images?.page).to(equal(1))
-        expect(images?.totalPages).to(equal(1))
-        expect(images?.results.count).to(equal(10))
+        XCTAssertNotNil(images)
+        XCTAssertEqual(images?.id, 19)
+        XCTAssertEqual(images?.page, 1)
+        XCTAssertEqual(images?.totalPages, 1)
+        XCTAssertEqual(images?.results.count, 10)
 
-        let tvResult = images!.results.first!
-        expect(tvResult.iso6391).to(beNil())
+        let tvResult = try XCTUnwrap(images?.results.first)
 
-        expect(tvResult.voteCount).to(equal(3))
-        expect(tvResult.mediaType).to(equal(.tv))
-        expect(tvResult.filePath).to(equal("/hY0TRC5cXMqFQvm5xl5LLd9t7eX.jpg"))
-        expect(tvResult.aspectRatio).to(beCloseTo(1.7778))
-        expect(tvResult.height).to(equal(1080))
-        expect(tvResult.voteAverage).to(beCloseTo(5.4401))
-        expect(tvResult.width).to(equal(1920))
+        XCTAssertEqual(tvResult.voteCount, 3)
+        XCTAssertEqual(tvResult.mediaType, .tv)
+        XCTAssertEqual(tvResult.filePath, "/hY0TRC5cXMqFQvm5xl5LLd9t7eX.jpg")
+        XCTAssertEqual(tvResult.aspectRatio, 1.7778, accuracy: 0.0001)
+        XCTAssertEqual(tvResult.height, 1080)
+        XCTAssertEqual(tvResult.voteAverage, 5.4401, accuracy: 0.0001)
+        XCTAssertEqual(tvResult.width, 1920)
 
         switch tvResult.media {
         case .movie(let movie):
-            expect(movie).toEventually(beNil())
+            XCTAssertNil(movie)
         case .tv(let tvMedia):
-            expect(tvMedia.name).to(equal("The West Wing"))
-            expect(tvMedia.posterPath).to(equal("/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg"))
+            XCTAssertEqual(tvMedia.name, "The West Wing")
+            XCTAssertEqual(tvMedia.posterPath, "/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg")
         case .person(let person):
-            expect(person).toEventually(beNil())
+            XCTAssertNil(person)
         }
     }
 
@@ -115,7 +113,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let translations = try awaitFor { tmdb.people.translations(for: personId, completion: $0) }.value
 
-        expect(translations).toEventuallyNot(beNil())
+        XCTAssertNotNil(translations)
     }
 
     func testReturnsLatest() throws {
@@ -123,7 +121,7 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let person = try awaitFor { tmdb.people.latest(completion: $0) }.value
 
-        expect(person).toEventuallyNot(beNil())
+        XCTAssertNotNil(person)
     }
 
     func testReturnsPopular() throws {
@@ -131,6 +129,6 @@ class PeopleEndpointTests: TMDBTestCase {
 
         let person = try awaitFor { tmdb.people.popular(completion: $0) }.value
 
-        expect(person).toEventuallyNot(beNil())
+        XCTAssertNotNil(person)
     }
 }

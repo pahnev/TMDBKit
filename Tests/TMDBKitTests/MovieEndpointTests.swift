@@ -6,7 +6,6 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
-import Nimble
 import XCTest
 @testable import TMDBKit
 
@@ -19,37 +18,39 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: nil, completion: $0) }.value
 
-        expect(movie).toEventuallyNot(beNil())
+        XCTAssertNotNil(movie)
     }
 
     func testReturnsMovieDetailsWithAllExtraDetails() throws {
         stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil))
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases, completion: $0) }.value
 
-        expect(movie?.reviews).toEventuallyNot(beNil())
-        expect(movie?.videos).toEventuallyNot(beNil())
-        expect(movie?.images).toEventuallyNot(beNil())
-        expect(movie?.credits).toEventuallyNot(beNil())
-        expect(movie?.recommendations).toEventuallyNot(beNil())
-        expect(movie?.similar).toEventuallyNot(beNil())
-        expect(movie?.translations).toEventuallyNot(beNil())
+        XCTAssertNotNil(movie?.reviews)
+        XCTAssertNotNil(movie?.videos)
+        XCTAssertNotNil(movie?.images)
+        XCTAssertNotNil(movie?.credits)
+        XCTAssertNotNil(movie?.recommendations)
+        XCTAssertNotNil(movie?.similar)
+        XCTAssertNotNil(movie?.translations)
     }
 
     func testReturnsAccountsStatesForMovie() throws {
         stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: blackPantherMovieId, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
-        expect(result?.id).toEventually(be(284054))
-        expect(result?.rated).toEventually(beNil())
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.id, 284054)
+        XCTAssertNil(result?.rated)
     }
 
     func testReturnsAccountsStatesForMovieWithRating() throws {
         stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: allQuietMovieId, completion: $0) }.value
-        expect(result).toEventuallyNot(beNil())
-        expect(result?.rated?.value).toEventually(be(3.0))
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.rated?.value, 3.0)
     }
 
     func testReturnsAlternativeTitlesForMovie() throws {
@@ -57,7 +58,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let alternatives = try awaitFor { tmdb.movies.alternativeTitles(for: allQuietMovieId, completion: $0) }.value
 
-        expect(alternatives).toEventuallyNot(beNil())
+        XCTAssertNotNil(alternatives)
     }
 
     func testReturnsChanges() throws {
@@ -65,7 +66,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let changes = try awaitFor { tmdb.movies.changes(for: allQuietMovieId, completion: $0) }.value
 
-        expect(changes).toEventuallyNot(beNil())
+        XCTAssertNotNil(changes)
     }
 
     func testReturnsCredits() throws {
@@ -73,7 +74,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let credits = try awaitFor { tmdb.movies.credits(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(credits).toEventuallyNot(beNil())
+        XCTAssertNotNil(credits)
     }
 
     func testReturnsExternalIds() throws {
@@ -81,7 +82,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let ids = try awaitFor { tmdb.movies.externalIds(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(ids).toEventuallyNot(beNil())
+        XCTAssertNotNil(ids)
     }
 
     func testReturnsMovieImages() throws {
@@ -89,7 +90,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let images = try awaitFor { tmdb.movies.images(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(images).toEventuallyNot(beNil())
+        XCTAssertNotNil(images)
     }
 
     func testReturnsKeywords() throws {
@@ -97,7 +98,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let words = try awaitFor { tmdb.movies.keywords(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(words).toEventuallyNot(beNil())
+        XCTAssertNotNil(words)
     }
 
     func testReturnsReleaseDates() throws {
@@ -105,7 +106,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let dates = try awaitFor { tmdb.movies.releaseDates(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(dates).toEventuallyNot(beNil())
+        XCTAssertNotNil(dates)
     }
 
     func testReturnsVideos() throws {
@@ -113,20 +114,20 @@ class MovieEndpointTests: TMDBTestCase {
 
         let videos = try awaitFor { tmdb.movies.videos(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(videos).toEventuallyNot(beNil())
+        XCTAssertNotNil(videos)
     }
 
     func testReturnsWatchProviders() throws {
         stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId))
 
         let providers = try awaitFor { tmdb.movies.watchProviders(for: blackPantherMovieId, completion: $0) }.value
-        expect(providers).toEventuallyNot(beNil())
+        XCTAssertNotNil(providers)
 
         let finnishProviders = providers?.results?.fi
-        expect(finnishProviders?.link).toEventually(equal("https://www.themoviedb.org/movie/284054-black-panther/watch?locale=FI"))
-        expect(finnishProviders?.buy?.count).toEventually(equal(8))
-        expect(finnishProviders?.rent?.count).toEventually(equal(5))
-        expect(finnishProviders?.flatrate?.count).toEventually(equal(1))
+        XCTAssertEqual(finnishProviders?.link, "https://www.themoviedb.org/movie/284054-black-panther/watch?locale=FI")
+        XCTAssertEqual(finnishProviders?.buy?.count, 8)
+        XCTAssertEqual(finnishProviders?.rent?.count, 5)
+        XCTAssertEqual(finnishProviders?.flatrate?.count, 1)
     }
 
     func testReturnsTranslations() throws {
@@ -134,7 +135,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let translations = try awaitFor { tmdb.movies.translations(for: blackPantherMovieId, completion: $0) }.value
 
-        expect(translations).toEventuallyNot(beNil())
+        XCTAssertNotNil(translations)
     }
 
     func testReturnsRecommendations() throws {
@@ -142,7 +143,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movies = try awaitFor { tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
-        expect(movies).toEventuallyNot(beNil())
+        XCTAssertNotNil(movies)
     }
 
     func testReturnsSimilarMovies() throws {
@@ -150,7 +151,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movies = try awaitFor { tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
-        expect(movies).toEventuallyNot(beNil())
+        XCTAssertNotNil(movies)
     }
 
     func testReturnsReviews() throws {
@@ -158,7 +159,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let reviews = try awaitFor { tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
-        expect(reviews).toEventuallyNot(beNil())
+        XCTAssertNotNil(reviews)
     }
 
     func testReturnsLists() throws {
@@ -166,7 +167,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let lists = try awaitFor { tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
-        expect(lists).toEventuallyNot(beNil())
+        XCTAssertNotNil(lists)
     }
 
     func testReturnsNowPlayingMovies() throws {
@@ -174,7 +175,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let nowPlaying = try awaitFor { tmdb.movies.nowPlaying(pageNumber: 1, completion: $0) }.value
 
-        expect(nowPlaying).toEventuallyNot(beNil())
+        XCTAssertNotNil(nowPlaying)
     }
 
     func testReturnsLatestMovie() throws {
@@ -182,7 +183,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movie = try awaitFor { tmdb.movies.latest(completion: $0) }.value
 
-        expect(movie).toEventuallyNot(beNil())
+        XCTAssertNotNil(movie)
     }
 
     func testReturnsPopularMovies() throws {
@@ -190,7 +191,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movies = try awaitFor { tmdb.movies.popular(pageNumber: 1, completion: $0) }.value
 
-        expect(movies).toEventuallyNot(beNil())
+        XCTAssertNotNil(movies)
     }
 
     func testReturnsTopRatedMovies() throws {
@@ -198,7 +199,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let movies = try awaitFor { tmdb.movies.topRated(pageNumber: 1, completion: $0) }.value
 
-        expect(movies).toEventuallyNot(beNil())
+        XCTAssertNotNil(movies)
     }
 
     func testReturnsUpcomingMovies() throws {
@@ -206,7 +207,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         let nowPlaying = try awaitFor { tmdb.movies.upcoming(pageNumber: 1, completion: $0) }.value
 
-        expect(nowPlaying).toEventuallyNot(beNil())
+        XCTAssertNotNil(nowPlaying)
     }
 
     func testEndpointURLsAreConstructedProperly() throws {
@@ -293,7 +294,7 @@ class MovieEndpointTests: TMDBTestCase {
         assertURL(images3, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en,fi")
     }
 
-    private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: FileString = #file, line: UInt = #line) {
+    private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
     }
 }

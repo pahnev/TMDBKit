@@ -6,7 +6,6 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
-import Nimble
 import XCTest
 @testable import TMDBKit
 
@@ -16,7 +15,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.details(completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testCreatedListsRequest() throws {
@@ -24,7 +23,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.createdListsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testFavoriteMoviesRequest() throws {
@@ -32,7 +31,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.favoriteMoviesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testFavoriteTVShowsRequest() throws {
@@ -40,7 +39,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.favoriteTVShowsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testRatedMoviesRequest() throws {
@@ -48,7 +47,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.ratedMoviesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testRatedTVShowsRequest() throws {
@@ -56,7 +55,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.ratedTVShowsFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testRatedTVEpisodesRequest() throws {
@@ -64,7 +63,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.ratedTVEpisodesFor(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testMovieWatchlistRequest() throws {
@@ -72,7 +71,7 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.movieWatchlist(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 
     func testTVShowWatchlistRequest() throws {
@@ -80,6 +79,6 @@ class AccountEndpointTests: TMDBTestCase {
 
         let details = try awaitFor { tmdb.account.tvShowWatchlist(accountId: 1, pageNumber: nil, completion: $0) }.value
 
-        expect(details).toEventuallyNot(beNil())
+        XCTAssertNotNil(details)
     }
 }
