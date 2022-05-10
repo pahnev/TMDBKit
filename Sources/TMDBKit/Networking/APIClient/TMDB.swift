@@ -50,9 +50,13 @@ public class TMDB {
     public lazy var lists = ListEndpoints(tmdb: self)
     public lazy var search = SearchEndpoints(tmdb: self)
 
-    public init(authenticator: Authenticator) throws {
+    public convenience init(authenticator: Authenticator) {
+        self.init(authenticator: authenticator, networkClient: NetworkClient(authenticator: authenticator))
+    }
+
+    init(authenticator: Authenticator, networkClient: NetworkClient) {
         self.authenticator = authenticator
-        networkClient = NetworkClient(authenticator: authenticator)
+        self.networkClient = networkClient
     }
 
     /// Updates the authentication details for the service. Can be called at

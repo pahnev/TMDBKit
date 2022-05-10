@@ -25,17 +25,15 @@ final class NetworkClient {
     private let urlSession: URLSession
     private let cache: URLCache
 
-    init(authenticator: Authenticator, cache: URLCache = URLCache.shared) {
+    init(authenticator: Authenticator, urlSession: URLSession = .shared, cache: URLCache = URLCache.shared) {
         self.authenticator = authenticator
         self.cache = cache
+        self.urlSession = urlSession
+
         httpLogger = HTTPLogger()
 
         cache.diskCapacity = 100 * 1024 * 1024
         cache.memoryCapacity = 100 * 1024 * 1024
-
-        let urlConfiguration = URLSessionConfiguration.default
-        urlConfiguration.requestCachePolicy = .useProtocolCachePolicy
-        urlSession = URLSession(configuration: urlConfiguration)
     }
 
     func cacheDiskStorageSize() -> Int {
