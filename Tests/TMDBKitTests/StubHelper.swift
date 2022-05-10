@@ -7,14 +7,14 @@
 //
 
 import Foundation
-@testable import TMDBKit
 import XCTest
+@testable import TMDBKit
 
 class StubHelper {
     func stubWithLocalFile(_ endpoint: Endpoint) throws {
         print("🗣 STUBBING: \(endpoint.url.path) ")
 
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
             if let query = endpoint.url.query, query.contains("append_to_response") {
                 fileName.append("?\(query)")
