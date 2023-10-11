@@ -1,6 +1,6 @@
 //
 //  AuthenticationEndpointTests.swift
-//  
+//
 //
 //  Created by Kirill Pahnev on 11.10.2023.
 //
@@ -9,7 +9,6 @@ import XCTest
 @testable import TMDBKit
 
 final class AuthenticationEndpointTests: TMDBTestCase {
-
     func test_createRequestToken_returnsToken() throws {
         try stubHelper.stubWithLocalFile(Authentication.requestToken)
 
@@ -63,10 +62,9 @@ final class AuthenticationEndpointTests: TMDBTestCase {
     func test_endpointHeaders() {
         XCTAssertEqual(Authentication.requestToken.requestHeaders, [:])
         XCTAssertEqual(Authentication.createQuestSession.requestHeaders, [:])
-        XCTAssertEqual(Authentication.createSession(requestToken: "a-token").requestHeaders, 
+        XCTAssertEqual(Authentication.createSession(requestToken: "a-token").requestHeaders,
                        ["Content-Type": "application/json;charset=utf-8"])
         XCTAssertEqual(Authentication.deleteSession(sessionId: "an-id").requestHeaders,
                        ["Content-Type": "application/json;charset=utf-8"])
     }
-
 }

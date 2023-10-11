@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  WatchProvider.swift
 //
 //
 //  Created by Pahnev, Kirill on 7.12.2021.

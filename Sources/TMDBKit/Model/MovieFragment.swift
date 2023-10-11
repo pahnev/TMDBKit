@@ -1,5 +1,5 @@
 //
-//  Result.swift
+//  MovieFragment.swift
 //  TMDBKit
 //
 //  Created by Kirill Pahnev on 29/06/2018.

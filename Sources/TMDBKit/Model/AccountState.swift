@@ -1,5 +1,5 @@
 //
-//  AccountDetails.swift
+//  AccountState.swift
 //  TMDBKit
 //
 //  Created by Pahnev, Kirill on 7.12.2021.

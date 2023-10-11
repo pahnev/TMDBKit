@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PersonDetailsResponse.swift
 //
 //
 //  Created by Pahnev, Kirill on 14/11/2019.

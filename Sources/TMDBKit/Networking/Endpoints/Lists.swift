@@ -1,5 +1,5 @@
 //
-//  List.swift
+//  Lists.swift
 //
 //
 //  Created by Pahnev, Kirill on 13.4.2021.

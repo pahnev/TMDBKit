@@ -1,5 +1,5 @@
 //
-//  Search.swift
+//  TMDB+Search.swift
 //  TMDBKit
 //
 //  Created by Pahnev, Kirill on 2.9.2021.

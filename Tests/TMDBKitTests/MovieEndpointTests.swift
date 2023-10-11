@@ -1,5 +1,5 @@
 //
-//  TMDBKitTests.swift
+//  MovieEndpointTests.swift
 //  TMDBKitTests
 //
 //  Created by Kirill Pahnev on 29/06/2018.
