@@ -19,7 +19,7 @@ class TMDBTestCase: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self] + (config.protocolClasses ?? [])
         let urlSession = URLSession(configuration: config)
 
-        let auth = MockAuth()
+        let auth = MockAuth(sessionId: "456")
         let networkClient = NetworkClient(authenticator: auth, urlSession: urlSession)
 
         tmdb = TMDB(authenticator: auth, networkClient: networkClient)
