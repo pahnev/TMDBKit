@@ -13,7 +13,5 @@ struct MockAuth: Authenticator {
         return "123"
     }
 
-    var sessionId: String? {
-        return "456"
-    }
+    var sessionId: String?
 }
