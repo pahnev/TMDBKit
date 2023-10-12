@@ -11,7 +11,8 @@ import Foundation
 extension URL {
     func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
         guard var urlComps = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            preconditionFailure("Invalid url \(self)")
+            assertionFailure("Invalid url \(self)")
+            return self
         }
 
         let currentQueryItems = urlComps.queryItems ?? []
@@ -32,6 +33,13 @@ extension URL {
 
     func appendingSearchQuery(_ query: String) -> URL {
         appendingQueryItem(URLQueryItem(name: "query", value: query))
+    }
+
+    func appendingSort(_ sort: Sort) -> URL {
+        switch sort {
+            case .createdAt(let direction):
+                return appendingQueryItem(URLQueryItem(name: "sort_by", value: "created_at.\(direction.urlQuery)"))
+        }
     }
 
     func appendingAccountId(_ accountId: Int?) -> URL {
@@ -60,10 +68,13 @@ extension URL {
     }
 
     func appendingSortedPagination(_ pagination: SortedPagination) -> URL {
-        // TODO: Append sorting info
-        if let page = pagination.page {
-            return appendingPage(page)
+        var url = self
+        if let sort = pagination.sortBy {
+            url = url.appendingSort(sort)
         }
-        return self
+        if let page = pagination.page {
+            url = url.appendingPage(page)
+        }
+        return url
     }
 }
