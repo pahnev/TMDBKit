@@ -294,6 +294,91 @@ class MovieEndpointTests: TMDBTestCase {
         assertURL(images3, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=images&include_image_language=en,fi")
     }
 
+    func test_httpMethod() {
+        // Verify http method for each case
+        XCTAssertEqual(Movies.accountStates(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.alternativeTitles(movieId: 1, country: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.changes(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.credits(movieId: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.deleteRating(movieId: 1).httpMethod, .DELETE)
+        XCTAssertEqual(Movies.details(movieId: 1, append: nil, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.externalIds(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.images(movieId: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.keywords(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.latest(language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.lists(movieId: 1, pageNumber: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.popular(pageNumber: 1, language: nil, region: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.rateMovie(rating: 1, movieId: 1).httpMethod, .POST)
+        XCTAssertEqual(Movies.recommendations(movieId: 1, pageNumber: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.releaseDates(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.reviews(movieId: 1, pageNumber: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.similarMovies(movieId: 1, pageNumber: 1, language: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.topRated(pageNumber: 1, language: nil, region: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.translations(movieId: 1).httpMethod, .GET)
+        XCTAssertEqual(Movies.upcoming(pageNumber: 1, language: nil, region: nil).httpMethod, .GET)
+        XCTAssertEqual(Movies.videos(movieId: 1, language: nil).httpMethod, .GET)
+    }
+
+    func test_httpBody() {
+        // Verify http body for each case
+        XCTAssertNil(Movies.accountStates(movieId: 1).httpBody)
+        XCTAssertNil(Movies.alternativeTitles(movieId: 1, country: nil).httpBody)
+        XCTAssertNil(Movies.changes(movieId: 1).httpBody)
+        XCTAssertNil(Movies.credits(movieId: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.deleteRating(movieId: 1).httpBody)
+        XCTAssertNil(Movies.details(movieId: 1, append: nil, language: nil).httpBody)
+        XCTAssertNil(Movies.externalIds(movieId: 1).httpBody)
+        XCTAssertNil(Movies.images(movieId: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.keywords(movieId: 1).httpBody)
+        XCTAssertNil(Movies.latest(language: nil).httpBody)
+        XCTAssertNil(Movies.lists(movieId: 1, pageNumber: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil).httpBody)
+        XCTAssertNil(Movies.popular(pageNumber: 1, language: nil, region: nil).httpBody)
+        XCTAssertNil(Movies.recommendations(movieId: 1, pageNumber: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.releaseDates(movieId: 1).httpBody)
+        XCTAssertNil(Movies.reviews(movieId: 1, pageNumber: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.similarMovies(movieId: 1, pageNumber: 1, language: nil).httpBody)
+        XCTAssertNil(Movies.topRated(pageNumber: 1, language: nil, region: nil).httpBody)
+        XCTAssertNil(Movies.translations(movieId: 1).httpBody)
+        XCTAssertNil(Movies.upcoming(pageNumber: 1, language: nil, region: nil).httpBody)
+        XCTAssertNil(Movies.videos(movieId: 1, language: nil).httpBody)
+    }
+
+    func test_rateMovie_httpBody() throws {
+        let data = try JSONEncoder().encode(["value": 1])
+        let body = Movies.rateMovie(rating: 1, movieId: 1).httpBody
+        XCTAssertEqual(body, data)
+    }
+
+    func test_requestHeaders() {
+        // Verify request headers for each case
+        XCTAssertEqual(Movies.accountStates(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.alternativeTitles(movieId: 1, country: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.changes(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.credits(movieId: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.details(movieId: 1, append: nil, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.externalIds(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.images(movieId: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.keywords(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.latest(language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.lists(movieId: 1, pageNumber: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.popular(pageNumber: 1, language: nil, region: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.recommendations(movieId: 1, pageNumber: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.releaseDates(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.reviews(movieId: 1, pageNumber: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.similarMovies(movieId: 1, pageNumber: 1, language: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.topRated(pageNumber: 1, language: nil, region: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.translations(movieId: 1).requestHeaders, [:])
+        XCTAssertEqual(Movies.upcoming(pageNumber: 1, language: nil, region: nil).requestHeaders, [:])
+        XCTAssertEqual(Movies.videos(movieId: 1, language: nil).requestHeaders, [:])
+
+        let expectedHeaders = ["Content-Type": "application/json;charset=utf-8"]
+        XCTAssertEqual(Movies.deleteRating(movieId: 1).requestHeaders, expectedHeaders)
+        XCTAssertEqual(Movies.rateMovie(rating: 1, movieId: 1).requestHeaders, expectedHeaders)
+    }
+
     private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
     }
