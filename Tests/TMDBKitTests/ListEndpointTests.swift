@@ -1,6 +1,6 @@
 //
 //  ListEndpointTests.swift
-//  
+//
 //
 //  Created by Kirill Pahnev on 12.10.2023.
 //
@@ -9,11 +9,10 @@ import XCTest
 @testable import TMDBKit
 
 class ListEndpointTests: TMDBTestCase {
-
     func test_details() throws {
         try stubHelper.stubWithLocalFile(Lists.details(listId: "1", language: nil))
 
-        let list = try XCTUnwrap(try awaitFor { tmdb.lists.details(for: "1", completion: $0) }.value)
+        let list = try XCTUnwrap(awaitFor { tmdb.lists.details(for: "1", completion: $0) }.value)
 
         XCTAssertEqual(list.id, "50941077760ee35e1500000c")
         XCTAssertEqual(list.name, "The Marvel Universe")
@@ -28,14 +27,14 @@ class ListEndpointTests: TMDBTestCase {
 
     func test_itemStatus() throws {
         try stubHelper.stubWithLocalFile(Lists.itemStatus(listId: "1", movieId: 1))
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.itemStatus(itemId: 1, listId: "1", completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.itemStatus(itemId: 1, listId: "1", completion: $0) }.value)
         XCTAssertEqual(response.id, "50941077760ee35e1500000c")
         XCTAssertFalse(response.itemPresent)
     }
 
     func test_createWith() throws {
         try stubHelper.stubWithLocalFile(Lists.createList(list: .init(name: "1", description: "1", language: "en")))
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.createWith(name: "Test", description: nil, language: nil, completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.createWith(name: "Test", description: nil, language: nil, completion: $0) }.value)
         XCTAssertEqual(response.statusCode, 1)
         XCTAssertEqual(response.listId, 5861)
         XCTAssertEqual(response.statusMessage, "The item/record was created successfully.")
@@ -44,21 +43,21 @@ class ListEndpointTests: TMDBTestCase {
 
     func test_addMovie() throws {
         try stubHelper.stubWithLocalFile(Lists.addMovie(listId: "1", mediaId: 1))
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.addMovie(movieId: 1, to: "1", completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.addMovie(movieId: 1, to: "1", completion: $0) }.value)
         XCTAssertEqual(response.statusCode, 12)
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
 
     func test_removeMovie() throws {
         try stubHelper.stubWithLocalFile(Lists.removeMovie(listId: "1", mediaId: 1))
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.removeMovie(movieId: 1, from: "1", completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.removeMovie(movieId: 1, from: "1", completion: $0) }.value)
         XCTAssertEqual(response.statusCode, 12)
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
 
     func test_clearList() throws {
         try stubHelper.stubWithLocalFile(Lists.clearList(listId: "1"))
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.clear(listId: "1", completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.clear(listId: "1", completion: $0) }.value)
         XCTAssertEqual(response.statusCode, 12)
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
@@ -69,7 +68,7 @@ class ListEndpointTests: TMDBTestCase {
                                         "status_code": 12,
                                         "status_message": "The item/record was updated successfully."
                                     ])
-        let response = try XCTUnwrap(try awaitFor { tmdb.lists.delete(listId: "1", completion: $0) }.value)
+        let response = try XCTUnwrap(awaitFor { tmdb.lists.delete(listId: "1", completion: $0) }.value)
         XCTAssertEqual(response.statusCode, 12)
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
