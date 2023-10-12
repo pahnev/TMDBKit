@@ -40,4 +40,36 @@ class TrendingEndpointTests: TMDBTestCase {
 
         XCTAssertNotNil(response)
     }
+
+    func test_httpMethod() {
+        XCTAssertEqual(Trending.trending(mediaType: .all, timeWindow: .day).httpMethod, .GET)
+    }
+
+    func test_httpBody() {
+        XCTAssertNil(Trending.trending(mediaType: .all, timeWindow: .day).httpBody)
+    }
+
+    func test_requestHeaders() {
+        XCTAssertEqual(Trending.trending(mediaType: .all, timeWindow: .day).requestHeaders, [:])
+    }
+
+    func test_urlConstruction() {
+        XCTAssertEqual(Trending.trending(mediaType: .all, timeWindow: .day).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/all/day")
+        XCTAssertEqual(Trending.trending(mediaType: .movie, timeWindow: .day).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/movie/day")
+        XCTAssertEqual(Trending.trending(mediaType: .tv, timeWindow: .day).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/tv/day")
+        XCTAssertEqual(Trending.trending(mediaType: .person, timeWindow: .day).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/person/day")
+
+        XCTAssertEqual(Trending.trending(mediaType: .all, timeWindow: .week).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/all/week")
+        XCTAssertEqual(Trending.trending(mediaType: .movie, timeWindow: .week).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/movie/week")
+        XCTAssertEqual(Trending.trending(mediaType: .tv, timeWindow: .week).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/tv/week")
+        XCTAssertEqual(Trending.trending(mediaType: .person, timeWindow: .week).url.absoluteString,
+                       "https://api.themoviedb.org/3/trending/person/week")
+    }
 }
