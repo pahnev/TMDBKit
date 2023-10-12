@@ -11,6 +11,13 @@ import XCTest
 @testable import TMDBKit
 
 class StubHelper {
+    func stubEndpoint(_ endpoint: Endpoint, with response: [String: Any]) throws {
+        MockURLProtocol.requestHandler = { _ in
+            let data = try JSONSerialization.data(withJSONObject: response, options: [])
+            return (HTTPURLResponse(url: endpoint.url, statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
+        }
+    }
+
     func stubWithLocalFile(_ endpoint: Endpoint) throws {
         print("🗣 STUBBING: \(endpoint.url.path) ")
 
