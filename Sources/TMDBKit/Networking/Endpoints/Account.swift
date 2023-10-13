@@ -36,6 +36,15 @@ struct WatchlistMedia: CodableEquatable {
 
 public enum SortDirection {
     case ascending, descending
+
+    var urlQuery: String {
+        switch self {
+            case .ascending:
+                return "asc"
+            case .descending:
+                return "desc"
+        }
+    }
 }
 
 public enum Sort {

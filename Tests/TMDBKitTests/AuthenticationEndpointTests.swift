@@ -67,4 +67,11 @@ final class AuthenticationEndpointTests: TMDBTestCase {
         XCTAssertEqual(Authentication.deleteSession(sessionId: "an-id").requestHeaders,
                        ["Content-Type": "application/json;charset=utf-8"])
     }
+
+    func test_httpMethod() {
+        XCTAssertEqual(Authentication.requestToken.httpMethod, .GET)
+        XCTAssertEqual(Authentication.createQuestSession.httpMethod, .GET)
+        XCTAssertEqual(Authentication.createSession(requestToken: "a-token").httpMethod, .POST)
+        XCTAssertEqual(Authentication.deleteSession(sessionId: "an-id").httpMethod, .DELETE)
+    }
 }
