@@ -39,10 +39,10 @@ public enum SortDirection {
 
     var urlQuery: String {
         switch self {
-            case .ascending:
-                return "asc"
-            case .descending:
-                return "desc"
+        case .ascending:
+            return "asc"
+        case .descending:
+            return "desc"
         }
     }
 }

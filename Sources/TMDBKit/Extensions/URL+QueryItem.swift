@@ -37,8 +37,8 @@ extension URL {
 
     func appendingSort(_ sort: Sort) -> URL {
         switch sort {
-            case .createdAt(let direction):
-                return appendingQueryItem(URLQueryItem(name: "sort_by", value: "created_at.\(direction.urlQuery)"))
+        case .createdAt(let direction):
+            return appendingQueryItem(URLQueryItem(name: "sort_by", value: "created_at.\(direction.urlQuery)"))
         }
     }
 

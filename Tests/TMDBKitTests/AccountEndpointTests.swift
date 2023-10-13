@@ -150,49 +150,48 @@ class AccountEndpointTests: TMDBTestCase {
     func test_urlConstruction() {
         // Verify URL is correct for each case in all variations
         XCTAssertEqual(Account.details.url, URL(string: "https://api.themoviedb.org/3/account"))
-        
+
         XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists"))
         XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc"))
         XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies"))
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies?sort_by=created_at.asc"))
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.favoriteTVShows(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/tv"))
         XCTAssertEqual(Account.favoriteTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/tv?sort_by=created_at.asc"))
         XCTAssertEqual(Account.favoriteTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/tv?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.favoriteTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/tv?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.ratedMovies(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/movies"))
         XCTAssertEqual(Account.ratedMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/movies?sort_by=created_at.asc"))
         XCTAssertEqual(Account.ratedMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/movies?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.ratedMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/rated/movies?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.ratedTVShows(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv"))
         XCTAssertEqual(Account.ratedTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv?sort_by=created_at.asc"))
         XCTAssertEqual(Account.ratedTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.ratedTVShows(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.ratedTVEpisodes(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv/episodes"))
         XCTAssertEqual(Account.ratedTVEpisodes(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv/episodes?sort_by=created_at.asc"))
         XCTAssertEqual(Account.ratedTVEpisodes(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv/episodes?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.ratedTVEpisodes(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/rated/tv/episodes?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.movieWatchlist(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/movies"))
         XCTAssertEqual(Account.movieWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/movies?sort_by=created_at.asc"))
         XCTAssertEqual(Account.movieWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/movies?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.movieWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/movies?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.tvShowWatchlist(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/tv"))
         XCTAssertEqual(Account.tvShowWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/tv?sort_by=created_at.asc"))
         XCTAssertEqual(Account.tvShowWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/tv?sort_by=created_at.asc&page=2"))
         XCTAssertEqual(Account.tvShowWatchlist(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist/tv?sort_by=created_at.asc&page=2&language=en"))
-        
+
         XCTAssertEqual(Account.markFavorite(accountId: 1, media: .init(mediaType: .movie, mediaId: 1, favorite: true)).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite"))
         XCTAssertEqual(Account.addToWatchlist(accountId: 1, media: .init(mediaType: .movie, mediaId: 1, watchlist: true)).url, URL(string: "https://api.themoviedb.org/3/account/1/watchlist"))
     }
-
 }

@@ -289,7 +289,8 @@ class TVEndpointTests: TMDBTestCase {
         let expectedData = try JSONEncoder().encode(["value": 1])
         XCTAssertEqual(TV.rateShow(tvId: 1, rating: 1).httpBody, expectedData)
     }
-   func test_requestHeaders() {
+
+    func test_requestHeaders() {
         XCTAssertEqual(TV.details(tvId: 1, language: nil, append: nil).requestHeaders, [:])
         XCTAssertEqual(TV.accountStates(tvId: 1, language: nil).requestHeaders, [:])
         XCTAssertEqual(TV.aggregateCredits(tvId: 1, language: nil).requestHeaders, [:])
