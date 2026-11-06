@@ -1,6 +1,6 @@
 # Response contract fixtures
 
-These are complete `responses["200"].content["application/json"].examples.Result.value`
+These are complete `responses["200"].content["application/json"].examples[example name].value`
 objects extracted by operation ID from `docs/api/spec/tmdb-v3.json`, pinned on
 2026-11-06 (SHA-256 `1c709375fe994e58c5a35aba7c9abfa7f28aa7103ed6c2052ea5ab0b62af081b`).
 Only JSON formatting changed. No live API requests or credentials are needed.
@@ -26,3 +26,36 @@ they are not represented as official API examples.
 Recommendation image nullability remains an evidence gap; these string example
 paths do not establish a recommendation-specific nullable-path contract. The
 reserved nullable-images test is not implemented or counted as passing.
+
+Task 7G complete examples (all use `Result` except `movie-details`, which uses `OK`):
+
+| Fixture / operation ID | Example |
+| --- | --- |
+| account-details.json / account-details | Result |
+| account-rated-tv-episodes.json / account-rated-tv-episodes | Result |
+| account-rated-tv.json / account-rated-tv | Result |
+| list-details.json / list-details | Result |
+| movie-credits.json / movie-credits | Result |
+| movie-details.json / movie-details | OK |
+| movie-external-ids.json / movie-external-ids | Result |
+| movie-images.json / movie-images | Result |
+| movie-release-dates.json / movie-release-dates | Result |
+| movie-reviews.json / movie-reviews | Result |
+| movie-translations.json / movie-translations | Result |
+| movie-videos.json / movie-videos | Result |
+| person-external-ids.json / person-external-ids | Result |
+| translations.json / translations | Result |
+| trending-all.json / trending-all | Result |
+| trending-people.json / trending-people | Result |
+| trending-tv.json / trending-tv | Result |
+| tv-series-aggregate-credits.json / tv-series-aggregate-credits | Result |
+| tv-series-content-ratings.json / tv-series-content-ratings | Result |
+| tv-series-credits.json / tv-series-credits | Result |
+| tv-series-details.json / tv-series-details | Result |
+| tv-series-external-ids.json / tv-series-external-ids | Result |
+| tv-series-images.json / tv-series-images | Result |
+| tv-series-latest-id.json / tv-series-latest-id | Result |
+| tv-series-reviews.json / tv-series-reviews | Result |
+| tv-series-similar.json / tv-series-similar | Result |
+| tv-series-translations.json / tv-series-translations | Result |
+| tv-series-videos.json / tv-series-videos | Result |

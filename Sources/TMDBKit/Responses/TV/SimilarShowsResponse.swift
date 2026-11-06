@@ -15,6 +15,8 @@ public struct SimilarShowsResponse: CodableEquatable {
 }
 
 public struct TVShowFragment: CodableEquatable {
+    public let adult: Bool?
+    public let rating: Double?
     public let originalName: String
     public let id: Int
     public let name: String

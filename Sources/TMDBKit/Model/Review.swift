@@ -9,6 +9,7 @@ import Foundation
 
 public struct Review: CodableEquatable {
     public struct AuthorDetails: CodableEquatable {
+        public let username: String?
         public let avatarPath: String?
         public let name: String
         public let rating: Double?

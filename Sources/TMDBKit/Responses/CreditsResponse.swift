@@ -49,10 +49,16 @@ public struct AggregateCast: CodableEquatable {
     public let order: Int
     public let popularity: Double
     public let profilePath: String?
+    public let roles: [Role]?
     public let totalEpisodeCount: Int
 }
 
 public struct AggregateCrew: CodableEquatable {
+    public let adult: Bool?
+    public let knownForDepartment: String?
+    public let originalName: String?
+    public let popularity: Double?
+    public let jobs: [Job]?
     public struct Job: CodableEquatable {
         public let creditId: String
         public let job: String

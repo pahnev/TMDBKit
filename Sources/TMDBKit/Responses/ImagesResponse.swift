@@ -12,11 +12,13 @@ import Foundation
 
 public struct ImagesResponse: CodableEquatable {
     public let id: Int
+    public let logos: [Image]?
     public let backdrops: [Image]
     public let posters: [Image]
 }
 
 public struct AppendedImages: CodableEquatable {
+    public let logos: [Image]?
     public let backdrops: [Image]
     public let posters: [Image]
 }

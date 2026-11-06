@@ -8,6 +8,7 @@
 import Foundation
 
 public struct Cast: CodableEquatable {
+    public let castId: Int?
     public let adult: Bool
     public let character: String
     public let creditId: String

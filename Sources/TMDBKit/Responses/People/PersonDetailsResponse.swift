@@ -103,6 +103,8 @@ public struct PopularPersonResponse: CodableEquatable {
 }
 
 public struct PopularPerson: CodableEquatable {
+    public let originalName: String?
+    public let mediaType: String?
     public let popularity: Double
     public let knownForDepartment: String?
     public let gender: Int

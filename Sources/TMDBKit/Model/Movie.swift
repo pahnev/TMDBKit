@@ -17,6 +17,7 @@ public struct Movie: CodableEquatable {
     public let homepage: String?
     public let id: Int
     public let imdbId: String?
+    public let originCountry: [String]?
     public let originalLanguage: String
     public let originalTitle: String
     public let overview: String

@@ -14,6 +14,11 @@ public struct AccountDetails: CodableEquatable {
             public let hash: String
         }
 
+        public struct TMDBAvatar: CodableEquatable {
+            public let avatarPath: String?
+        }
+
+        public let tmdb: TMDBAvatar?
         public let gravatar: Gravatar
     }
 

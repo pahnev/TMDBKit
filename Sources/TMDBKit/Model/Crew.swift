@@ -8,6 +8,10 @@
 import Foundation
 
 public struct Crew: CodableEquatable {
+    public let adult: Bool?
+    public let knownForDepartment: String?
+    public let originalName: String?
+    public let popularity: Double?
     public let creditId: String
     public let department: String
     public let gender: Int?
