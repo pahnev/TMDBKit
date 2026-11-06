@@ -54,3 +54,16 @@ final class SearchEndpointTests: TMDBTestCase {
         }.value)
     }
 }
+
+extension SearchEndpointTests {
+    func testSearchQueryEncodingRoundTripsSpecialCharacters() throws {
+        stubResponse(["page": 2, "results": [], "total_pages": 7, "total_results": 121]) { request in
+            try RequestExpectation(path: "/3/search/movie", query: ["api_key": "123", "query": "Amélie & C++?/", "page": "2", "language": "fi-FI", "include_adult": "false", "region": "FI", "year": "2001", "primary_release_year": "2001"]).assertRequest(request)
+        }
+        let response = try XCTUnwrap(awaitFor { tmdb.search.searchForMovies("Amélie & C++?/", page: 2, language: "fi-FI", includeAdult: false, region: "FI", year: "2001", primaryReleaseYear: "2001", completion: $0) }.value)
+        XCTAssertEqual(response.page, 2)
+        XCTAssertEqual(response.totalPages, 7)
+        XCTAssertEqual(response.totalResults, 121)
+        XCTAssertEqual(response.results.count, 0)
+    }
+}
