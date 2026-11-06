@@ -44,6 +44,10 @@ public struct TVDetails: CodableEquatable {
     public let reviews: AppendedReviews?
     public let videos: AppendedVideos?
     public let images: AppendedImages?
+    public let credits: AppendedTVCredits?
+    public let similar: SimilarShowsResponse?
+    public let recommendations: RecommendationsResponse?
+    public let translations: AppendedTranslations?
 }
 
 // MARK: - CreatedBy

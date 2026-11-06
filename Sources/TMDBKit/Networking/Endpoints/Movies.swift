@@ -158,18 +158,10 @@ enum Movies: Endpoint {
 
         switch self {
         case .details(let movieId, let append, let lang):
-            let movieDetails = movies
+            return movies
                 .appendingPathComponent("\(movieId)")
-                .appendingLanguage(lang)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return movieDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return movieDetails
+                .appendingDetails(append, language: lang)
+
         case .accountStates(let movieId):
             return movies.appendingPathComponent("\(movieId)/account_states")
         case .alternativeTitles(let movieId, let country):

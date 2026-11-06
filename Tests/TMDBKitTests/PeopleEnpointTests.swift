@@ -9,6 +9,42 @@ import XCTest
 @testable import TMDBKit
 
 class PeopleEndpointTests: TMDBTestCase {
+
+    func testPersonAppendResourcesUseDocumentedNamespaces() throws {
+        try assertGETQuery("/3/person/31", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "append_to_response", value: "combined_credits,movie_credits,tv_credits,images,translations")]) {
+            tmdb.people.details(for: 31, appending: [.credits, .movieCredits, .tvCredits, .combinedCredits, .images(languages: nil), .translations, .credits], completion: $0)
+        }
+    }
+
+    func testAppendUnsupportedPersonResourcesAreOmitted() throws {
+        let unsupported: [DetailsAppendable] = [.reviews(language: "fi"), .videos(language: "en"), .similar, .recommendations]
+        try assertGETQuery("/3/person/31", [URLQueryItem(name: "api_key", value: "123")]) {
+            tmdb.people.details(for: 31, appending: unsupported, completion: $0)
+        }
+    }
+
+    func testPersonAppendImagesAndTranslationsDecode() throws {
+        var object = try contractObject("person-details")
+        object["images"] = try contractObject("person-images", omitID: true)
+        object["translations"] = try contractObject("translations", omitID: true)
+        for resource in ["movie", "tv", "combined"] {
+            object[resource + "_credits"] = try contractObject("person-" + resource + "-credits", omitID: true)
+        }
+        stubResponse(object) { request in
+            XCTAssertEqual(request.url?.path, "/3/person/31")
+            XCTAssertEqual(request.httpMethod, "GET")
+        }
+        let person = try XCTUnwrap(awaitFor { tmdb.people.details(for: 31, appending: [.images(languages: nil), .translations, .movieCredits, .tvCredits, .combinedCredits], completion: $0) }.value)
+        XCTAssertEqual(person.profileImages?.profiles.first?.filePath, "/cckcYc2v0yh1tc9QjRelptcOBko.jpg")
+        XCTAssertEqual(person.personTranslations?.first?.data.name, "Tom Hanks")
+        XCTAssertTrue(person.personTranslations?.first?.data.biography.hasPrefix("Thomas Jeffrey Hanks") == true)
+        XCTAssertNil(person.images)
+        XCTAssertNil(person.translations)
+        XCTAssertEqual(person.movieCredits?.cast.first?.id, 13)
+        XCTAssertEqual(person.tvCredits?.cast.first?.id, 1900)
+        XCTAssertEqual(person.combinedCredits?.cast.first?.mediaType, "movie")
+        XCTAssertEqual(person.credits, person.combinedCredits)
+    }
     private let personId = 1
 
     func testLegacyUndocumentedQueriesAreOmitted() throws {
@@ -223,11 +259,11 @@ class PeopleEndpointTests: TMDBTestCase {
         XCTAssertEqual(People.details(personId: personId, language: "en", append: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1?language=en")
         XCTAssertEqual(People.details(personId: personId, language: nil, append: [.credits]).url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1?append_to_response=credits")
+                       "https://api.themoviedb.org/3/person/1?append_to_response=combined_credits")
         XCTAssertEqual(People.details(personId: personId, language: nil, append: [.recommendations, .credits]).url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1?append_to_response=recommendations,credits")
+                       "https://api.themoviedb.org/3/person/1?append_to_response=combined_credits")
         XCTAssertEqual(People.details(personId: personId, language: "en", append: [.translations, .similar]).url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1?language=en&append_to_response=translations,similar")
+                       "https://api.themoviedb.org/3/person/1?language=en&append_to_response=translations")
 
         XCTAssertEqual(People.changes(personId: personId, pageNumber: 1).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1/changes?page=1")

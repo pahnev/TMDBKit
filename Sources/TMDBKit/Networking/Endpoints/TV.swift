@@ -164,18 +164,10 @@ enum TV: Endpoint {
 
         switch self {
         case .details(let tvId, let language, let append):
-            let tvDetails = tv
+            return tv
                 .appendingPathComponent("\(tvId)")
-                .appendingLanguage(language)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return tvDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return tvDetails
+                .appendingDetails(append, language: language)
+
         case .accountStates(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/account_states")

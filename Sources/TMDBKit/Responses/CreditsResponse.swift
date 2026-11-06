@@ -72,3 +72,9 @@ public struct AggregateCrew: CodableEquatable {
     public let profilePath: String?
     public let totalEpisodeCount: Int
 }
+
+/// TV credits appended to details; no standalone response ID is required.
+public struct AppendedTVCredits: CodableEquatable {
+    public let cast: [TVCast]
+    public let crew: [Crew]
+}

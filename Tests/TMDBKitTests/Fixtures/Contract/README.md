@@ -59,3 +59,21 @@ Task 7G complete examples (all use `Result` except `movie-details`, which uses `
 | tv-series-similar.json / tv-series-similar | Result |
 | tv-series-translations.json / tv-series-translations | Result |
 | tv-series-videos.json / tv-series-videos | Result |
+
+Task 7J adds `person-images.json` from the pinned `person-images` operation's
+`Result` example, unchanged except formatting. Append tests nest complete
+standalone examples under their wire names and remove only standalone root IDs
+for appended containers whose models deliberately omit those IDs. This composition
+is a deterministic nesting test, not a new upstream details example.
+
+Person compatibility accessors `images: AppendedImages?` and
+`translations: AppendedTranslations?` remain available and return nil. Canonical
+`profileImages` and `personTranslations` decode the actual person wire shapes;
+no movie overview/homepage values are fabricated from person biography data.
+
+`DetailsAppendable` adds person-only `.movieCredits`, `.tvCredits`, and
+`.combinedCredits`: external exhaustive switches must handle these new cases.
+This enum migration joins the Media/MediaType migrations documented in Task 7F.
+Existing `.credits` maps to `combined_credits` for person requests. Unsupported
+person reviews/videos/similar/recommendations selections are deprecated and omitted;
+they remain valid movie/TV selections. Language applies once to the whole request.

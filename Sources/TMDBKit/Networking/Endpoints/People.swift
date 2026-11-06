@@ -25,18 +25,10 @@ enum People: Endpoint {
 
         switch self {
         case .details(let personId, let language, let append):
-            let peopleDetails = people
+            return people
                 .appendingPathComponent("\(personId)")
-                .appendingLanguage(language)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return peopleDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return peopleDetails
+                .appendingDetails(append, language: language, person: true)
+
         case .changes(let personId, let pageNumber, let startDate, let endDate):
             let dates = [URLQueryItem(name: "start_date", value: startDate),
                          URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }

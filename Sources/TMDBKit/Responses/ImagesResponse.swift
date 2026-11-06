@@ -22,3 +22,8 @@ public struct AppendedImages: CodableEquatable {
     public let backdrops: [Image]
     public let posters: [Image]
 }
+
+/// Profile images appended to person details; no standalone response ID is required.
+public struct AppendedPersonImages: CodableEquatable {
+    public let profiles: [Image]
+}

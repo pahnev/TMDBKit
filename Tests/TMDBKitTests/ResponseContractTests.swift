@@ -26,6 +26,38 @@ final class ResponseContractTests: XCTestCase {
         for invalid: Any in [true, "false", [:], ["value": "8.5"], NSNull()] { XCTAssertThrowsError(try state(invalid)) }
     }
 
+    func testAppendedPersonAndTVCreditsRoundTripWithoutStandaloneIDs() throws {
+        var person = try XCTUnwrap(fixtureValue("person-details") as? [String: Any])
+        for (wire, operation) in [("images", "person-images"), ("translations", "translations"), ("movie_credits", "person-movie-credits"), ("tv_credits", "person-tv-credits"), ("combined_credits", "person-combined-credits")] {
+            var appended = try XCTUnwrap(fixtureValue(operation) as? [String: Any])
+            appended.removeValue(forKey: "id") // Appended containers intentionally omit standalone-only IDs.
+            person[wire] = appended
+        }
+        let value = try decode(PersonDetailsResponse.self, JSONSerialization.data(withJSONObject: person))
+        XCTAssertEqual(value.profileImages?.profiles.first?.width, 653)
+        XCTAssertEqual(value.personTranslations?.first?.iso6391, "en")
+        XCTAssertEqual(value.movieCredits?.cast.first?.creditId, "52fe420ec3a36847f800074f")
+        XCTAssertEqual(value.tvCredits?.cast.first?.creditId, "52571af019c29571140d5c92")
+        XCTAssertEqual(value.combinedCredits?.cast.first?.genreIds, [35, 18, 10749])
+        try roundTrip(value)
+        let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(value)) as? [String: Any])
+        XCTAssertNotNil(encoded["images"])
+        XCTAssertNotNil(encoded["translations"])
+        XCTAssertNotNil(encoded["combined_credits"])
+        for alias in ["profile_images", "profileImages", "person_translations", "personTranslations", "credits"] { XCTAssertNil(encoded[alias]) }
+        for wire in ["images", "translations", "movie_credits", "tv_credits", "combined_credits"] {
+            var malformed = person
+            malformed[wire] = "wrong"
+            XCTAssertThrowsError(try decode(PersonDetailsResponse.self, JSONSerialization.data(withJSONObject: malformed)))
+        }
+        var credits = try XCTUnwrap(fixtureValue("tv-series-credits") as? [String: Any])
+        credits.removeValue(forKey: "id")
+        let appendedTV = try decode(AppendedTVCredits.self, JSONSerialization.data(withJSONObject: credits))
+        XCTAssertEqual(appendedTV.cast.first?.id, 22970)
+        XCTAssertEqual(appendedTV.crew.first?.id, 1406855)
+        try roundTrip(appendedTV)
+    }
+
     func testMovieChangesAcceptPosterObjectAndMissingOriginalValue() throws {
         let response = try decode(ChangesResponse.self, fixture("changes-movie"))
         XCTAssertEqual(response.changes?.first?.key, "images")

@@ -12,6 +12,30 @@ import XCTest
 
 class MovieEndpointTests: TMDBTestCase {
 
+    func testPersonOnlyCreditsAreOmittedForMovieAndTV() throws {
+        let appends: [DetailsAppendable] = [.movieCredits, .tvCredits, .combinedCredits]
+        let app = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/movie/1", app) { tmdb.movies.details(for: 1, appending: appends, completion: $0) }
+        try assertGETQuery("/3/tv/1", app) { tmdb.tv.details(for: 1, appending: appends, completion: $0) }
+    }
+
+    func testAppendLanguageHasSingleDeterministicValue() throws {
+        let appends: [DetailsAppendable] = [.reviews(language: nil), .videos(language: "fi"), .reviews(language: "es"), .images(languages: ["en", "null"]), .images(languages: ["null", "fi"]), .credits, .credits]
+        for explicit: String? in [nil, "de"] {
+            let common = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: explicit ?? "fi"), URLQueryItem(name: "include_image_language", value: "en,null,fi")]
+            try assertGETQuery("/3/movie/1", common + [URLQueryItem(name: "append_to_response", value: "reviews,videos,images,credits")]) {
+                tmdb.movies.details(for: 1, appending: appends, language: explicit, completion: $0)
+            }
+            try assertGETQuery("/3/tv/1", common + [URLQueryItem(name: "append_to_response", value: "reviews,videos,images,credits")]) {
+                tmdb.tv.details(for: 1, language: explicit, appending: appends, completion: $0)
+            }
+        }
+        // Person rejects the language-bearing movie/TV resources; explicit language remains.
+        try assertGETQuery("/3/person/1", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: "de"), URLQueryItem(name: "include_image_language", value: "en,null,fi"), URLQueryItem(name: "append_to_response", value: "images,combined_credits")]) {
+            tmdb.people.details(for: 1, language: "de", appending: appends, completion: $0)
+        }
+    }
+
     func testGuestAccountStatesAndRatingsUseGuestSessionOnly() throws {
         try checkSession(guest: "guest", expectedKey: "guest_session_id", expectedValue: "guest")
         tmdb = makeTMDB(authenticator: MockAuth(sessionId: nil))

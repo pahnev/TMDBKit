@@ -38,6 +38,15 @@ class TMDBTestCase: XCTestCase {
         }
     }
 
+    /// Complete pinned standalone example, optionally omitting a standalone-only root ID for nesting.
+    func contractObject(_ name: String, omitID: Bool = false) throws -> [String: Any] {
+        let root = URL(fileURLWithPath: #file).deletingLastPathComponent()
+        let data = try Data(contentsOf: root.appendingPathComponent("Fixtures/Contract/\(name).json"))
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        if omitID { object.removeValue(forKey: "id") }
+        return object
+    }
+
     func requestBody(_ request: URLRequest) throws -> Data {
         if let body = request.httpBody { return body }
         let stream = try XCTUnwrap(request.httpBodyStream)

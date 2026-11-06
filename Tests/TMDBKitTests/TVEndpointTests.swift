@@ -11,6 +11,29 @@ import XCTest
 
 class TVEndpointTests: TMDBTestCase {
 
+    func testTVAllSupportedAppendsDecode() throws {
+        var object = try contractObject("tv-series-details")
+        for resource in ["credits", "reviews", "videos", "images", "similar", "translations"] {
+            let omitID = ["credits", "reviews", "videos", "images", "translations"].contains(resource)
+            object[resource] = try contractObject("tv-series-" + resource, omitID: omitID)
+        }
+        object["recommendations"] = try contractObject("tv-recommendations")
+        stubResponse(object) { request in
+            XCTAssertEqual(request.url?.path, "/3/tv/1399")
+            XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(try self.queryItems(in: request).filter { $0.name == "append_to_response" }.first?.value, "images,reviews,videos,credits,similar,recommendations,translations")
+        }
+        let tv = try XCTUnwrap(awaitFor { tmdb.tv.details(for: 1399, appending: DetailsAppendable.allCases, completion: $0) }.value)
+        XCTAssertEqual(tv.credits?.cast.first?.character, "Tyrion Lannister")
+        XCTAssertEqual(tv.credits?.crew.first?.name, "Duncan Muggoch")
+        XCTAssertEqual(tv.similar?.results.first?.id, 197063)
+        XCTAssertEqual(tv.recommendations?.results.first?.id, 1396)
+        XCTAssertEqual(tv.translations?.translations.first?.data.tagline, "الشتاء قادم")
+        XCTAssertEqual(tv.images?.posters.first?.filePath, "/r3pPehX4ik8NLYPpbDRAh0YRtMb.jpg")
+        XCTAssertEqual(tv.reviews?.results.first?.author, "lmao7")
+        XCTAssertEqual(tv.videos?.results.first?.key, "y2ZJ3lTaREY")
+    }
+
     func testGuestAccountStatesAndRatingsUseGuestSessionOnly() throws {
         try checkSession(guest: "guest", expectedKey: "guest_session_id", expectedValue: "guest")
         tmdb = makeTMDB(authenticator: MockAuth(sessionId: nil))
@@ -164,7 +187,7 @@ class TVEndpointTests: TMDBTestCase {
             .images(languages: ["en", "es"]),
             .videos(language: "en")
         ])
-        XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es&language=en")
+        XCTAssertEqual(appendingEverything.url.absoluteString, "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,images,videos&language=en&include_image_language=en,es")
     }
 
     func test_accountStates() throws {
@@ -492,7 +515,7 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertEqual(TV.details(tvId: 1, language: nil, append: [.images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?append_to_response=images"))
         XCTAssertEqual(TV.details(tvId: 1, language: "en", append: [.images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?language=en&append_to_response=images"))
         XCTAssertEqual(TV.details(tvId: 1, language: nil, append: [.reviews(language: "en"), .videos(language: nil), .images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?append_to_response=reviews,videos,images&language=en"))
-        XCTAssertEqual(TV.details(tvId: 1, language: "en", append: [.reviews(language: "en"), .videos(language: nil), .images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?language=en&append_to_response=reviews,videos,images&language=en"))
+        XCTAssertEqual(TV.details(tvId: 1, language: "en", append: [.reviews(language: "en"), .videos(language: nil), .images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?language=en&append_to_response=reviews,videos,images"))
 
         XCTAssertEqual(TV.accountStates(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/account_states"))
         XCTAssertEqual(TV.accountStates(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/account_states"))
