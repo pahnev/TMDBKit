@@ -11,6 +11,26 @@ import XCTest
 @testable import TMDBKit
 
 class AccountEndpointTests: TMDBTestCase {
+
+    func testAccountDetailsExplicitIDUsesDocumentedPath() throws {
+        try assertGETQuery("/3/account/548", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]) {
+            tmdb.account.details(for: 548, completion: $0)
+        }
+        tmdb = makeTMDB(authenticator: MockAuth(sessionId: nil))
+        try assertGETQuery("/3/account/548", [URLQueryItem(name: "api_key", value: "123")]) {
+            tmdb.account.details(for: 548, completion: $0)
+        }
+        XCTAssertEqual(Account.detailsFor(accountId: 0).url.path, "/3/account/0")
+        XCTAssertEqual(Account.detailsFor(accountId: -1).url.path, "/3/account/-1")
+    }
+
+    func testLegacyAccountDefaultsRemainDocumentedCompatibility() throws {
+        // Local non-contract coverage: /account and nil -> 0 are unverified server conventions.
+        let auth = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
+        try assertGETQuery("/3/account", auth) { tmdb.account.details(completion: $0) }
+        try assertGETQuery("/3/account/0/favorite/movies", auth) { tmdb.account.favoriteMoviesFor(pageNumber: nil, completion: $0) }
+        try assertGETQuery("/3/account/548/favorite/movies", auth) { tmdb.account.favoriteMoviesFor(accountId: 548, pageNumber: nil, completion: $0) }
+    }
     func testLegacyUndocumentedQueriesAreOmitted() throws {
         let authenticated = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
         try assertGETQuery("/3/account/1/lists", authenticated + [URLQueryItem(name: "page", value: "2")]) {

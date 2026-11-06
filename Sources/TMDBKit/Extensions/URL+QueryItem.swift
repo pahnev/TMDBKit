@@ -48,6 +48,7 @@ extension URL {
         }
     }
 
+    /// Nil preserves the legacy ID 0 route; the pinned contract does not establish its server meaning.
     func appendingAccountId(_ accountId: Int?) -> URL {
         appendingPathComponent(String(accountId ?? 0))
     }
