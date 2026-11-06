@@ -48,13 +48,20 @@ class MovieEndpointTests: TMDBTestCase {
 
     private func checkSession(guest: String?, expectedKey: String, expectedValue: String) throws {
         let credentials = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: expectedKey, value: expectedValue)]
-        try assertGETQuery("/3/movie/1/account_states", credentials) { tmdb.movies.accountStates(for: 1, guestSessionId: guest, completion: $0) }
+        stubResponse(["id": 1, "favorite": true, "watchlist": false, "rated": ["value": 8.5]]) { request in
+            try RequestExpectation(path: "/3/movie/1/account_states", query: ["api_key": "123", expectedKey: expectedValue]).assertRequest(request)
+        }
+        let state = try XCTUnwrap(awaitFor { tmdb.movies.accountStates(for: 1, guestSessionId: guest, completion: $0) }.value)
+        XCTAssertEqual(state.id, 1)
+        XCTAssertTrue(state.favorite)
+        XCTAssertEqual(state.rated?.value, 8.5)
         for method in ["POST", "DELETE"] {
             var count = 0
             stubResponse(["status_code": 1, "status_message": "ok"]) { request in
                 count += 1
                 XCTAssertEqual(request.httpMethod, method)
                 XCTAssertEqual(request.url?.path, "/3/movie/1/rating")
+                XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
                 let query = try self.queryItems(in: request)
                 XCTAssertEqual(query.count, 2)
                 for item in credentials { XCTAssertEqual(query.filter { $0 == item }.count, 1) }
@@ -63,8 +70,11 @@ class MovieEndpointTests: TMDBTestCase {
                     XCTAssertEqual(object, ["value": 8.5])
                 } else { XCTAssertNil(request.httpBody) }
             }
-            if method == "POST" { _ = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) } }
-            else { _ = try awaitFor { tmdb.movies.deleteRating(of: 1, guestSessionId: guest, completion: $0) } }
+            let response: StatusResponse?
+            if method == "POST" { response = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value }
+            else { response = try awaitFor { tmdb.movies.deleteRating(of: 1, guestSessionId: guest, completion: $0) }.value }
+            XCTAssertEqual(response?.statusCode, 1)
+            XCTAssertEqual(response?.statusMessage, "ok")
             XCTAssertEqual(count, 1)
         }
     }
@@ -129,15 +139,18 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsMovieDetails() throws {
-        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil), expecting: .init(path: "/3/movie/143"))
 
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: nil, completion: $0) }.value
 
         XCTAssertNotNil(movie)
+        XCTAssertEqual(movie?.id, 143)
+        XCTAssertEqual(movie?.title, "All Quiet on the Western Front")
+        XCTAssertEqual(movie?.imdbId, "tt0020629")
     }
 
     func testReturnsMovieDetailsWithAllExtraDetails() throws {
-        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: DetailsAppendable.allCases, language: nil), expecting: .init(path: "/3/movie/143", query: ["api_key": "123", "append_to_response": "images,reviews,videos,credits,similar,recommendations,translations"]))
         let movie = try awaitFor { tmdb.movies.details(for: allQuietMovieId, appending: DetailsAppendable.allCases, completion: $0) }.value
 
         XCTAssertNotNil(movie?.reviews)
@@ -147,93 +160,113 @@ class MovieEndpointTests: TMDBTestCase {
         XCTAssertNotNil(movie?.recommendations)
         XCTAssertNotNil(movie?.similar)
         XCTAssertNotNil(movie?.translations)
+        XCTAssertEqual(movie?.id, 143)
+        XCTAssertEqual(movie?.title, "All Quiet on the Western Front")
+        XCTAssertEqual(movie?.imdbId, "tt0020629")
     }
 
     func testReturnsAccountsStatesForMovie() throws {
-        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/account_states", query: ["api_key": "123", "session_id": "456"]))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.id, 284054)
         XCTAssertNil(result?.rated)
+        XCTAssertEqual(result?.id, 284054)
     }
 
     func testReturnsAccountsStatesForMovieWithRating() throws {
-        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId))
+        try stubHelper.stubWithLocalFile(Movies.accountStates(movieId: allQuietMovieId), expecting: .init(path: "/3/movie/143/account_states", query: ["api_key": "123", "session_id": "456"]))
 
         let result = try awaitFor { tmdb.movies.accountStates(for: allQuietMovieId, completion: $0) }.value
 
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.rated?.value, 3.0)
+        XCTAssertEqual(result?.id, 580489)
     }
 
     func testReturnsAlternativeTitlesForMovie() throws {
-        try stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil))
+        try stubHelper.stubWithLocalFile(Movies.alternativeTitles(movieId: allQuietMovieId, country: nil), expecting: .init(path: "/3/movie/143/alternative_titles"))
 
         let alternatives = try awaitFor { tmdb.movies.alternativeTitles(for: allQuietMovieId, completion: $0) }.value
 
         XCTAssertNotNil(alternatives)
+        XCTAssertEqual(alternatives?.id, 143)
+        XCTAssertEqual(alternatives?.titles.first?.title, "À l'Ouest, rien de nouveau")
     }
 
     func testReturnsChanges() throws {
-        try stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId))
+        try stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId), expecting: .init(path: "/3/movie/143/changes", query: ["api_key": "123", "page": "1"]))
 
         let changes = try awaitFor { tmdb.movies.changes(for: allQuietMovieId, completion: $0) }.value
 
         XCTAssertNotNil(changes)
+        XCTAssertEqual(changes?.changes?.count, 0)
     }
 
     func testReturnsCredits() throws {
-        try stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.credits(movieId: blackPantherMovieId, language: nil), expecting: .init(path: "/3/movie/284054/credits"))
 
         let credits = try awaitFor { tmdb.movies.credits(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(credits)
+        XCTAssertEqual(credits?.id, 284054)
+        XCTAssertEqual(credits?.cast.first?.name, "Chadwick Boseman")
     }
 
     func testReturnsExternalIds() throws {
-        try stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.externalIds(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/external_ids"))
 
         let ids = try awaitFor { tmdb.movies.externalIds(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(ids)
+        XCTAssertEqual(ids?.id, 284054)
+        XCTAssertEqual(ids?.imdbId, "tt1825683")
     }
 
     func testReturnsMovieImages() throws {
-        try stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.images(movieId: blackPantherMovieId, language: nil), expecting: .init(path: "/3/movie/284054/images"))
 
         let images = try awaitFor { tmdb.movies.images(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(images)
+        XCTAssertEqual(images?.id, 284054)
+        XCTAssertEqual(images?.backdrops.first?.filePath, "/6ELJEzQJ3Y45HczvreC3dg0GV5R.jpg")
     }
 
     func testReturnsKeywords() throws {
-        try stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.keywords(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/keywords"))
 
         let words = try awaitFor { tmdb.movies.keywords(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(words)
+        XCTAssertEqual(words?.id, 284054)
+        XCTAssertEqual(words?.keywords.first?.name, "africa")
     }
 
     func testReturnsReleaseDates() throws {
-        try stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.releaseDates(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/release_dates"))
 
         let dates = try awaitFor { tmdb.movies.releaseDates(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(dates)
+        XCTAssertEqual(dates?.id, 284054)
+        XCTAssertEqual(dates?.results.first?.iso31661, "LT")
     }
 
     func testReturnsVideos() throws {
-        try stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.videos(movieId: blackPantherMovieId, language: nil), expecting: .init(path: "/3/movie/284054/videos"))
 
         let videos = try awaitFor { tmdb.movies.videos(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(videos)
+        XCTAssertEqual(videos?.id, 284054)
+        XCTAssertEqual(videos?.results.first?.key, "xjDjIWPwcPU")
     }
 
     func testReturnsWatchProviders() throws {
-        try stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.watchProviders(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/watch/providers"))
 
         let providers = try awaitFor { tmdb.movies.watchProviders(for: blackPantherMovieId, completion: $0) }.value
         XCTAssertNotNil(providers)
@@ -243,22 +276,29 @@ class MovieEndpointTests: TMDBTestCase {
         XCTAssertEqual(finnishProviders?.buy?.count, 8)
         XCTAssertEqual(finnishProviders?.rent?.count, 5)
         XCTAssertEqual(finnishProviders?.flatrate?.count, 1)
+        XCTAssertEqual(providers?.id, 284054)
     }
 
     func testReturnsTranslations() throws {
-        try stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId))
+        try stubHelper.stubWithLocalFile(Movies.translations(movieId: blackPantherMovieId), expecting: .init(path: "/3/movie/284054/translations"))
 
         let translations = try awaitFor { tmdb.movies.translations(for: blackPantherMovieId, completion: $0) }.value
 
         XCTAssertNotNil(translations)
+        XCTAssertEqual(translations?.id, 284054)
+        XCTAssertEqual(translations?.translations.first?.englishName, "Polish")
     }
 
     func testReturnsRecommendations() throws {
-        try stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.recommendations(movieId: blackPantherMovieId, pageNumber: 1, language: nil), expecting: .init(path: "/3/movie/284054/recommendations", query: ["api_key": "123", "page": "1"]))
 
         let movies = try awaitFor { tmdb.movies.recommendations(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(movies)
+        XCTAssertEqual(movies?.page, 1)
+        XCTAssertEqual(movies?.totalPages, 1)
+        XCTAssertEqual(movies?.totalResults, 20)
+        XCTAssertEqual(movies?.results.first?.id, 284053)
     }
 
     func testSimilarMoviesUsesCurrentRoute() {
@@ -270,67 +310,100 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsSimilarMovies() throws {
-        try stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil), expecting: .init(path: "/3/movie/284054/similar", query: ["api_key": "123", "page": "1"]))
 
         let movies = try awaitFor { tmdb.movies.similarMovies(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(movies)
+        XCTAssertEqual(movies?.page, 1)
+        XCTAssertEqual(movies?.totalPages, 63)
+        XCTAssertEqual(movies?.totalResults, 1248)
+        XCTAssertEqual(movies?.results.first?.id, 1924)
     }
 
     func testReturnsReviews() throws {
-        try stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.reviews(movieId: blackPantherMovieId, pageNumber: 1, language: nil), expecting: .init(path: "/3/movie/284054/reviews", query: ["api_key": "123", "page": "1"]))
 
         let reviews = try awaitFor { tmdb.movies.reviews(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(reviews)
+        XCTAssertEqual(reviews?.id, 284054)
+        XCTAssertEqual(reviews?.page, 1)
+        XCTAssertEqual(reviews?.totalPages, 1)
+        XCTAssertEqual(reviews?.totalResults, 16)
+        XCTAssertEqual(reviews?.results.first?.id, "5a844e0fc3a36862e100c22f")
     }
 
     func testReturnsLists() throws {
-        try stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(Movies.lists(movieId: blackPantherMovieId, pageNumber: 1, language: nil), expecting: .init(path: "/3/movie/284054/lists", query: ["api_key": "123", "page": "1"]))
 
         let lists = try awaitFor { tmdb.movies.lists(for: blackPantherMovieId, pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(lists)
+        XCTAssertEqual(lists?.id, 284054)
+        XCTAssertEqual(lists?.page, 1)
+        XCTAssertEqual(lists?.totalPages, 42)
+        XCTAssertEqual(lists?.totalResults, 838)
+        XCTAssertEqual(lists?.results.first?.id, 46580)
     }
 
     func testReturnsNowPlayingMovies() throws {
-        try stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.nowPlaying(pageNumber: 1, language: nil, region: nil), expecting: .init(path: "/3/movie/now_playing", query: ["api_key": "123", "page": "1"]))
 
         let nowPlaying = try awaitFor { tmdb.movies.nowPlaying(pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(nowPlaying)
+        XCTAssertEqual(nowPlaying?.page, 1)
+        XCTAssertEqual(nowPlaying?.totalPages, 52)
+        XCTAssertEqual(nowPlaying?.totalResults, 1040)
+        XCTAssertEqual(nowPlaying?.results.first?.id, 351286)
     }
 
     func testReturnsLatestMovie() throws {
-        try stubHelper.stubWithLocalFile(Movies.latest(language: nil))
+        try stubHelper.stubWithLocalFile(Movies.latest(language: nil), expecting: .init(path: "/3/movie/latest"))
 
         let movie = try awaitFor { tmdb.movies.latest(completion: $0) }.value
 
         XCTAssertNotNil(movie)
+        XCTAssertEqual(movie?.id, 533504)
+        XCTAssertEqual(movie?.title, "Конец старой Березовки")
+        XCTAssertEqual(movie?.imdbId, "tt2921084")
     }
 
     func testReturnsPopularMovies() throws {
-        try stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.popular(pageNumber: 1, language: nil, region: nil), expecting: .init(path: "/3/movie/popular", query: ["api_key": "123", "page": "1"]))
 
         let movies = try awaitFor { tmdb.movies.popular(pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(movies)
+        XCTAssertEqual(movies?.page, 1)
+        XCTAssertEqual(movies?.totalPages, 992)
+        XCTAssertEqual(movies?.totalResults, 19833)
+        XCTAssertEqual(movies?.results.first?.id, 351286)
     }
 
     func testReturnsTopRatedMovies() throws {
-        try stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.topRated(pageNumber: 1, language: nil, region: nil), expecting: .init(path: "/3/movie/top_rated", query: ["api_key": "123", "page": "1"]))
 
         let movies = try awaitFor { tmdb.movies.topRated(pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(movies)
+        XCTAssertEqual(movies?.page, 1)
+        XCTAssertEqual(movies?.totalPages, 378)
+        XCTAssertEqual(movies?.totalResults, 7541)
+        XCTAssertEqual(movies?.results.first?.id, 19404)
     }
 
     func testReturnsUpcomingMovies() throws {
-        try stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1, language: nil, region: nil))
+        try stubHelper.stubWithLocalFile(Movies.upcoming(pageNumber: 1, language: nil, region: nil), expecting: .init(path: "/3/movie/upcoming", query: ["api_key": "123", "page": "1"]))
 
         let nowPlaying = try awaitFor { tmdb.movies.upcoming(pageNumber: 1, completion: $0) }.value
 
         XCTAssertNotNil(nowPlaying)
+        XCTAssertEqual(nowPlaying?.page, 1)
+        XCTAssertEqual(nowPlaying?.totalPages, 12)
+        XCTAssertEqual(nowPlaying?.totalResults, 240)
+        XCTAssertEqual(nowPlaying?.results.first?.id, 351286)
     }
 
     func testEndpointURLsAreConstructedProperly() throws {
@@ -507,5 +580,108 @@ class MovieEndpointTests: TMDBTestCase {
 
     private func assertURL(_ endpoint: Movies, matches expectedValue: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(endpoint.url.absoluteString, expectedValue, file: file, line: line)
+    }
+}
+
+extension MovieEndpointTests {
+    func testAppendQueriesPreserveLanguageAndPage() throws {
+        // Details has no root page argument. Appended review pagination belongs to the response.
+        var object = try contractObject("movie-details")
+        var reviews = try contractObject("movie-reviews", omitID: true)
+        reviews["page"] = 2
+        reviews["total_pages"] = 7
+        reviews["total_results"] = 121
+        object["reviews"] = reviews
+        stubResponse(object) { request in
+            try RequestExpectation(path: "/3/movie/11", query: ["api_key": "123", "language": "fi-FI", "append_to_response": "reviews,videos,images", "include_image_language": "fi,en,null"]).assertRequest(request)
+        }
+        let movie = try XCTUnwrap(awaitFor { tmdb.movies.details(for: 11, appending: [.reviews(language: "fi-FI"), .videos(language: "fi-FI"), .images(languages: ["fi", "en", "null"])], language: "fi-FI", completion: $0) }.value)
+        XCTAssertEqual(movie.id, 11)
+        XCTAssertEqual(movie.reviews?.page, 2)
+        XCTAssertEqual(movie.reviews?.totalPages, 7)
+        XCTAssertEqual(movie.reviews?.totalResults, 121)
+        XCTAssertEqual(movie.reviews?.results.first?.author, "Goddard")
+    }
+}
+
+extension MovieEndpointTests {
+    func testnowPlayingNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/now_playing", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "region", value: "FI")]) {
+            tmdb.movies.nowPlaying(pageNumber: 2, language: "fi-FI", region: "FI", completion: $0)
+        }
+    }
+
+    func testpopularNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/popular", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "region", value: "FI")]) {
+            tmdb.movies.popular(pageNumber: 2, language: "fi-FI", region: "FI", completion: $0)
+        }
+    }
+
+    func testtopRatedNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/top_rated", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "region", value: "FI")]) {
+            tmdb.movies.topRated(pageNumber: 2, language: "fi-FI", region: "FI", completion: $0)
+        }
+    }
+
+    func testupcomingNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/upcoming", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "region", value: "FI")]) {
+            tmdb.movies.upcoming(pageNumber: 2, language: "fi-FI", region: "FI", completion: $0)
+        }
+    }
+
+    func testlistsNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/lists", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.lists(for: 550, pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testrecommendationsNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/recommendations", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.recommendations(for: 550, pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testreviewsNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/reviews", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.reviews(for: 550, pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testsimilarMoviesNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/similar", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.similarMovies(for: 550, pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testAlternativeTitlesNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/alternative_titles", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "country", value: "FI")]) {
+            tmdb.movies.alternativeTitles(for: 550, country: "FI", completion: $0)
+        }
+    }
+
+    func testCreditsNondefaultOptions() throws {
+        try assertGETQuery("/3/movie/550/credits", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.credits(for: 550, language: "fi-FI", completion: $0)
+        }
+    }
+
+}
+
+extension MovieEndpointTests {
+    func testOriginalRatingOverloadsReturnStatus() throws {
+        let rate = tmdb.movies.rateMovie(_:rating:completion:)
+        let delete = tmdb.movies.deleteRating(of:completion:)
+        stubResponse(["status_code": 1, "status_message": "Created."]) { request in
+            try RequestExpectation(path: "/3/movie/1/rating", method: "POST", query: ["api_key": "123", "session_id": "456"], body: ["value": 8.5], contentType: "application/json;charset=utf-8").assertRequest(request)
+        }
+        let rated = try XCTUnwrap(awaitFor { rate(1, 8.5, $0) }.value)
+        XCTAssertEqual(rated.statusCode, 1)
+        XCTAssertEqual(rated.statusMessage, "Created.")
+        stubResponse(["status_code": 13, "status_message": "Deleted."]) { request in
+            try RequestExpectation(path: "/3/movie/1/rating", method: "DELETE", query: ["api_key": "123", "session_id": "456"], contentType: "application/json;charset=utf-8").assertRequest(request)
+        }
+        let deleted = try XCTUnwrap(awaitFor { delete(1, $0) }.value)
+        XCTAssertEqual(deleted.statusCode, 13)
+        XCTAssertEqual(deleted.statusMessage, "Deleted.")
     }
 }
