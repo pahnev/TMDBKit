@@ -11,17 +11,29 @@ import XCTest
 @testable import TMDBKit
 
 class StubHelper {
-    func stubEndpoint(_ endpoint: Endpoint, with response: [String: Any]) throws {
-        MockURLProtocol.requestHandler = { _ in
+    private var expectedRequests = 0
+    private var receivedRequests = 0
+
+    func verifyRequests(file: StaticString = #file, line: UInt = #line) {
+        XCTAssertEqual(receivedRequests, expectedRequests, file: file, line: line)
+    }
+
+    func stubEndpoint(_ endpoint: Endpoint, expecting expected: RequestExpectation? = nil, with response: [String: Any], file: StaticString = #file, line: UInt = #line) throws {
+        expectedRequests += 1
+        MockURLProtocol.requestHandler = { request in
+            self.receivedRequests += 1
+            try expected?.assertRequest(request, file: file, line: line)
             let data = try JSONSerialization.data(withJSONObject: response, options: [])
             return (HTTPURLResponse(url: endpoint.url, statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
         }
     }
 
-    func stubWithLocalFile(_ endpoint: Endpoint) throws {
-        print("🗣 STUBBING: \(endpoint.url.path) ")
+    func stubWithLocalFile(_ endpoint: Endpoint, expecting expected: RequestExpectation? = nil, file: StaticString = #file, line: UInt = #line) throws {
+        expectedRequests += 1
 
-        MockURLProtocol.requestHandler = { _ in
+        MockURLProtocol.requestHandler = { request in
+            self.receivedRequests += 1
+            try expected?.assertRequest(request, file: file, line: line)
             var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
             if let query = endpoint.url.query {
                 if query.contains("append_to_response") {

@@ -11,11 +11,16 @@ import XCTest
 class TMDBTestCase: XCTestCase {
     var stubHelper = StubHelper()
     var tmdb: TMDB!
+    private static let handlerLock = NSRecursiveLock()
 
     override func setUp() {
         super.setUp()
+        Self.handlerLock.lock()
+        MockURLProtocol.requestHandler = nil
+        stubHelper = StubHelper()
 
         let config = URLSessionConfiguration.ephemeral
+        config.urlCache = URLCache(memoryCapacity: 1024 * 1024, diskCapacity: 0, diskPath: nil)
         config.protocolClasses = [MockURLProtocol.self] + (config.protocolClasses ?? [])
         let urlSession = URLSession(configuration: config)
 
@@ -24,9 +29,10 @@ class TMDBTestCase: XCTestCase {
 
     func makeTMDB(authenticator: Authenticator, urlSession: URLSession? = nil) -> TMDB {
         let config = URLSessionConfiguration.ephemeral
+        config.urlCache = URLCache(memoryCapacity: 1024 * 1024, diskCapacity: 0, diskPath: nil)
         config.protocolClasses = [MockURLProtocol.self]
         let session = urlSession ?? URLSession(configuration: config)
-        let client = NetworkClient(authenticator: authenticator, urlSession: session)
+        let client = NetworkClient(authenticator: authenticator, urlSession: session, cache: session.configuration.urlCache!)
         return TMDB(authenticator: authenticator, networkClient: client)
     }
 
@@ -48,18 +54,7 @@ class TMDBTestCase: XCTestCase {
     }
 
     func requestBody(_ request: URLRequest) throws -> Data {
-        if let body = request.httpBody { return body }
-        let stream = try XCTUnwrap(request.httpBodyStream)
-        stream.open()
-        defer { stream.close() }
-        var body = Data()
-        var buffer = [UInt8](repeating: 0, count: 1024)
-        while stream.hasBytesAvailable {
-            let count = stream.read(&buffer, maxLength: buffer.count)
-            guard count > 0 else { break }
-            body.append(contentsOf: buffer.prefix(count))
-        }
-        return body
+        try requestBodyData(request)
     }
 
     func queryItems(in request: URLRequest) throws -> [URLQueryItem] {
@@ -75,29 +70,25 @@ class TMDBTestCase: XCTestCase {
         var requestCount = 0
         stubResponse([:]) { request in
             requestCount += 1
-            XCTAssertEqual(request.url?.path, path, file: file, line: line)
-            XCTAssertEqual(request.httpMethod, "GET", file: file, line: line)
-            XCTAssertNil(request.httpBody, file: file, line: line)
-            XCTAssertNil(request.httpBodyStream, file: file, line: line)
-            let actual = try self.queryItems(in: request)
-            XCTAssertEqual(actual.count, expected.count, file: file, line: line)
-            for item in expected {
-                XCTAssertEqual(actual.filter { $0 == item }.count,
-                               expected.filter { $0 == item }.count, file: file, line: line)
-            }
+            let query = expected.reduce(into: [String: String]()) { $0[$1.name] = $1.value }
+            try RequestExpectation(path: path, query: query).assertRequest(request, file: file, line: line)
         }
         _ = try awaitFor(invoke)
         XCTAssertEqual(requestCount, 1, file: file, line: line)
     }
 
     override func tearDown() {
+        stubHelper.verifyRequests()
+        MockURLProtocol.requestHandler = nil
         tmdb.clearCaches()
+        tmdb = nil
+        Self.handlerLock.unlock()
         super.tearDown()
     }
 }
 
 final class MockURLProtocol: URLProtocol {
-    static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+    static var requestHandler: ((URLRequest) throws -> (URLResponse, Data))?
 
     override class func canInit(with request: URLRequest) -> Bool {
         true
