@@ -63,6 +63,7 @@ public class TMDB {
     /// - Parameter authenticator: The new `Authenticator` to use.
     public func updateAuthenticator(_ authenticator: Authenticator) {
         self.authenticator = authenticator
+        networkClient.updateAuthenticator(authenticator)
     }
 
     /// - Returns: Total byte size of all caches stored on disk by TMDBKit

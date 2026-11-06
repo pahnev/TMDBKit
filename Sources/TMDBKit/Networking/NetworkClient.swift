@@ -20,7 +20,7 @@ enum NetworkResult {
 }
 
 final class NetworkClient {
-    private let authenticator: Authenticator
+    private var authenticator: Authenticator
     private let httpLogger: HTTPLogger
     private let urlSession: URLSession
     private let cache: URLCache
@@ -34,6 +34,10 @@ final class NetworkClient {
 
         cache.diskCapacity = 100 * 1024 * 1024
         cache.memoryCapacity = 100 * 1024 * 1024
+    }
+
+    func updateAuthenticator(_ authenticator: Authenticator) {
+        self.authenticator = authenticator
     }
 
     func cacheDiskStorageSize() -> Int {

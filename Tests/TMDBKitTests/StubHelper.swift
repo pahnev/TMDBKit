@@ -26,8 +26,6 @@ class StubHelper {
             if let query = endpoint.url.query {
                 if query.contains("append_to_response") {
                     fileName.append("?\(query)")
-                } else if query.contains("request_token") {
-                    fileName.append("?\(query)")
                 }
             }
             let file = try XCTUnwrap(self.fixtureCache["v\(fileName).json"])

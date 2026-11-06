@@ -19,10 +19,28 @@ class TMDBTestCase: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self] + (config.protocolClasses ?? [])
         let urlSession = URLSession(configuration: config)
 
-        let auth = MockAuth(sessionId: "456")
-        let networkClient = NetworkClient(authenticator: auth, urlSession: urlSession)
+        tmdb = makeTMDB(authenticator: MockAuth(sessionId: "456"), urlSession: urlSession)
+    }
 
-        tmdb = TMDB(authenticator: auth, networkClient: networkClient)
+    func makeTMDB(authenticator: Authenticator, urlSession: URLSession? = nil) -> TMDB {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = urlSession ?? URLSession(configuration: config)
+        let client = NetworkClient(authenticator: authenticator, urlSession: session)
+        return TMDB(authenticator: authenticator, networkClient: client)
+    }
+
+    func stubResponse(_ response: [String: Any], inspectRequest: @escaping (URLRequest) throws -> Void) {
+        MockURLProtocol.requestHandler = { request in
+            try inspectRequest(request)
+            let data = try JSONSerialization.data(withJSONObject: response)
+            return (HTTPURLResponse(url: try XCTUnwrap(request.url), statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
+        }
+    }
+
+    func queryItems(in request: URLRequest) throws -> [URLQueryItem] {
+        let url = try XCTUnwrap(request.url)
+        return try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)).queryItems ?? []
     }
 
     override func tearDown() {

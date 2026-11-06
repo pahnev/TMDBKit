@@ -63,6 +63,45 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertNotNil(result)
     }
 
+    func testTVAccountStatesSendsConfiguredSession() throws {
+        var requestCount = 0
+        stubResponse(["id": 1399, "favorite": false, "rated": false, "watchlist": true]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.url?.path, "/3/tv/1399/account_states")
+            let items = try self.queryItems(in: request)
+            XCTAssertEqual(items.filter { $0.name == "session_id" }.map { $0.value }, ["456"])
+        }
+        let state = try awaitFor { tmdb.tv.accountStates(for: 1399, completion: $0) }.value
+        XCTAssertEqual(state?.id, 1399)
+        XCTAssertEqual(state?.watchlist, true)
+        XCTAssertEqual(requestCount, 1)
+    }
+
+    func testTVAccountStatesWithoutSessionDoesNotRequest() throws {
+        let service = makeTMDB(authenticator: MockAuth())
+        var requestCount = 0
+        stubResponse(["id": 1399, "favorite": false, "rated": false, "watchlist": false]) { _ in
+            requestCount += 1
+        }
+        var completionCount = 0
+        let result = try awaitFor { completion in
+            service.tv.accountStates(for: 1399) {
+                completionCount += 1
+                completion($0)
+            }
+        }
+        switch result.error {
+        case .sessionIdMissing?: break
+        case .networkError(let error)?:
+            guard case TMDBError.sessionIdMissing = error else {
+                return XCTFail("Expected missing session, got \(error)")
+            }
+        default: XCTFail("Expected missing session, got \(String(describing: result.error))")
+        }
+        XCTAssertEqual(requestCount, 0)
+        XCTAssertEqual(completionCount, 1)
+    }
+
     func test_aggregateCredits() throws {
         try stubHelper.stubWithLocalFile(TV.aggregateCredits(tvId: gameOfThrones, language: nil))
 

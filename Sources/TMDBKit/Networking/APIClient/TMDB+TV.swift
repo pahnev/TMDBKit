@@ -33,9 +33,7 @@ public struct TVEndpoints {
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
     ///   - completion: Result of a `AccountState` or `TMDBError`.
     public func accountStates(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<AccountState>) {
-        tmdb.fetchObject(ofType: AccountState.self,
-                         endpoint: TV.accountStates(tvId: tvId, language: language),
-                         completion: completion)
+        tmdb.authenticatedRequestAndParse(TV.accountStates(tvId: tvId, language: language), completion: completion)
     }
 
     /// Get the aggregate credits (cast and crew) that have been added to a TV show.
