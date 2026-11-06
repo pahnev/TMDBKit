@@ -5,6 +5,7 @@
 //  Created by Kirill Pahnev on 01/12/2019.
 //
 
+import CoreFoundation
 import XCTest
 @testable import TMDBKit
 
@@ -286,8 +287,12 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func test_rateShow_httpBody() throws {
-        let expectedData = try JSONEncoder().encode(["value": 1])
-        XCTAssertEqual(TV.rateShow(tvId: 1, rating: 1).httpBody, expectedData)
+        let body = try XCTUnwrap(TV.rateShow(tvId: 1, rating: 1).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["value"]))
+        let number = try XCTUnwrap(object["value"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
     }
 
     func test_requestHeaders() {

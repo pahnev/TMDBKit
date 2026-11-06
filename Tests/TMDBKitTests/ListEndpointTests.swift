@@ -5,6 +5,7 @@
 //  Created by Kirill Pahnev on 12.10.2023.
 //
 
+import CoreFoundation
 import XCTest
 @testable import TMDBKit
 
@@ -95,21 +96,30 @@ class ListEndpointTests: TMDBTestCase {
 
     func test_createListHTTPBody() throws {
         let list = Lists.List(name: "1", description: "1", language: "en")
-        let data = try JSONEncoder().encode(list)
-        let body = Lists.createList(list: list).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Lists.createList(list: list).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["name", "description", "language"]))
+        XCTAssertEqual(object["name"] as? String, "1")
+        XCTAssertEqual(object["description"] as? String, "1")
+        XCTAssertEqual(object["language"] as? String, "en")
     }
 
     func test_addMovie_HTTPBody() throws {
-        let data = try JSONEncoder().encode(["media_id": 1])
-        let body = Lists.addMovie(listId: "1", mediaId: 1).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Lists.addMovie(listId: "1", mediaId: 1).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["media_id"]))
+        let number = try XCTUnwrap(object["media_id"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
     }
 
     func test_removeMovie_HTTPBody() throws {
-        let data = try JSONEncoder().encode(["media_id": 1])
-        let body = Lists.removeMovie(listId: "1", mediaId: 1).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Lists.removeMovie(listId: "1", mediaId: 1).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["media_id"]))
+        let number = try XCTUnwrap(object["media_id"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
     }
 
     func test_requestHeaders() {

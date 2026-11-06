@@ -6,6 +6,7 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
+import CoreFoundation
 import XCTest
 @testable import TMDBKit
 
@@ -346,9 +347,12 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func test_rateMovie_httpBody() throws {
-        let data = try JSONEncoder().encode(["value": 1])
-        let body = Movies.rateMovie(rating: 1, movieId: 1).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Movies.rateMovie(rating: 1, movieId: 1).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["value"]))
+        let number = try XCTUnwrap(object["value"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
     }
 
     func test_requestHeaders() {

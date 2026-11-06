@@ -50,13 +50,17 @@ final class AuthenticationEndpointTests: TMDBTestCase {
     }
 
     func test_createSession_HTTPBody() throws {
-        let expectedData = try JSONEncoder().encode(["request_token": "a-token"])
-        XCTAssertEqual(Authentication.createSession(requestToken: "a-token").httpBody, expectedData)
+        let body = try XCTUnwrap(Authentication.createSession(requestToken: "a-token").httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["request_token"]))
+        XCTAssertEqual(object["request_token"] as? String, "a-token")
     }
 
     func test_deleteSession_HTTPBody() throws {
-        let expectedData = try JSONEncoder().encode(["session_id": "an-id"])
-        XCTAssertEqual(Authentication.deleteSession(sessionId: "an-id").httpBody, expectedData)
+        let body = try XCTUnwrap(Authentication.deleteSession(sessionId: "an-id").httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["session_id"]))
+        XCTAssertEqual(object["session_id"] as? String, "an-id")
     }
 
     func test_endpointHeaders() {

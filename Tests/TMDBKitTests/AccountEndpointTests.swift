@@ -6,6 +6,7 @@
 //  Copyright © 2018 Pahnev. All rights reserved.
 //
 
+import CoreFoundation
 import XCTest
 @testable import TMDBKit
 
@@ -113,22 +114,30 @@ class AccountEndpointTests: TMDBTestCase {
 
     func test_markFavorite_httpBody() throws {
         let media = FavoriteMedia(mediaType: .movie, mediaId: 1, favorite: true)
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        let data = try encoder.encode(media)
-
-        let body = Account.markFavorite(accountId: nil, media: media).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Account.markFavorite(accountId: nil, media: media).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["media_type", "media_id", "favorite"]))
+        XCTAssertEqual(object["media_type"] as? String, "movie")
+        let number = try XCTUnwrap(object["media_id"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
+        let flag = try XCTUnwrap(object["favorite"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(flag), CFBooleanGetTypeID())
+        XCTAssertEqual(flag.boolValue, true)
     }
 
     func test_addToWatchList_httpBody() throws {
         let media = WatchlistMedia(mediaType: .movie, mediaId: 1, watchlist: true)
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        let data = try encoder.encode(media)
-
-        let body = Account.addToWatchlist(accountId: nil, media: media).httpBody
-        XCTAssertEqual(body, data)
+        let body = try XCTUnwrap(Account.addToWatchlist(accountId: nil, media: media).httpBody)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(Set(object.keys), Set(["media_type", "media_id", "watchlist"]))
+        XCTAssertEqual(object["media_type"] as? String, "movie")
+        let number = try XCTUnwrap(object["media_id"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+        XCTAssertEqual(number.doubleValue, 1)
+        let flag = try XCTUnwrap(object["watchlist"] as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(flag), CFBooleanGetTypeID())
+        XCTAssertEqual(flag.boolValue, true)
     }
 
     func test_requestHeaders() {
