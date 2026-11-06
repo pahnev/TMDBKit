@@ -147,6 +147,14 @@ class MovieEndpointTests: TMDBTestCase {
         XCTAssertNotNil(movies)
     }
 
+    func testSimilarMoviesUsesCurrentRoute() {
+        let url = Movies.similarMovies(movieId: 284054, pageNumber: 2, language: "fi-FI").url
+        XCTAssertEqual(url.path, "/3/movie/284054/similar")
+        let query = URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!
+        XCTAssertTrue(query.contains(URLQueryItem(name: "page", value: "2")))
+        XCTAssertTrue(query.contains(URLQueryItem(name: "language", value: "fi-FI")))
+    }
+
     func testReturnsSimilarMovies() throws {
         try stubHelper.stubWithLocalFile(Movies.similarMovies(movieId: blackPantherMovieId, pageNumber: 1, language: nil))
 
@@ -246,7 +254,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         assertURL(.reviews(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/reviews?page=1&language=fi")
 
-        assertURL(.similarMovies(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/similar_movies?page=1&language=fi")
+        assertURL(.similarMovies(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/similar?page=1&language=fi")
 
         assertURL(.topRated(pageNumber: 1, language: "fi", region: "fi"), matches: "https://api.themoviedb.org/3/movie/top_rated?page=1&language=fi&region=fi")
 

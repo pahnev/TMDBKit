@@ -207,7 +207,7 @@ enum Movies: Endpoint {
                 .appendingLanguage(lang)
         case .similarMovies(let movieId, let page, let lang):
             return movies
-                .appendingPathComponent("\(movieId)/similar_movies")
+                .appendingPathComponent("\(movieId)/similar")
                 .appendingPage(page)
                 .appendingLanguage(lang)
         case .reviews(let movieId, let page, let lang):
