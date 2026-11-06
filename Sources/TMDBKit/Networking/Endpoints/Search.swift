@@ -12,7 +12,7 @@ enum Search: Endpoint {
     case companies(SearchParam)
     case collections(SearchParam)
     case keywords(SearchParam)
-    case movies(SearchParam)
+    case movies(SearchParam, language: String? = nil, includeAdult: Bool? = nil, region: String? = nil, year: String? = nil, primaryReleaseYear: String? = nil)
     case multiSearch(SearchParam)
     case people(SearchParam)
     case tvShows(SearchParam)
@@ -32,10 +32,16 @@ enum Search: Endpoint {
             return search.appendingPathComponent("keyword")
                 .appendingSearchQuery(query)
                 .appendingPage(page)
-        case .movies((let query, let page)):
+        case .movies((let query, let page), let language, let includeAdult, let region, let year, let primaryReleaseYear):
+            let options = [URLQueryItem(name: "language", value: language),
+                           URLQueryItem(name: "include_adult", value: includeAdult.map { String($0) }),
+                           URLQueryItem(name: "region", value: region),
+                           URLQueryItem(name: "year", value: year),
+                           URLQueryItem(name: "primary_release_year", value: primaryReleaseYear)].filter { $0.value != nil }
             return search.appendingPathComponent("movie")
                 .appendingSearchQuery(query)
                 .appendingPage(page)
+                .appendingQueryItems(options)
         case .multiSearch((let query, let page)):
             return search.appendingPathComponent("multi")
                 .appendingSearchQuery(query)
