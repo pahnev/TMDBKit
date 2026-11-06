@@ -197,12 +197,14 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsChanges() throws {
-        try stubHelper.stubWithLocalFile(Movies.changes(movieId: allQuietMovieId), expecting: .init(path: "/3/movie/143/changes", query: ["api_key": "123", "page": "1"]))
+        stubResponse(try contractObject("changes-movie")) { request in
+            try RequestExpectation(path: "/3/movie/143/changes", query: ["api_key": "123", "page": "1"]).assertRequest(request)
+        }
 
         let changes = try awaitFor { tmdb.movies.changes(for: allQuietMovieId, completion: $0) }.value
 
         XCTAssertNotNil(changes)
-        XCTAssertEqual(changes?.changes?.count, 0)
+        XCTAssertEqual(changes?.changes?.first?.key, "images")
     }
 
     func testReturnsCredits() throws {

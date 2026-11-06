@@ -24,35 +24,55 @@ class TrendingEndpointTests: TMDBTestCase {
     }
 
     func testReturnsTrendingMovies() throws {
-        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day))
+        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day), expecting: .init(path: "/3/trending/movie/day"))
 
         let response = try awaitFor { tmdb.trending.trending(.movie, withinLast: .day, completion: $0) }.value
 
         XCTAssertNotNil(response)
+        XCTAssertEqual(response?.page, 1)
+        XCTAssertEqual(response?.totalPages, 1000)
+        XCTAssertEqual(response?.totalResults, 20000)
+        guard case .movie(let movie)? = response?.results.first else { return XCTFail("Expected movie") }
+        XCTAssertEqual(movie.id, 423204)
     }
 
     func testReturnsTrendingTVShows() throws {
-        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .tv, timeWindow: .day))
+        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .tv, timeWindow: .day), expecting: .init(path: "/3/trending/tv/day"))
 
         let response = try awaitFor { tmdb.trending.trending(.tv, withinLast: .day, completion: $0) }.value
 
         XCTAssertNotNil(response)
+        XCTAssertEqual(response?.page, 1)
+        XCTAssertEqual(response?.totalPages, 1000)
+        XCTAssertEqual(response?.totalResults, 20000)
+        guard case .tv(let tv)? = response?.results.first else { return XCTFail("Expected TV") }
+        XCTAssertEqual(tv.id, 82856)
     }
 
     func testReturnsTrendingPeople() throws {
-        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .person, timeWindow: .day))
+        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .person, timeWindow: .day), expecting: .init(path: "/3/trending/person/day"))
 
         let response = try awaitFor { tmdb.trending.trending(.person, withinLast: .day, completion: $0) }.value
 
         XCTAssertNotNil(response)
+        XCTAssertEqual(response?.page, 1)
+        XCTAssertEqual(response?.totalPages, 1000)
+        XCTAssertEqual(response?.totalResults, 20000)
+        guard case .person(let person)? = response?.results.first else { return XCTFail("Expected person") }
+        XCTAssertEqual(person.id, 1277188)
     }
 
     func testReturnsTrendingEverything() throws {
-        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .all, timeWindow: .day))
+        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .all, timeWindow: .day), expecting: .init(path: "/3/trending/all/day"))
 
         let response = try awaitFor { tmdb.trending.trending(.all, withinLast: .day, completion: $0) }.value
 
         XCTAssertNotNil(response)
+        XCTAssertEqual(response?.page, 1)
+        XCTAssertEqual(response?.totalPages, 1000)
+        XCTAssertEqual(response?.totalResults, 20000)
+        guard case .tv(let tv)? = response?.results.first else { return XCTFail("Expected TV") }
+        XCTAssertEqual(tv.id, 82856)
     }
 
     func test_httpMethod() {
@@ -85,5 +105,55 @@ class TrendingEndpointTests: TMDBTestCase {
                        "https://api.themoviedb.org/3/trending/tv/week")
         XCTAssertEqual(Trending.trending(mediaType: .person, timeWindow: .week).url.absoluteString,
                        "https://api.themoviedb.org/3/trending/person/week")
+    }
+}
+
+extension TrendingEndpointTests {
+    func testWeeklyTrendingAllRequestAndResponse() throws {
+        stubResponse(try contractObject("trending-all")) { request in
+            try RequestExpectation(path: "/3/trending/all/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
+        }
+        let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.all, withinLast: .week, language: "fi-FI", completion: $0) }.value)
+        XCTAssertEqual(response.page, 1)
+        XCTAssertEqual(response.totalPages, 1000)
+        XCTAssertEqual(response.totalResults, 20000)
+        guard case .movie(let movie)? = response.results.first else { return XCTFail("Expected movie") }
+        XCTAssertEqual(movie.title, "Scream VI")
+    }
+
+    func testWeeklyTrendingMovieRequestAndResponse() throws {
+        // Reuse a movie response fixture; its selection is independent of the asserted week route.
+        try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day), expecting: .init(path: "/3/trending/movie/week", query: ["api_key": "123", "language": "fi-FI"]))
+        let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.movie, withinLast: .week, language: "fi-FI", completion: $0) }.value)
+        XCTAssertEqual(response.page, 1)
+        XCTAssertEqual(response.totalPages, 1000)
+        XCTAssertEqual(response.totalResults, 20000)
+        guard case .movie(let movie)? = response.results.first else { return XCTFail("Expected movie") }
+        XCTAssertEqual(movie.id, 423204)
+        XCTAssertEqual(movie.title, "Angel Has Fallen")
+    }
+
+    func testWeeklyTrendingTVRequestAndResponse() throws {
+        stubResponse(try contractObject("trending-tv")) { request in
+            try RequestExpectation(path: "/3/trending/tv/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
+        }
+        let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.tv, withinLast: .week, language: "fi-FI", completion: $0) }.value)
+        XCTAssertEqual(response.page, 1)
+        XCTAssertEqual(response.totalPages, 1000)
+        XCTAssertEqual(response.totalResults, 20000)
+        guard case .tv(let tv)? = response.results.first else { return XCTFail("Expected TV") }
+        XCTAssertEqual(tv.name, "Sweet Tooth")
+    }
+
+    func testWeeklyTrendingPeopleRequestAndResponse() throws {
+        stubResponse(try contractObject("trending-people")) { request in
+            try RequestExpectation(path: "/3/trending/person/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
+        }
+        let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.person, withinLast: .week, language: "fi-FI", completion: $0) }.value)
+        XCTAssertEqual(response.page, 1)
+        XCTAssertEqual(response.totalPages, 1000)
+        XCTAssertEqual(response.totalResults, 20000)
+        guard case .person(let person)? = response.results.first else { return XCTFail("Expected person") }
+        XCTAssertEqual(person.name, "Ana de Armas")
     }
 }

@@ -18,22 +18,22 @@ class StubHelper {
         XCTAssertEqual(receivedRequests, expectedRequests, file: file, line: line)
     }
 
-    func stubEndpoint(_ endpoint: Endpoint, expecting expected: RequestExpectation? = nil, with response: [String: Any], file: StaticString = #file, line: UInt = #line) throws {
+    func stubEndpoint(_ endpoint: Endpoint, expecting expected: RequestExpectation, with response: [String: Any], file: StaticString = #file, line: UInt = #line) throws {
         expectedRequests += 1
         MockURLProtocol.requestHandler = { request in
             self.receivedRequests += 1
-            try expected?.assertRequest(request, file: file, line: line)
+            try expected.assertRequest(request, file: file, line: line)
             let data = try JSONSerialization.data(withJSONObject: response, options: [])
             return (HTTPURLResponse(url: endpoint.url, statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
         }
     }
 
-    func stubWithLocalFile(_ endpoint: Endpoint, expecting expected: RequestExpectation? = nil, file: StaticString = #file, line: UInt = #line) throws {
+    func stubWithLocalFile(_ endpoint: Endpoint, expecting expected: RequestExpectation, file: StaticString = #file, line: UInt = #line) throws {
         expectedRequests += 1
 
         MockURLProtocol.requestHandler = { request in
             self.receivedRequests += 1
-            try expected?.assertRequest(request, file: file, line: line)
+            try expected.assertRequest(request, file: file, line: line)
             var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
             if let query = endpoint.url.query {
                 if query.contains("append_to_response") {
