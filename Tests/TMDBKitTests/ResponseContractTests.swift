@@ -87,4 +87,43 @@ final class ResponseContractTests: XCTestCase {
             XCTAssertThrowsError(try decode(TVChange.self, Data(json.utf8)))
         }
     }
+
+    func testProviderRegionsPreserveAEAndUnknownRegion() throws {
+        let response = try decode(WatchProviderResponse.self, fixture("providers-movie"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(response)) as? [String: Any])
+        let results = try XCTUnwrap(object["results"] as? [String: Any])
+        XCTAssertNotNil(results["AE"])
+        XCTAssertEqual(response.results?["AE"]?.flatrate?.first?.providerId, 119)
+        try roundTrip(response)
+        // Synthetic future region and arbitrary key spelling must survive key strategy.
+        let future = try decode(WatchProviderResponse.self, Data(#"{"id":1,"results":{"ZZ":{"free":[{"provider_id":42,"provider_name":"Future","display_priority":3,"logo_path":"/future"}]},"NEW_REGION":{}}}"#.utf8))
+        XCTAssertEqual(future.results?["ZZ"]?.free?.first?.providerId, 42)
+        XCTAssertNotNil(future.results?["NEW_REGION"])
+        try roundTrip(future)
+        // Synthetic malformed provider identity, including an unknown region.
+        XCTAssertThrowsError(try decode(WatchProviderResponse.self, Data(#"{"id":1,"results":{"ZZ":{"free":[{"provider_id":"42","provider_name":"Future","display_priority":3,"logo_path":"/future"}]}}}"#.utf8)))
+    }
+
+    func testProviderFreeAndAdsRoundTrip() throws {
+        for (fixtureName, region, category) in [("providers-movie", "ES", "ads"), ("providers-tv", "US", "free")] {
+            let response = try decode(WatchProviderResponse.self, fixture(fixtureName))
+            let object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(response)) as? [String: Any])
+            let results = try XCTUnwrap(object["results"] as? [String: [String: Any]])
+            XCTAssertNotNil(results[region]?[category])
+            let provider = category == "ads" ? response.results?[region]?.ads?.first : response.results?[region]?.free?.first
+            XCTAssertEqual(provider?.providerId, category == "ads" ? 35 : 384)
+            XCTAssertEqual(provider?.providerName, category == "ads" ? "Rakuten TV" : "HBO Max")
+            XCTAssertEqual(provider?.displayPriority, category == "ads" ? 11 : 7)
+            XCTAssertEqual(provider?.logoPath, category == "ads" ? "/5GEbAhFW2S5T8zVc1MNvz00pIzM.jpg" : "/Ajqyt5aNxNGjmF9uOfxArGrdf3X.jpg")
+            try roundTrip(response)
+        }
+    }
+
+    func testLegacyProviderRegionAccessors() throws {
+        let response = try decode(WatchProviderResponse.self, fixture("providers-movie"))
+        XCTAssertNotNil(response.results?.us)
+        XCTAssertNotNil(response.results?.iN)
+        XCTAssertEqual(response.results?.us, response.results?["US"])
+        XCTAssertEqual(response.results?.iN, response.results?["IN"])
+    }
 }

@@ -10,6 +10,8 @@ Only JSON formatting changed. No live API requests or credentials are needed.
 | changes-movie.json | movie-changes |
 | changes-person.json | person-changes |
 | changes-tv.json | tv-series-changes |
+| providers-movie.json | movie-watch-providers |
+| providers-tv.json | tv-series-watch-providers |
 
 Inline test payloads are explicitly labeled synthetic boundaries or regressions;
 they are not represented as official API examples.
