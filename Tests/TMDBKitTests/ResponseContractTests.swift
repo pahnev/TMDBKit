@@ -156,4 +156,84 @@ final class ResponseContractTests: XCTestCase {
             XCTAssertThrowsError(try decode(RecommendationsResponse.self, JSONSerialization.data(withJSONObject: malformed)))
         }
     }
+
+    func testListItemStatusAcceptsNumericAndLegacyStringID() throws {
+        let response = try decode(ListItemStatus.self, fixture("list-item-status"))
+        XCTAssertEqual(response.id, "1")
+        XCTAssertTrue(response.itemPresent)
+        XCTAssertEqual(response.numericId, 1)
+        try roundTrip(response)
+        let encoded = try decode(ChangeValue.self, JSONEncoder().encode(response))
+        XCTAssertEqual(encoded, .object(["id": .integer(1), "item_present": .bool(true)]))
+        // Synthetic legacy boundaries preserve textual wire IDs exactly.
+        for text in ["legacy-list", "001", "1"] {
+            let object: [String: Any] = ["id": text, "item_present": true]
+            let legacy = try decode(ListItemStatus.self, JSONSerialization.data(withJSONObject: object))
+            XCTAssertEqual(legacy.id, text)
+            XCTAssertEqual(legacy.numericId, Int(text))
+            XCTAssertEqual(try decode(ChangeValue.self, JSONEncoder().encode(legacy)), .object(["id": .string(text), "item_present": .bool(true)]))
+            try roundTrip(legacy)
+        }
+        for invalid in [#"{"item_present":true}"#, #"{"id":true,"item_present":true}"#,
+                        #"{"id":{},"item_present":true}"#, #"{"id":1.5,"item_present":true}"#,
+                        #"{"id":null,"item_present":true}"#] {
+            XCTAssertThrowsError(try decode(ListItemStatus.self, Data(invalid.utf8)))
+        }
+    }
+
+    func testPersonDeathdayIsPreserved() throws {
+        let official = try decode(PersonDetailsResponse.self, fixture("person-details"))
+        XCTAssertEqual(official.id, 31)
+        XCTAssertNil(official.deathday)
+        XCTAssertNil(official.deathDay)
+        try roundTrip(official)
+        // Synthetic non-null key regression: the official living person's example is null.
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture("person-details")) as? [String: Any])
+        object["deathday"] = "2000-01-02"
+        let regression = try decode(PersonDetailsResponse.self, JSONSerialization.data(withJSONObject: object))
+        XCTAssertEqual(regression.deathday, "2000-01-02")
+        XCTAssertEqual(regression.deathDay, regression.deathday)
+        let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(regression)) as? [String: Any])
+        XCTAssertEqual(encoded["deathday"] as? String, "2000-01-02")
+        XCTAssertNil(encoded["death_day"])
+        try roundTrip(regression)
+    }
+
+    func testPersonCreditsPreserveIDsGenresAndOrder() throws {
+        for (name, credit, genres) in [
+            ("person-movie-credits", "52fe420ec3a36847f800074f", [35, 18, 10749]),
+            ("person-tv-credits", "52571af019c29571140d5c92", [10767]),
+            ("person-combined-credits", "52fe420ec3a36847f800074f", [35, 18, 10749])
+        ] {
+            let response = try decode(PersonCreditsResponse.self, fixture(name))
+            XCTAssertEqual(response.id, 31)
+            let cast = try XCTUnwrap(response.cast.first)
+            XCTAssertEqual(cast.creditID, credit)
+            XCTAssertEqual(cast.genreIDS, genres)
+            XCTAssertEqual(cast.creditId, credit)
+            XCTAssertEqual(cast.genreIds, genres)
+            XCTAssertEqual(cast.id, name == "person-tv-credits" ? 1900 : 13)
+            XCTAssertEqual(cast.order, name == "person-tv-credits" ? nil : 0)
+            XCTAssertEqual(cast.mediaType, name == "person-combined-credits" ? "movie" : nil)
+            let crew = try XCTUnwrap(response.crew.first)
+            XCTAssertEqual(crew.creditID, name == "person-tv-credits" ? "525734f3760ee3776a397211" : "5d818a63d34eb3002c4f8fea")
+            XCTAssertEqual(crew.genreIDS, name == "person-tv-credits" ? [35, 9648, 80, 10765] : [99])
+            let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(cast)) as? [String: Any])
+            XCTAssertEqual(encoded["credit_id"] as? String, credit)
+            XCTAssertEqual(encoded["genre_ids"] as? [Int], genres)
+            XCTAssertNil(encoded["creditID"])
+            XCTAssertNil(encoded["genreIDS"])
+            try roundTrip(response)
+            // Synthetic required-ID and malformed optional-value boundaries.
+            for mutation: (inout [String: Any]) -> Void in [
+                { $0.removeValue(forKey: "id") }, { $0["id"] = "13" },
+                { $0["id"] = false }, { $0["credit_id"] = 5 },
+                { $0["genre_ids"] = ["wrong"] }
+            ] {
+                var malformed = encoded
+                mutation(&malformed)
+                XCTAssertThrowsError(try decode(CreditsCast.self, JSONSerialization.data(withJSONObject: malformed)))
+            }
+        }
+    }
 }

@@ -13,6 +13,11 @@ Only JSON formatting changed. No live API requests or credentials are needed.
 | providers-movie.json | movie-watch-providers |
 | providers-tv.json | tv-series-watch-providers |
 | tv-recommendations.json | tv-series-recommendations |
+| list-item-status.json | list-check-item-status |
+| person-details.json | person-details |
+| person-movie-credits.json | person-movie-credits |
+| person-tv-credits.json | person-tv-credits |
+| person-combined-credits.json | person-combined-credits |
 
 Inline test payloads are explicitly labeled synthetic boundaries or regressions;
 they are not represented as official API examples.
