@@ -89,72 +89,92 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPersonDetails() throws {
-        try stubHelper.stubWithLocalFile(People.details(personId: personId, language: nil, append: nil))
+        try stubHelper.stubWithLocalFile(People.details(personId: personId, language: nil, append: nil), expecting: .init(path: "/3/person/1"))
 
         let person = try awaitFor { tmdb.people.details(for: personId, appending: nil, completion: $0) }.value
 
         XCTAssertNotNil(person)
         XCTAssertEqual(person?.name, "George Lucas")
+        XCTAssertEqual(person?.id, 1)
+        XCTAssertEqual(person?.name, "George Lucas")
+        XCTAssertEqual(person?.imdbId, "nm0000184")
     }
 
     func testReturnsPersonChanges() throws {
-        try stubHelper.stubWithLocalFile(People.changes(personId: personId, pageNumber: 1))
+        stubResponse(try contractObject("changes-person")) { request in
+            try RequestExpectation(path: "/3/person/1/changes", query: ["api_key": "123", "page": "1"]).assertRequest(request)
+        }
 
         let changes = try awaitFor { tmdb.people.changes(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(changes)
+        XCTAssertEqual(changes?.changes?.first?.key, "biography")
     }
 
     func testReturnsMovieCredits() throws {
-        try stubHelper.stubWithLocalFile(People.movieCredits(personId: personId, language: nil))
+        try stubHelper.stubWithLocalFile(People.movieCredits(personId: personId, language: nil), expecting: .init(path: "/3/person/1/movie_credits"))
 
         let credits = try awaitFor { tmdb.people.movieCredits(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(credits)
+        XCTAssertEqual(credits?.id, 1)
+        XCTAssertEqual(credits?.cast.first?.character, "Himself")
     }
 
     func testReturnsTVCredits() throws {
-        try stubHelper.stubWithLocalFile(People.tvCredits(personId: personId, language: nil))
+        try stubHelper.stubWithLocalFile(People.tvCredits(personId: personId, language: nil), expecting: .init(path: "/3/person/1/tv_credits"))
 
         let credits = try awaitFor { tmdb.people.tvCredits(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(credits)
+        XCTAssertEqual(credits?.id, 1)
+        XCTAssertEqual(credits?.cast.first?.character, "")
     }
 
     func testReturnsCombinedCredits() throws {
-        try stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId, language: nil))
+        try stubHelper.stubWithLocalFile(People.combinedCredits(personId: personId, language: nil), expecting: .init(path: "/3/person/1/combined_credits"))
 
         let credits = try awaitFor { tmdb.people.combinedCredits(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(credits)
+        XCTAssertEqual(credits?.id, 1)
+        XCTAssertEqual(credits?.cast.first?.character, "Himself")
     }
 
     func testReturnsExternalIds() throws {
-        try stubHelper.stubWithLocalFile(People.externalIds(personId: personId, language: nil))
+        try stubHelper.stubWithLocalFile(People.externalIds(personId: personId, language: nil), expecting: .init(path: "/3/person/1/external_ids"))
 
         let ids = try awaitFor { tmdb.people.externalIds(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(ids)
+        XCTAssertEqual(ids?.id, 1)
+        XCTAssertEqual(ids?.imdbId, "nm0000184")
     }
 
     func testReturnsImages() throws {
-        try stubHelper.stubWithLocalFile(People.images(personId: personId))
+        try stubHelper.stubWithLocalFile(People.images(personId: personId), expecting: .init(path: "/3/person/1/images"))
 
         let images = try awaitFor { tmdb.people.images(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(images)
+        XCTAssertEqual(images?.id, 1)
+        XCTAssertEqual(images?.profiles.first?.filePath, "/d8I8oke7Y5K0vlcz6LVCoFHzkxx.jpg")
     }
 
     func testReturnsTaggedImages() throws {
-        try stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil), expecting: .init(path: "/3/person/1/tagged_images", query: ["api_key": "123", "page": "1"]))
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(images)
+        XCTAssertEqual(images?.id, 19)
+        XCTAssertEqual(images?.page, 1)
+        XCTAssertEqual(images?.totalPages, 1)
+        XCTAssertEqual(images?.totalResults, 10)
     }
 
     func testTaggedImagesResponseParsing() throws {
-        try stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(People.taggedImages(personId: personId, pageNumber: 1, language: nil), expecting: .init(path: "/3/person/1/tagged_images", query: ["api_key": "123", "page": "1"]))
 
         let images = try awaitFor { tmdb.people.taggedImages(for: personId, completion: $0) }.value
 
@@ -185,30 +205,42 @@ class PeopleEndpointTests: TMDBTestCase {
         case .episode:
             XCTFail("Expected TV show, received episode")
         }
+        XCTAssertEqual(images?.id, 19)
+        XCTAssertEqual(images?.page, 1)
+        XCTAssertEqual(images?.totalPages, 1)
+        XCTAssertEqual(images?.totalResults, 10)
     }
 
     func testReturnsTranslations() throws {
-        try stubHelper.stubWithLocalFile(People.translations(personId: personId, language: nil))
+        try stubHelper.stubWithLocalFile(People.translations(personId: personId, language: nil), expecting: .init(path: "/3/person/1/translations"))
 
         let translations = try awaitFor { tmdb.people.translations(for: personId, completion: $0) }.value
 
         XCTAssertNotNil(translations)
+        XCTAssertEqual(translations?.id, 1)
+        XCTAssertEqual(translations?.translations.first?.englishName, "cs")
     }
 
     func testReturnsLatest() throws {
-        try stubHelper.stubWithLocalFile(People.latest(language: nil))
+        try stubHelper.stubWithLocalFile(People.latest(language: nil), expecting: .init(path: "/3/person/latest"))
 
         let person = try awaitFor { tmdb.people.latest(completion: $0) }.value
 
         XCTAssertNotNil(person)
+        XCTAssertEqual(person?.id, 2457919)
+        XCTAssertEqual(person?.name, "Ariadny Collucy")
     }
 
     func testReturnsPopular() throws {
-        try stubHelper.stubWithLocalFile(People.popular(pageNumber: 1, language: nil))
+        try stubHelper.stubWithLocalFile(People.popular(pageNumber: 1, language: nil), expecting: .init(path: "/3/person/popular", query: ["api_key": "123", "page": "1"]))
 
         let person = try awaitFor { tmdb.people.popular(completion: $0) }.value
 
         XCTAssertNotNil(person)
+        XCTAssertEqual(person?.page, 1)
+        XCTAssertEqual(person?.totalPages, 500)
+        XCTAssertEqual(person?.totalResults, 10000)
+        XCTAssertEqual(person?.results.first?.id, 1449329)
     }
 
     func test_httpMethod() {
@@ -317,4 +349,31 @@ class PeopleEndpointTests: TMDBTestCase {
         XCTAssertEqual(People.popular(pageNumber: 1, language: "en").url.absoluteString,
                        "https://api.themoviedb.org/3/person/popular?page=1&language=en")
     }
+}
+
+extension PeopleEndpointTests {
+    func testmovieCreditsNondefaultOptions() throws {
+        try assertGETQuery("/3/person/1/movie_credits", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.people.movieCredits(for: 1, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testtvCreditsNondefaultOptions() throws {
+        try assertGETQuery("/3/person/1/tv_credits", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.people.tvCredits(for: 1, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testcombinedCreditsNondefaultOptions() throws {
+        try assertGETQuery("/3/person/1/combined_credits", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.people.combinedCredits(for: 1, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testPopularNondefaultOptions() throws {
+        try assertGETQuery("/3/person/popular", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.people.popular(pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+    }
+
 }
