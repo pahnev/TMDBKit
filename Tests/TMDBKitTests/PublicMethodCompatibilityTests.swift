@@ -3,6 +3,12 @@ import TMDBKit
 
 final class PublicMethodCompatibilityTests: TMDBTestCase {
     func testOriginalFullMethodNamesRetainTheirFunctionTypes() {
+        let _: (Int, @escaping TMDBResult<AccountState>) -> Void = tmdb.movies.accountStates(for:completion:)
+        let _: (Int, String?, @escaping TMDBResult<AccountState>) -> Void = tmdb.tv.accountStates(for:language:completion:)
+        let _: (Int, Double, @escaping TMDBResult<StatusResponse>) -> Void = tmdb.movies.rateMovie(_:rating:completion:)
+        let _: (Int, Double, @escaping TMDBResult<StatusResponse>) -> Void = tmdb.tv.rateShow(_:rating:completion:)
+        let _: (Int, @escaping TMDBResult<StatusResponse>) -> Void = tmdb.movies.deleteRating(of:completion:)
+        let _: (Int, @escaping TMDBResult<StatusResponse>) -> Void = tmdb.tv.deleteRating(of:completion:)
         let _: (Int, @escaping TMDBResult<ChangesResponse>) -> Void = tmdb.movies.changes(for:completion:)
         let _: (Int, PageNumber, @escaping TMDBResult<TVChangesResponse>) -> Void = tmdb.tv.changes(for:pageNumber:completion:)
         let _: (Int, PageNumber, @escaping TMDBResult<ChangesResponse>) -> Void = tmdb.people.changes(for:pageNumber:completion:)

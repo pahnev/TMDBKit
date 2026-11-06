@@ -19,7 +19,7 @@ public extension TMDB {
         ///   - pageNumber: Page to fetch; nil omits this query and uses the server default.
         ///   - completion: Result of `ListDetails` or `TMDBError`.
         public func details(for listId: String, language: String? = nil, pageNumber: PageNumber? = nil, completion: @escaping TMDBResult<ListDetails>) {
-            tmdb.authenticatedRequestAndParse(Lists.details(listId: listId, language: language, pageNumber: pageNumber), completion: completion)
+            tmdb.requestAndParseWithOptionalSession(Lists.details(listId: listId, language: language, pageNumber: pageNumber), completion: completion)
         }
 
         /// You can use this method to check if a movie has already been added to the list.
@@ -29,7 +29,7 @@ public extension TMDB {
         ///   - language: Language for translated fields; nil uses the server default.
         ///   - completion: Result of `ListItemStatus` or `TMDBError`.
         public func itemStatus(itemId: Int, listId: String, language: String? = nil, completion: @escaping TMDBResult<ListItemStatus>) {
-            tmdb.authenticatedRequestAndParse(Lists.itemStatus(listId: listId, movieId: itemId, language: language), completion: completion)
+            tmdb.requestAndParseWithOptionalSession(Lists.itemStatus(listId: listId, movieId: itemId, language: language), completion: completion)
         }
 
         /// Create a list.

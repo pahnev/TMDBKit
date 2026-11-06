@@ -17,6 +17,15 @@ final class ResponseContractTests: XCTestCase {
         XCTAssertEqual(try decode(T.self, JSONEncoder().encode(value)), value)
     }
 
+    func testAccountStateRejectsMalformedRatedUnion() throws {
+        func state(_ rated: Any) throws -> AccountState {
+            try decode(AccountState.self, JSONSerialization.data(withJSONObject: ["id": 1, "favorite": false, "watchlist": true, "rated": rated]))
+        }
+        XCTAssertNil(try state(false).rated)
+        XCTAssertEqual(try state(["value": 8.5]).rated?.value, 8.5)
+        for invalid: Any in [true, "false", [:], ["value": "8.5"], NSNull()] { XCTAssertThrowsError(try state(invalid)) }
+    }
+
     func testMovieChangesAcceptPosterObjectAndMissingOriginalValue() throws {
         let response = try decode(ChangesResponse.self, fixture("changes-movie"))
         XCTAssertEqual(response.changes?.first?.key, "images")

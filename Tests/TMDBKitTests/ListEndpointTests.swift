@@ -10,6 +10,13 @@ import XCTest
 @testable import TMDBKit
 
 class ListEndpointTests: TMDBTestCase {
+    func testListReadsWorkWithoutUserSession() throws {
+        tmdb = makeTMDB(authenticator: MockAuth(sessionId: nil))
+        let app = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/list/1", app) { tmdb.lists.details(for: "1", completion: $0) }
+        try assertGETQuery("/3/list/1/item_status", app + [URLQueryItem(name: "movie_id", value: "2")]) { tmdb.lists.itemStatus(itemId: 2, listId: "1", completion: $0) }
+    }
+
     func testListReadOptions() throws {
         let authenticated = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
         try assertGETQuery("/3/list/1", authenticated) { tmdb.lists.details(for: "1", completion: $0) }

@@ -31,9 +31,10 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - tvId: The id of the TV show.
     ///   - language: Ignored compatibility argument; this operation does not support a language query.
+    ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
     ///   - completion: Result of a `AccountState` or `TMDBError`.
-    public func accountStates(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<AccountState>) {
-        tmdb.authenticatedRequestAndParse(TV.accountStates(tvId: tvId, language: language), completion: completion)
+    public func accountStates(for tvId: Int, language: String? = nil, guestSessionId: String? = nil, completion: @escaping TMDBResult<AccountState>) {
+        tmdb.authenticatedRequestAndParse(TV.accountStates(tvId: tvId, language: language), guestSessionId: guestSessionId, completion: completion)
     }
 
     /// Get the aggregate credits (cast and crew) that have been added to a TV show.
@@ -317,9 +318,10 @@ public struct TVEndpoints {
     ///   - tvId: The id of the TV show.
     ///   - rating: The rating. The value is expected to be between 0.5 and 10.0.
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
     ///   - completion: Result of a `StatusResponse` or `TMDBError`.
-    public func rateShow(_ tvId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-        tmdb.authenticatedRequestAndParse(TV.rateShow(tvId: tvId, rating: rating), completion: completion)
+    public func rateShow(_ tvId: Int, rating: Double, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+        tmdb.authenticatedRequestAndParse(TV.rateShow(tvId: tvId, rating: rating), guestSessionId: guestSessionId, completion: completion)
     }
 
     // MARK: - Delete
@@ -329,8 +331,9 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
+    ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
     ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-    public func deleteRating(of tvId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-        tmdb.authenticatedRequestAndParse(TV.deleteRating(tvId: tvId), completion: completion)
+    public func deleteRating(of tvId: Int, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+        tmdb.authenticatedRequestAndParse(TV.deleteRating(tvId: tvId), guestSessionId: guestSessionId, completion: completion)
     }
 }

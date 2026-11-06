@@ -23,6 +23,13 @@ public struct AccountState: CodableEquatable {
         id = try container.decode(Int.self, forKey: .id)
         favorite = try container.decode(Bool.self, forKey: .favorite)
         watchlist = try container.decode(Bool.self, forKey: .watchlist)
-        rated = try? container.decode(Rating.self, forKey: .rated)
+        if let flag = try? container.decode(Bool.self, forKey: .rated) {
+            guard !flag else {
+                throw DecodingError.dataCorruptedError(forKey: .rated, in: container, debugDescription: "rated must be false or a numeric rating object")
+            }
+            rated = nil
+        } else {
+            rated = try container.decode(Rating.self, forKey: .rated)
+        }
     }
 }

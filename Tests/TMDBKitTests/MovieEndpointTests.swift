@@ -11,6 +11,39 @@ import XCTest
 @testable import TMDBKit
 
 class MovieEndpointTests: TMDBTestCase {
+
+    func testGuestAccountStatesAndRatingsUseGuestSessionOnly() throws {
+        try checkSession(guest: "guest", expectedKey: "guest_session_id", expectedValue: "guest")
+        tmdb = makeTMDB(authenticator: MockAuth(sessionId: nil))
+        try checkSession(guest: "guest", expectedKey: "guest_session_id", expectedValue: "guest")
+    }
+
+    func testDefaultUserSessionRemainsCompatible() throws {
+        try checkSession(guest: nil, expectedKey: "session_id", expectedValue: "456")
+    }
+
+    private func checkSession(guest: String?, expectedKey: String, expectedValue: String) throws {
+        let credentials = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: expectedKey, value: expectedValue)]
+        try assertGETQuery("/3/movie/1/account_states", credentials) { tmdb.movies.accountStates(for: 1, guestSessionId: guest, completion: $0) }
+        for method in ["POST", "DELETE"] {
+            var count = 0
+            stubResponse(["status_code": 1, "status_message": "ok"]) { request in
+                count += 1
+                XCTAssertEqual(request.httpMethod, method)
+                XCTAssertEqual(request.url?.path, "/3/movie/1/rating")
+                let query = try self.queryItems(in: request)
+                XCTAssertEqual(query.count, 2)
+                for item in credentials { XCTAssertEqual(query.filter { $0 == item }.count, 1) }
+                if method == "POST" {
+                    let object = try XCTUnwrap(JSONSerialization.jsonObject(with: self.requestBody(request)) as? [String: Double])
+                    XCTAssertEqual(object, ["value": 8.5])
+                } else { XCTAssertNil(request.httpBody) }
+            }
+            if method == "POST" { _ = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) } }
+            else { _ = try awaitFor { tmdb.movies.deleteRating(of: 1, guestSessionId: guest, completion: $0) } }
+            XCTAssertEqual(count, 1)
+        }
+    }
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 

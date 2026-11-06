@@ -31,9 +31,10 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of a `AccountState` or `TMDBError`.
-        public func accountStates(for movieId: Int, completion: @escaping TMDBResult<AccountState>) {
-            tmdb.authenticatedRequestAndParse(Movies.accountStates(movieId: movieId), completion: completion)
+        public func accountStates(for movieId: Int, guestSessionId: String? = nil, completion: @escaping TMDBResult<AccountState>) {
+            tmdb.authenticatedRequestAndParse(Movies.accountStates(movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
 
         /// Get all of the alternative titles for a movie. By default returns all title for all countries.
@@ -268,9 +269,10 @@ public extension TMDB {
         /// - Parameters:
         ///   - movieId: The id of the `Movie` to rate.
         ///   - rating: The rating. The value is expected to be between 0.5 and 10.0.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), completion: completion)
+        public func rateMovie(_ movieId: Int, rating: Double, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
 
         // MARK: DELETE
@@ -280,9 +282,10 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
+        public func deleteRating(of movieId: Int, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
     }
 }

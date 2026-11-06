@@ -133,16 +133,29 @@ public class TMDB {
         }
     }
 
-    func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint,
-                                                  sessionId: authenticator.sessionId,
-                                                  additionalHeaders: additionalHeaders) { result in
+    /// Application authentication, retaining an optional configured user session for private reads.
+    func requestAndParseWithOptionalSession<Type: CodableEquatable>(_ endpoint: Endpoint, completion: @escaping TMDBResult<Type>) {
+        networkClient.executeRequest(for: endpoint, sessionQuery: authenticator.sessionId.map(SessionQuery.user)) { result in
+            switch result {
+            case .error(let error): completion(.failure(TMDBError.networkError(error)))
+            case .success(let value): self.parse(ofType: Type.self, value: value, completion: completion)
+            }
+        }
+    }
+
+    func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, guestSessionId: String? = nil, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
+        let handle: (NetworkResult) -> Void = { result in
             switch result {
             case .error(let error):
                 completion(.failure(TMDBError.networkError(error)))
             case .success(let value):
                 self.parse(ofType: Type.self, value: value, completion: completion)
             }
+        }
+        if let guestSessionId = guestSessionId {
+            networkClient.executeAuthenticatedRequest(for: endpoint, sessionQuery: .guest(guestSessionId), additionalHeaders: additionalHeaders, completion: handle)
+        } else {
+            networkClient.executeAuthenticatedRequest(for: endpoint, sessionId: authenticator.sessionId, additionalHeaders: additionalHeaders, completion: handle)
         }
     }
 }

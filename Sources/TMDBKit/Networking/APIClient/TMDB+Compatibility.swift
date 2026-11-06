@@ -65,3 +65,31 @@ public extension TMDB.ListEndpoints {
         itemStatus(itemId: itemId, listId: listId, language: nil, completion: completion)
     }
 }
+
+public extension TMDB.MovieEndpoints {
+    func accountStates(for movieId: Int, completion: @escaping TMDBResult<AccountState>) {
+        accountStates(for: movieId, guestSessionId: nil, completion: completion)
+    }
+
+    func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
+        rateMovie(movieId, rating: rating, guestSessionId: nil, completion: completion)
+    }
+
+    func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
+        deleteRating(of: movieId, guestSessionId: nil, completion: completion)
+    }
+}
+
+public extension TVEndpoints {
+    func accountStates(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<AccountState>) {
+        accountStates(for: tvId, language: language, guestSessionId: nil, completion: completion)
+    }
+
+    func rateShow(_ tvId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
+        rateShow(tvId, rating: rating, guestSessionId: nil, completion: completion)
+    }
+
+    func deleteRating(of tvId: Int, completion: @escaping TMDBResult<StatusResponse>) {
+        deleteRating(of: tvId, guestSessionId: nil, completion: completion)
+    }
+}

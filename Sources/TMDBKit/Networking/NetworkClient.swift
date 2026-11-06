@@ -19,6 +19,19 @@ enum NetworkResult {
     case error(Error)
 }
 
+/// The selected credential is serialized under exactly one session query key.
+enum SessionQuery {
+    case user(String)
+    case guest(String)
+
+    var item: URLQueryItem {
+        switch self {
+        case .user(let value): return URLQueryItem(name: "session_id", value: value)
+        case .guest(let value): return URLQueryItem(name: "guest_session_id", value: value)
+        }
+    }
+}
+
 final class NetworkClient {
     private var authenticator: Authenticator
     private let httpLogger: HTTPLogger
@@ -53,28 +66,32 @@ final class NetworkClient {
             completion(.error(TMDBError.sessionIdMissing))
             return
         }
-        startRequest(authenticatedRequest(endpoint, sessionId: sessionId, additionalHeaders: additionalHeaders),
+        executeAuthenticatedRequest(for: endpoint, sessionQuery: .user(sessionId), additionalHeaders: additionalHeaders, completion: completion)
+    }
+
+    func executeAuthenticatedRequest(for endpoint: Endpoint, sessionQuery: SessionQuery, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+        startRequest(authenticatedRequest(endpoint, sessionQuery: sessionQuery, additionalHeaders: additionalHeaders),
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
     }
 
-    func executeRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
-        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders),
+    func executeRequest(for endpoint: Endpoint, sessionQuery: SessionQuery? = nil, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+        startRequest(authenticatedRequest(endpoint, sessionQuery: sessionQuery, additionalHeaders: additionalHeaders),
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
     }
 }
 
 private extension NetworkClient {
-    func urlFor(_ endpoint: Endpoint, sessionId: String?) -> URL {
+    func urlFor(_ endpoint: Endpoint, sessionQuery: SessionQuery?) -> URL {
         let url = endpoint.url.appendingQueryItem(URLQueryItem(name: "api_key", value: authenticator.apiKey))
-        guard let sessionId = sessionId else { return url }
-        return url.appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+        guard let sessionQuery = sessionQuery else { return url }
+        return url.appendingQueryItem(sessionQuery.item)
     }
 
-    func authenticatedRequest(_ endpoint: Endpoint, sessionId: String? = nil, additionalHeaders: [String: String]) -> URLRequest {
+    func authenticatedRequest(_ endpoint: Endpoint, sessionQuery: SessionQuery? = nil, additionalHeaders: [String: String]) -> URLRequest {
         var request = URLRequest(url: endpoint.url)
-        request.url = urlFor(endpoint, sessionId: sessionId)
+        request.url = urlFor(endpoint, sessionQuery: sessionQuery)
 
         request.httpMethod = endpoint.httpMethod.rawValue
         request.allHTTPHeaderFields = endpoint.requestHeaders
