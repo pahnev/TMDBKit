@@ -405,16 +405,86 @@ final class ResponseContractTests: XCTestCase {
             try roundTrip(value)
             explicit.removeValue(forKey: "media_type")
             let historical = try decode(Media.self, JSONSerialization.data(withJSONObject: explicit))
-            // Only Media's shape inference supplies known wrapper metadata; standalone models
-            // preserve omission. Inferred wrappers are equal and stable through round trips.
-            XCTAssertEqual(historical, value)
+            // Historical movie/TV/person shapes preserve the missing child metadata.
+            // Episodes have no child mediaType field and always encode their discriminator.
+            if type == "tv_episode" { XCTAssertEqual(historical, value) }
             try roundTrip(historical)
             let standaloneData = try JSONSerialization.data(withJSONObject: explicit)
             switch type {
-            case "movie": XCTAssertNil(try decode(MovieFragment.self, standaloneData).mediaType)
-            case "tv": XCTAssertNil(try decode(TVMedia.self, standaloneData).mediaType)
-            case "person": XCTAssertNil(try decode(PopularPerson.self, standaloneData).mediaType)
+            case "movie":
+                let standalone = try decode(MovieFragment.self, standaloneData)
+                XCTAssertNil(standalone.mediaType)
+                XCTAssertEqual(historical, .movie(standalone))
+            case "tv":
+                let standalone = try decode(TVMedia.self, standaloneData)
+                XCTAssertNil(standalone.mediaType)
+                XCTAssertEqual(historical, .tv(standalone))
+            case "person":
+                let standalone = try decode(PopularPerson.self, standaloneData)
+                XCTAssertNil(standalone.mediaType)
+                XCTAssertEqual(historical, .person(standalone))
             default: break
+            }
+        }
+    }
+
+    func testMediaManualConstructionPreservesMissingType() throws {
+        for (op, type, id) in [("trending-all", "movie", 934433), ("trending-tv", "tv", 103768), ("trending-people", "person", 224513)] {
+            // Synthetic omission boundary on each pinned standalone model. Constructing
+            // public enum cases must not invent child metadata during a round trip.
+            var object = try XCTUnwrap(fixtureValue(op, "results.0") as? [String: Any])
+            object.removeValue(forKey: "media_type")
+            let data = try JSONSerialization.data(withJSONObject: object)
+            let wrapped: Media
+            switch type {
+            case "movie":
+                let standalone = try decode(MovieFragment.self, data)
+                XCTAssertEqual(standalone.id, id)
+                XCTAssertNil(standalone.mediaType)
+                wrapped = .movie(standalone)
+            case "tv":
+                let standalone = try decode(TVMedia.self, data)
+                XCTAssertEqual(standalone.id, id)
+                XCTAssertNil(standalone.mediaType)
+                wrapped = .tv(standalone)
+            default:
+                let standalone = try decode(PopularPerson.self, data)
+                XCTAssertEqual(standalone.id, id)
+                XCTAssertNil(standalone.mediaType)
+                wrapped = .person(standalone)
+            }
+            XCTAssertEqual(try decode(Media.self, data), wrapped)
+            try roundTrip(wrapped)
+            // Both supported encoding strategies must preserve exact model equality
+            // and omission of both discriminator spellings.
+            for strategy: JSONEncoder.KeyEncodingStrategy in [.useDefaultKeys, .convertToSnakeCase] {
+                let encoder = JSONEncoder()
+                encoder.keyEncodingStrategy = strategy
+                let encodedData = try encoder.encode(wrapped)
+                let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: encodedData) as? [String: Any])
+                XCTAssertNil(encoded["media_type"])
+                XCTAssertNil(encoded["mediaType"])
+                XCTAssertEqual(try decode(Media.self, encodedData), wrapped)
+            }
+        }
+    }
+
+    func testTaggedImageOptionalMetadataBoundaries() throws {
+        let source = try XCTUnwrap(fixtureValue("person-tagged-images", "results.10") as? [String: Any])
+        for key in ["id", "image_type"] {
+            // Synthetic missing, null and malformed-present optional string boundaries.
+            var boundary = source
+            boundary.removeValue(forKey: key)
+            let missing = try decode(TaggedImageResponse.Result.self, JSONSerialization.data(withJSONObject: boundary))
+            if key == "id" { XCTAssertNil(missing.id) } else { XCTAssertNil(missing.imageType) }
+            try roundTrip(missing)
+            boundary[key] = NSNull()
+            let null = try decode(TaggedImageResponse.Result.self, JSONSerialization.data(withJSONObject: boundary))
+            XCTAssertEqual(null, missing)
+            try roundTrip(null)
+            for wrong: Any in [7, true, [:], []] {
+                boundary[key] = wrong
+                XCTAssertThrowsError(try decode(TaggedImageResponse.Result.self, JSONSerialization.data(withJSONObject: boundary)))
             }
         }
     }

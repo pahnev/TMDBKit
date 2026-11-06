@@ -35,15 +35,14 @@ public extension Media {
             }
             return
         }
-        // Historical shapes gain the discriminator implied by this typed wrapper.
-        // Standalone models still preserve absent mediaType as nil. Normalizing here
-        // makes inferred Media values stable through canonical encode/decode.
+        // Historical shapes preserve absent child metadata. Inferring the enum case
+        // does not supply a remote mediaType value that the payload did not contain.
         if let value = try? container.decode(TVMedia.self) {
-            self = .tv(value.withMediaType("tv"))
+            self = .tv(value)
         } else if let value = try? container.decode(MovieFragment.self) {
-            self = .movie(value.withMediaType("movie"))
+            self = .movie(value)
         } else if let value = try? container.decode(PopularPerson.self) {
-            self = .person(value.withMediaType("person"))
+            self = .person(value)
         } else if let episode = try? container.decode(LastEpisodeToAir.self) {
             self = .episode(episode)
         } else {
@@ -53,17 +52,19 @@ public extension Media {
     }
 
     func encode(to encoder: Encoder) throws {
+        // Preserve omission for historical and manually wrapped standalone models;
+        // injecting a tag would populate their nil metadata on the next decode.
         var discriminator = encoder.container(keyedBy: WireKey.self)
         var container = encoder.singleValueContainer()
         switch self {
         case .tv(let tvMedia):
-            try discriminator.encode("tv", forKey: .mediaType)
+            if tvMedia.mediaType != nil { try discriminator.encode("tv", forKey: .mediaType) }
             try container.encode(tvMedia.withMediaType(nil))
         case .movie(let movieMedia):
-            try discriminator.encode("movie", forKey: .mediaType)
+            if movieMedia.mediaType != nil { try discriminator.encode("movie", forKey: .mediaType) }
             try container.encode(movieMedia.withMediaType(nil))
         case .person(let person):
-            try discriminator.encode("person", forKey: .mediaType)
+            if person.mediaType != nil { try discriminator.encode("person", forKey: .mediaType) }
             try container.encode(person.withMediaType(nil))
         case .episode(let episode):
             try discriminator.encode("tv_episode", forKey: .mediaType)
