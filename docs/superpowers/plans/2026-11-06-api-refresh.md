@@ -266,6 +266,10 @@ These entries are implementation requirements, not completed fixes. Operation ID
 - [ ] **Step 5:** Run both suites and the full suite with coverage; expect every named behavioral assertion to pass without timing sleeps or shared cache interference. Record measured line/function coverage and still-unexercised branches with explanations in `docs/api/test-coverage.md`.
 - [ ] **Step 6:** Commit test groups and any regression-backed fixes separately: `test: cover transport failures and cache lifecycle` / `fix: <demonstrated transport defect>`.
 
+#### Task 9 discovered repairs (recorded before production edits)
+
+- [ ] `NetworkClient.init(authenticator:urlSession:cache:)`: preserve an explicitly injected URLCache's memory/disk capacities. Focused `testInjectedCacheRetainsCallerCapacities` RED reports 104857600 versus requested 1048576 memory / 0 disk. Change the internal cache argument to optional with a nil default; configure the existing shared cache to 100 MB only when no cache is supplied. Existing explicit URLCache calls remain compatible. This removes unintended shared disk storage from deterministic tests. The first cache-wide RED was polluted by the capacity override and sandbox Cache.db failures; repeat it after this repair before drawing further conclusions.
+
 ## Stage 3 — Map missing implementations
 
 ### Task 10: Publish the complete missing-public-API backlog

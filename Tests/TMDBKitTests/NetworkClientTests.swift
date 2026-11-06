@@ -2,6 +2,13 @@ import XCTest
 @testable import TMDBKit
 
 final class NetworkClientTests: TMDBTestCase {
+    func testInjectedCacheRetainsCallerCapacities() {
+        let cache = URLCache(memoryCapacity: 1024 * 1024, diskCapacity: 0, diskPath: nil)
+        _ = NetworkClient(authenticator: MockAuth(), cache: cache)
+        XCTAssertEqual(cache.memoryCapacity, 1024 * 1024)
+        XCTAssertEqual(cache.diskCapacity, 0)
+    }
+
     func testMissingUserSessionRetainsErrorWithoutRequest() {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [MockURLProtocol.self]

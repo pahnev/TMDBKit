@@ -38,15 +38,17 @@ final class NetworkClient {
     private let urlSession: URLSession
     private let cache: URLCache
 
-    init(authenticator: Authenticator, urlSession: URLSession = .shared, cache: URLCache = URLCache.shared) {
+    init(authenticator: Authenticator, urlSession: URLSession = .shared, cache: URLCache? = nil) {
         self.authenticator = authenticator
-        self.cache = cache
+        self.cache = cache ?? URLCache.shared
         self.urlSession = urlSession
 
         httpLogger = HTTPLogger()
 
-        cache.diskCapacity = 100 * 1024 * 1024
-        cache.memoryCapacity = 100 * 1024 * 1024
+        if cache == nil {
+            self.cache.diskCapacity = 100 * 1024 * 1024
+            self.cache.memoryCapacity = 100 * 1024 * 1024
+        }
     }
 
     func updateAuthenticator(_ authenticator: Authenticator) {
