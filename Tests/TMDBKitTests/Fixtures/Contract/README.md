@@ -77,3 +77,9 @@ This enum migration joins the Media/MediaType migrations documented in Task 7F.
 Existing `.credits` maps to `combined_credits` for person requests. Unsupported
 person reviews/videos/similar/recommendations selections are deprecated and omitted;
 they remain valid movie/TV selections. Language applies once to the whole request.
+
+`movie-recommendations-negative-boundary.json` preserves the pinned
+`movie-recommendations` empty `{}` example. It is a **negative boundary fixture**
+and an **upstream schema gap**, not a useful successful response contract. Strict
+pagination/results decoding remains in place; missing schema required lists and
+empty sub-schemas are treated as unknown, never as permission to supply IDs.

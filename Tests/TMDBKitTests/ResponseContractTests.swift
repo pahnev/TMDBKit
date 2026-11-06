@@ -62,6 +62,74 @@ final class ResponseContractTests: XCTestCase {
         try roundTrip(appendedTV)
     }
 
+    func testMovieRecommendationsRejectsMissingPagination() throws {
+        // Negative boundary from the pinned empty example: upstream response completeness
+        // is unknown. This is not evidence that useful recommendations responses are empty.
+        XCTAssertThrowsError(try decode(PopularMoviesResponse.self, fixture("movie-recommendations-negative-boundary")))
+        for json in [#"{"results":[],"total_pages":0,"total_results":0}"#,
+                     #"{"page":1,"total_pages":0,"total_results":0}"#,
+                     #"{"page":1,"results":[],"total_results":0}"#,
+                     #"{"page":1,"results":[],"total_pages":0}"#] {
+            XCTAssertThrowsError(try decode(PopularMoviesResponse.self, Data(json.utf8)))
+        }
+        // Synthetic shape boundary only; no movie-recommendations example is invented.
+        let paginated = try decode(PopularMoviesResponse.self, Data(#"{"page":1,"results":[],"total_pages":0,"total_results":0}"#.utf8))
+        XCTAssertEqual(paginated.page, 1)
+        XCTAssertEqual(paginated.results, [])
+    }
+
+    func testRequiredIDsRemainStrict() throws {
+        // Each row first decodes a complete pinned object, then mutates only identity.
+        // Missing schema required lists never justify defaulting IDs or coercing strings.
+        func row<T: Decodable>(_ type: T.Type, _ operation: String, _ path: String = "", key: String = "id", wrong: Any = "wrong") -> (String, () throws -> Void) {
+            (String(describing: type), {
+                let source = try XCTUnwrap(self.fixtureValue(operation, path) as? [String: Any])
+                _ = try self.decode(type, JSONSerialization.data(withJSONObject: source))
+                var missing = source
+                missing.removeValue(forKey: key)
+                XCTAssertThrowsError(try self.decode(type, JSONSerialization.data(withJSONObject: missing)), "Missing \(type).\(key)")
+                var malformed = source
+                malformed[key] = wrong
+                XCTAssertThrowsError(try self.decode(type, JSONSerialization.data(withJSONObject: malformed)), "Wrong \(type).\(key) type")
+            })
+        }
+        let rows = [
+            row(AccountDetails.self, "account-details"),
+            row(Movie.self, "movie-details"),
+            row(MovieFragment.self, "list-details", "items.0"),
+            row(Cast.self, "movie-credits", "cast.0"),
+            row(Crew.self, "movie-credits", "crew.0"),
+            row(TVCast.self, "tv-series-credits", "cast.0"),
+            row(TVCreditsResponse.self, "tv-series-credits"),
+            row(AggregateCredits.self, "tv-series-aggregate-credits"),
+            row(AggregateCast.self, "tv-series-aggregate-credits", "cast.0"),
+            row(AggregateCrew.self, "tv-series-aggregate-credits", "crew.0"),
+            row(ExternalIds.self, "person-external-ids"),
+            row(ImagesResponse.self, "movie-images"),
+            row(WatchProviderResponse.self, "providers-movie"),
+            row(WatchProvider.self, "providers-movie", "results.ES.ads.0", key: "provider_id"),
+            row(RecommendationsResponse.Result.self, "tv-recommendations", "results.0"),
+            row(PersonDetailsResponse.self, "person-details"),
+            row(PersonCreditsResponse.self, "person-movie-credits"),
+            row(CreditsCast.self, "person-movie-credits", "cast.0"),
+            row(TaggedImageResponse.self, "person-tagged-images"),
+            row(TVDetails.self, "tv-series-details"),
+            row(LastEpisodeToAir.self, "account-rated-tv-episodes", "results.0"),
+            row(Season.self, "tv-series-details", "seasons.0"),
+            row(TVShowFragment.self, "account-rated-tv", "results.0"),
+            row(TVMedia.self, "trending-tv", "results.0"),
+            row(PopularPerson.self, "trending-people", "results.0"),
+            row(Change.Item.self, "changes-movie", "changes.0.items.0", wrong: 7),
+            row(TVChange.Item.self, "changes-tv", "changes.0.items.0", wrong: 7),
+            row(Review.self, "movie-reviews", "results.0", wrong: 7),
+            row(Video.self, "movie-videos", "results.0", wrong: 7)
+        ]
+        for (name, verify) in rows { try XCTContext.runActivity(named: name) { _ in try verify() } }
+        // ListItemStatus intentionally accepts historical string IDs; its separate union
+        // boundary test rejects missing/null/boolean/fractional/object IDs.
+        // Appended containers have no root ID; child identities use the same strict types.
+    }
+
     func testMovieChangesAcceptPosterObjectAndMissingOriginalValue() throws {
         let response = try decode(ChangesResponse.self, fixture("changes-movie"))
         XCTAssertEqual(response.changes?.first?.key, "images")
