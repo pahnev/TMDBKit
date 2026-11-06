@@ -10,6 +10,21 @@ import XCTest
 @testable import TMDBKit
 
 class ListEndpointTests: TMDBTestCase {
+    func testListReadOptions() throws {
+        let authenticated = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
+        try assertGETQuery("/3/list/1", authenticated) { tmdb.lists.details(for: "1", completion: $0) }
+        try assertGETQuery("/3/list/1", authenticated) { tmdb.lists.details(for: "1", pageNumber: nil, completion: $0) }
+        try assertGETQuery("/3/list/1", authenticated + [URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.lists.details(for: "1", language: "fi-FI", pageNumber: 2, completion: $0)
+        }
+        let item = authenticated + [URLQueryItem(name: "movie_id", value: "2")]
+        try assertGETQuery("/3/list/1/item_status", item) { tmdb.lists.itemStatus(itemId: 2, listId: "1", completion: $0) }
+        try assertGETQuery("/3/list/1/item_status", item) { tmdb.lists.itemStatus(itemId: 2, listId: "1", language: nil, completion: $0) }
+        try assertGETQuery("/3/list/1/item_status", item + [URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.lists.itemStatus(itemId: 2, listId: "1", language: "fi-FI", completion: $0)
+        }
+    }
+
     func test_details() throws {
         try stubHelper.stubWithLocalFile(Lists.details(listId: "1", language: nil))
 

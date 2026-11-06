@@ -14,6 +14,32 @@ class MovieEndpointTests: TMDBTestCase {
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 
+    func testMovieVideosOnlyUseDocumentedLanguage() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/movie/1/videos", application) { tmdb.movies.videos(for: 1, completion: $0) }
+        try assertGETQuery("/3/movie/1/videos", application + [URLQueryItem(name: "language", value: "fi-FI")]) {
+            tmdb.movies.videos(for: 1, language: "fi-FI", completion: $0)
+        }
+    }
+
+    func testImageLanguageFallbackQuery() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/movie/1/images", application) { tmdb.movies.images(for: 1, completion: $0) }
+        try assertGETQuery("/3/movie/1/images", application) { tmdb.movies.images(for: 1, includeImageLanguages: nil, completion: $0) }
+        try assertGETQuery("/3/movie/1/images", application + [URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "include_image_language", value: "en,null")]) {
+            tmdb.movies.images(for: 1, language: "fi-FI", includeImageLanguages: ["en", "null"], completion: $0)
+        }
+        try assertGETQuery("/3/movie/1/images", application + [URLQueryItem(name: "include_image_language", value: "")]) {
+            tmdb.movies.images(for: 1, includeImageLanguages: [], completion: $0)
+        }
+    }
+
+    func testLegacyUndocumentedQueriesAreOmitted() throws {
+        try assertGETQuery("/3/movie/latest", [URLQueryItem(name: "api_key", value: "123")]) {
+            tmdb.movies.latest(language: "fi-FI", completion: $0)
+        }
+    }
+
     func testChangesForwardsDateRangeAndPage() throws {
         var requestCount = 0
         stubResponse(["changes": []]) { request in
@@ -269,7 +295,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         assertURL(.keywords(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/keywords")
 
-        assertURL(.latest(language: "fi"), matches: "https://api.themoviedb.org/3/movie/latest?language=fi")
+        assertURL(.latest(language: "fi"), matches: "https://api.themoviedb.org/3/movie/latest")
 
         assertURL(.lists(movieId: 1, pageNumber: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/lists?page=1&language=fi")
 

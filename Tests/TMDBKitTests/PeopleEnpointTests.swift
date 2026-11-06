@@ -11,6 +11,16 @@ import XCTest
 class PeopleEndpointTests: TMDBTestCase {
     private let personId = 1
 
+    func testLegacyUndocumentedQueriesAreOmitted() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/person/1/external_ids", application) { tmdb.people.externalIds(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/person/1/tagged_images", application + [URLQueryItem(name: "page", value: "2")]) {
+            tmdb.people.taggedImages(for: 1, pageNumber: 2, language: "fi-FI", completion: $0)
+        }
+        try assertGETQuery("/3/person/1/translations", application) { tmdb.people.translations(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/person/latest", application) { tmdb.people.latest(in: "fi-FI", completion: $0) }
+    }
+
     func testChangesForwardsDateRangeAndPage() throws {
         var requestCount = 0
         stubResponse(["changes": []]) { request in
@@ -240,7 +250,7 @@ class PeopleEndpointTests: TMDBTestCase {
         XCTAssertEqual(People.externalIds(personId: personId, language: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1/external_ids")
         XCTAssertEqual(People.externalIds(personId: personId, language: "en").url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1/external_ids?language=en")
+                       "https://api.themoviedb.org/3/person/1/external_ids")
 
         XCTAssertEqual(People.images(personId: personId).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1/images")
@@ -250,17 +260,17 @@ class PeopleEndpointTests: TMDBTestCase {
         XCTAssertEqual(People.taggedImages(personId: personId, pageNumber: 2, language: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1/tagged_images?page=2")
         XCTAssertEqual(People.taggedImages(personId: personId, pageNumber: 1, language: "en").url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1/tagged_images?page=1&language=en")
+                       "https://api.themoviedb.org/3/person/1/tagged_images?page=1")
 
         XCTAssertEqual(People.translations(personId: personId, language: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/1/translations")
         XCTAssertEqual(People.translations(personId: personId, language: "en").url.absoluteString,
-                       "https://api.themoviedb.org/3/person/1/translations?language=en")
+                       "https://api.themoviedb.org/3/person/1/translations")
 
         XCTAssertEqual(People.latest(language: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/latest")
         XCTAssertEqual(People.latest(language: "en").url.absoluteString,
-                       "https://api.themoviedb.org/3/person/latest?language=en")
+                       "https://api.themoviedb.org/3/person/latest")
 
         XCTAssertEqual(People.popular(pageNumber: 1, language: nil).url.absoluteString,
                        "https://api.themoviedb.org/3/person/popular?page=1")

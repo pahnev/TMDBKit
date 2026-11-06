@@ -16,12 +16,13 @@ public enum TimeWindow: String {
 }
 
 enum Trending: Endpoint {
-    case trending(mediaType: MediaType, timeWindow: TimeWindow)
+    case trending(mediaType: MediaType, timeWindow: TimeWindow, language: String? = nil)
 
     var url: URL {
         switch self {
-        case .trending(let mediaType, let timeWindow):
+        case .trending(let mediaType, let timeWindow, let language):
             return baseURL.appendingPathComponent("trending/\(mediaType.rawValue)/\(timeWindow.rawValue)")
+                .appendingLanguage(language)
         }
     }
 }

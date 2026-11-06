@@ -56,25 +56,21 @@ enum People: Endpoint {
             return people
                 .appendingPathComponent("\(personId)/combined_credits")
                 .appendingLanguage(language)
-        case .externalIds(let personId, let language):
+        case .externalIds(let personId, _):
             return people
                 .appendingPathComponent("\(personId)/external_ids")
-                .appendingLanguage(language)
         case .images(let personId):
             return people.appendingPathComponent("\(personId)/images")
-        case .taggedImages(let personId, let pageNumber, let language):
+        case .taggedImages(let personId, let pageNumber, _):
             return people
                 .appendingPathComponent("\(personId)/tagged_images")
                 .appendingPage(pageNumber)
-                .appendingLanguage(language)
-        case .translations(let personId, let language):
+        case .translations(let personId, _):
             return people
                 .appendingPathComponent("\(personId)/translations")
-                .appendingLanguage(language)
-        case .latest(let language):
+        case .latest(_):
             return people
                 .appendingPathComponent("latest")
-                .appendingLanguage(language)
         case .popular(let pageNumber, let language):
             return people
                 .appendingPathComponent("popular")

@@ -12,6 +12,54 @@ import XCTest
 class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
 
+    func testTVVideoLanguageFallbackQuery() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/tv/1/videos", application) { tmdb.tv.videos(for: 1, completion: $0) }
+        try assertGETQuery("/3/tv/1/videos", application) { tmdb.tv.videos(for: 1, includeVideoLanguages: nil, completion: $0) }
+        try assertGETQuery("/3/tv/1/videos", application + [URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "include_video_language", value: "fi,en")]) {
+            tmdb.tv.videos(for: 1, language: "fi-FI", includeVideoLanguages: ["fi", "en"], completion: $0)
+        }
+    }
+
+    func testTVListTimezoneQuery() throws {
+        let paged = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "page", value: "2")]
+        let options = [URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "timezone", value: "Europe/Helsinki")]
+        try assertGETQuery("/3/tv/airing_today", paged) { tmdb.tv.airingToday(pageNumber: 2, completion: $0) }
+        try assertGETQuery("/3/tv/airing_today", paged) { tmdb.tv.airingToday(pageNumber: 2, timezone: nil, completion: $0) }
+        try assertGETQuery("/3/tv/airing_today", paged + options) {
+            tmdb.tv.airingToday(pageNumber: 2, language: "fi-FI", timezone: "Europe/Helsinki", completion: $0)
+        }
+        try assertGETQuery("/3/tv/on_the_air", paged) { tmdb.tv.onTheAir(pageNumber: 2, completion: $0) }
+        try assertGETQuery("/3/tv/on_the_air", paged) { tmdb.tv.onTheAir(pageNumber: 2, timezone: nil, completion: $0) }
+        try assertGETQuery("/3/tv/on_the_air", paged + options) {
+            tmdb.tv.onTheAir(pageNumber: 2, language: "fi-FI", timezone: "Europe/Helsinki", completion: $0)
+        }
+    }
+
+    func testImageLanguageFallbackQuery() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/tv/1/images", application) { tmdb.tv.images(for: 1, completion: $0) }
+        try assertGETQuery("/3/tv/1/images", application) { tmdb.tv.images(for: 1, includeImageLanguages: nil, completion: $0) }
+        try assertGETQuery("/3/tv/1/images", application + [URLQueryItem(name: "language", value: "fi-FI"), URLQueryItem(name: "include_image_language", value: "en,null")]) {
+            tmdb.tv.images(for: 1, language: "fi-FI", includeImageLanguages: ["en", "null"], completion: $0)
+        }
+        try assertGETQuery("/3/tv/1/images", application + [URLQueryItem(name: "include_image_language", value: "")]) {
+            tmdb.tv.images(for: 1, includeImageLanguages: [], completion: $0)
+        }
+    }
+
+    func testLegacyUndocumentedQueriesAreOmitted() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        try assertGETQuery("/3/tv/1/account_states", application + [URLQueryItem(name: "session_id", value: "456")]) {
+            tmdb.tv.accountStates(for: 1, language: "fi-FI", completion: $0)
+        }
+        try assertGETQuery("/3/tv/1/alternative_titles", application) { tmdb.tv.alternativeTitles(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/tv/1/content_ratings", application) { tmdb.tv.contentRatings(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/tv/1/episode_groups", application) { tmdb.tv.episodeGroups(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/tv/1/external_ids", application) { tmdb.tv.externalIds(for: 1, language: "fi-FI", completion: $0) }
+        try assertGETQuery("/3/tv/latest", application) { tmdb.tv.latest(in: "fi-FI", completion: $0) }
+    }
+
     func testChangesForwardsDateRangeAndPage() throws {
         var requestCount = 0
         stubResponse(["changes": []]) { request in
@@ -414,28 +462,28 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertEqual(TV.details(tvId: 1, language: "en", append: [.reviews(language: "en"), .videos(language: nil), .images(languages: nil)]).url, URL(string: "https://api.themoviedb.org/3/tv/1?language=en&append_to_response=reviews,videos,images&language=en"))
 
         XCTAssertEqual(TV.accountStates(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/account_states"))
-        XCTAssertEqual(TV.accountStates(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/account_states?language=en"))
+        XCTAssertEqual(TV.accountStates(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/account_states"))
 
         XCTAssertEqual(TV.aggregateCredits(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/aggregate_credits"))
         XCTAssertEqual(TV.aggregateCredits(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/aggregate_credits?language=en"))
 
         XCTAssertEqual(TV.alternativeTitles(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/alternative_titles"))
-        XCTAssertEqual(TV.alternativeTitles(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/alternative_titles?language=en"))
+        XCTAssertEqual(TV.alternativeTitles(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/alternative_titles"))
 
         XCTAssertEqual(TV.changes(tvId: 1, pageNumber: 1).url, URL(string: "https://api.themoviedb.org/3/tv/1/changes?page=1"))
         XCTAssertEqual(TV.changes(tvId: 1, pageNumber: 1).url, URL(string: "https://api.themoviedb.org/3/tv/1/changes?page=1"))
 
         XCTAssertEqual(TV.contentRatings(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/content_ratings"))
-        XCTAssertEqual(TV.contentRatings(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/content_ratings?language=en"))
+        XCTAssertEqual(TV.contentRatings(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/content_ratings"))
 
         XCTAssertEqual(TV.credits(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/credits"))
         XCTAssertEqual(TV.credits(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/credits?language=en"))
 
         XCTAssertEqual(TV.episodeGroups(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/episode_groups"))
-        XCTAssertEqual(TV.episodeGroups(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/episode_groups?language=en"))
+        XCTAssertEqual(TV.episodeGroups(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/episode_groups"))
 
         XCTAssertEqual(TV.externalIds(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/external_ids"))
-        XCTAssertEqual(TV.externalIds(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/external_ids?language=en"))
+        XCTAssertEqual(TV.externalIds(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/external_ids"))
 
         XCTAssertEqual(TV.images(tvId: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/1/images"))
         XCTAssertEqual(TV.images(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/images?language=en"))
@@ -459,7 +507,7 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertEqual(TV.videos(tvId: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/1/videos?language=en"))
 
         XCTAssertEqual(TV.latest(language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/latest"))
-        XCTAssertEqual(TV.latest(language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/latest?language=en"))
+        XCTAssertEqual(TV.latest(language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/latest"))
 
         XCTAssertEqual(TV.airingToday(pageNumber: 1, language: nil).url, URL(string: "https://api.themoviedb.org/3/tv/airing_today?page=1"))
         XCTAssertEqual(TV.airingToday(pageNumber: 1, language: "en").url, URL(string: "https://api.themoviedb.org/3/tv/airing_today?page=1&language=en"))

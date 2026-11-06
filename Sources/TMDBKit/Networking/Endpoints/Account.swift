@@ -134,12 +134,11 @@ enum Account: Endpoint {
         switch self {
         case .details:
             return account
-        case .createdLists(let accountId, let pagination, let language):
+        case .createdLists(let accountId, let pagination, _):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("lists")
-                .appendingSortedPagination(pagination)
-                .appendingLanguage(language)
+                .appendingQueryItem(named: "page", value: pagination.page.map { String($0) })
         case .favoriteMovies(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)

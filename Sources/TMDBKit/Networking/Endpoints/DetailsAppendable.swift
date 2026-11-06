@@ -4,7 +4,7 @@ import Foundation
 ///
 /// - videos: The language code in ISO-639-1 format, for specifying in which language the videos should be.
 /// - images: For specifying in which language the images should be, add the language codes in ISO 639-1 format.
-///           Defaults to [en,null], which will return all images that match English and those that haven't been set yet (null)
+///           Use ["en", "null"] for English and untagged images. Nil omits the image-language query.
 public enum DetailsAppendable {
     case reviews(language: String?)
     case videos(language: String?)

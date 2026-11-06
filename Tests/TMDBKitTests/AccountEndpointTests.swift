@@ -11,6 +11,16 @@ import XCTest
 @testable import TMDBKit
 
 class AccountEndpointTests: TMDBTestCase {
+    func testLegacyUndocumentedQueriesAreOmitted() throws {
+        let authenticated = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
+        try assertGETQuery("/3/account/1/lists", authenticated + [URLQueryItem(name: "page", value: "2")]) {
+            tmdb.account.createdListsFor(accountId: 1, pageNumber: 2, language: "fi-FI", sortBy: .createdAt(.ascending), completion: $0)
+        }
+        try assertGETQuery("/3/account/1/lists", authenticated) {
+            tmdb.account.createdListsFor(accountId: 1, pageNumber: nil, completion: $0)
+        }
+    }
+
     func testDetailsRequest() throws {
         try stubHelper.stubWithLocalFile(Account.details)
 
@@ -161,9 +171,9 @@ class AccountEndpointTests: TMDBTestCase {
         XCTAssertEqual(Account.details.url, URL(string: "https://api.themoviedb.org/3/account"))
 
         XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists"))
-        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc"))
-        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc&page=2"))
-        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/lists?sort_by=created_at.asc&page=2&language=en"))
+        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists"))
+        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/lists?page=2"))
+        XCTAssertEqual(Account.createdLists(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: 2), language: "en").url, URL(string: "https://api.themoviedb.org/3/account/1/lists?page=2"))
 
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: nil, page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies"))
         XCTAssertEqual(Account.favoriteMovies(accountId: 1, pagination: SortedPagination(sortBy: .createdAt(.ascending), page: nil), language: nil).url, URL(string: "https://api.themoviedb.org/3/account/1/favorite/movies?sort_by=created_at.asc"))

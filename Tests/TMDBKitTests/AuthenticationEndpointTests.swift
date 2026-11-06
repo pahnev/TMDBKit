@@ -9,6 +9,36 @@ import XCTest
 @testable import TMDBKit
 
 final class AuthenticationEndpointTests: TMDBTestCase {
+    func testDeleteSessionUsesBodyWithoutSessionQuery() throws {
+        var requestCount = 0
+        stubResponse(["success": true]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.url?.path, "/3/authentication/session")
+            XCTAssertEqual(request.httpMethod, "DELETE")
+            XCTAssertEqual(try self.queryItems(in: request), [URLQueryItem(name: "api_key", value: "123")])
+            let data: Data
+            if let body = request.httpBody {
+                data = body
+            } else {
+                let stream = try XCTUnwrap(request.httpBodyStream)
+                stream.open()
+                defer { stream.close() }
+                var body = Data()
+                var buffer = [UInt8](repeating: 0, count: 1024)
+                while stream.hasBytesAvailable {
+                    let count = stream.read(&buffer, maxLength: buffer.count)
+                    guard count > 0 else { break }
+                    body.append(contentsOf: buffer.prefix(count))
+                }
+                data = body
+            }
+            let body = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: String])
+            XCTAssertEqual(body, ["session_id": "456"])
+        }
+        XCTAssertNotNil(try awaitFor { tmdb.deleteSession(completion: $0) }.value)
+        XCTAssertEqual(requestCount, 1)
+    }
+
     func test_createRequestToken_returnsToken() throws {
         try stubHelper.stubWithLocalFile(Authentication.requestToken)
 

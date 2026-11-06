@@ -94,7 +94,7 @@ public class TMDB {
             completion(.failure(.sessionIdMissing))
             return
         }
-        authenticatedRequestAndParse(Authentication.deleteSession(sessionId: sessionId), completion: completion)
+        fetchObject(ofType: SuccessResponse.self, endpoint: Authentication.deleteSession(sessionId: sessionId), completion: completion)
     }
 
     /// Fetches the wanted object either from Cache if one is found, otherwise from the network. The successful network request is then cached.

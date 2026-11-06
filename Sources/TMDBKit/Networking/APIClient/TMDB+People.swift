@@ -89,7 +89,7 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - personId: The id of the Person.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `ExternalIds` or `TMDBError`.
         public func externalIds(for personId: Int, language: String? = nil, completion: @escaping TMDBResult<ExternalIds>) {
             tmdb.fetchObject(ofType: ExternalIds.self,
@@ -109,7 +109,7 @@ public extension TMDB {
         /// - Parameters:
         ///   - personId: The id of the Person.
         ///   - pageNumber: The page number to fetch. Defaults to 1 to get the first results.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `TaggedImageResponse` or `TMDBError`.
         public func taggedImages(for personId: Int, pageNumber: PageNumber = 1, language: String? = nil, completion: @escaping TMDBResult<TaggedImageResponse>) {
             tmdb.fetchObject(ofType: TaggedImageResponse.self,
@@ -120,7 +120,7 @@ public extension TMDB {
         /// Get a list of translations that have been created for a person.
         /// - Parameters:
         ///   - personId: The id of the Person.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `PersonTranslationResponse` or `TMDBError`.
         public func translations(for personId: Int, language: String? = nil, completion: @escaping TMDBResult<PersonTranslationResponse>) {
             tmdb.fetchObject(ofType: PersonTranslationResponse.self,
@@ -130,7 +130,7 @@ public extension TMDB {
 
         /// Get the most newly created person. This is a live response and will continuously change.
         /// - Parameters:
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `PersonDetailsResponse` or `TMDBError`.
         public func latest(in language: String? = nil, completion: @escaping TMDBResult<PersonDetailsResponse>) {
             tmdb.fetchObject(ofType: PersonDetailsResponse.self,

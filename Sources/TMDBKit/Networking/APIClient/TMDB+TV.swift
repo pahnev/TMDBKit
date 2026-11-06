@@ -30,7 +30,7 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `AccountState` or `TMDBError`.
     public func accountStates(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<AccountState>) {
         tmdb.authenticatedRequestAndParse(TV.accountStates(tvId: tvId, language: language), completion: completion)
@@ -53,7 +53,7 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `AlternativeTvTitlesResponse` or `TMDBError`.
     public func alternativeTitles(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<AlternativeTvTitlesResponse>) {
         tmdb.fetchObject(ofType: AlternativeTvTitlesResponse.self,
@@ -82,7 +82,7 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `ContentRatingsResponse` or `TMDBError`.
     public func contentRatings(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<ContentRatingsResponse>) {
         tmdb.fetchObject(ofType: ContentRatingsResponse.self,
@@ -106,7 +106,7 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `EpisodeGroupsResponse` or `TMDBError`.
     public func episodeGroups(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<EpisodeGroupsResponse>) {
         tmdb.fetchObject(ofType: EpisodeGroupsResponse.self,
@@ -124,7 +124,7 @@ public struct TVEndpoints {
     ///
     /// - Parameters:
     ///   - tvId: The id of the TV show.
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `ExternalIds` or `TMDBError`.
     public func externalIds(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<ExternalIds>) {
         tmdb.fetchObject(ofType: ExternalIds.self,
@@ -138,10 +138,11 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - tvId: The id of the TV show.
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - includeImageLanguages: Additional image language filters, joined with commas. Use "null" for images without a language; nil omits this query.
     ///   - completion: Result of a `ImagesResponse` or `TMDBError`.
-    public func images(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
+    public func images(for tvId: Int, language: String? = nil, includeImageLanguages: [String]? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
         tmdb.fetchObject(ofType: ImagesResponse.self,
-                         endpoint: TV.images(tvId: tvId, language: language),
+                         endpoint: TV.images(tvId: tvId, language: language, includeImageLanguages: includeImageLanguages),
                          completion: completion)
     }
 
@@ -217,10 +218,11 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - tvId: The id of the TV show.
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - includeVideoLanguages: Video language filters, joined with commas; nil omits this query.
     ///   - completion: Result of a `VideosResponse` or `TMDBError`.
-    public func videos(for tvId: Int, language: String? = nil, completion: @escaping TMDBResult<VideosResponse>) {
+    public func videos(for tvId: Int, language: String? = nil, includeVideoLanguages: [String]? = nil, completion: @escaping TMDBResult<VideosResponse>) {
         tmdb.fetchObject(ofType: VideosResponse.self,
-                         endpoint: TV.videos(tvId: tvId, language: language),
+                         endpoint: TV.videos(tvId: tvId, language: language, includeVideoLanguages: includeVideoLanguages),
                          completion: completion)
     }
 
@@ -245,7 +247,7 @@ public struct TVEndpoints {
     /// Get the most newly created TV show. This is a live response and will continuously change.
     ///
     /// - Parameters:
-    ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - language: Ignored compatibility argument; this operation does not support a language query.
     ///   - completion: Result of a `TVDetails` or `TMDBError`.
     public func latest(in language: String? = nil, completion: @escaping TMDBResult<TVDetails>) {
         tmdb.fetchObject(ofType: TVDetails.self,
@@ -260,10 +262,11 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - pageNumber: The page number to fetch.
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - timezone: Timezone used to calculate the date range, such as "Europe/Helsinki"; nil uses the server default.
     ///   - completion: Result of a `SimilarShowsResponse` or `TMDBError`.
-    public func airingToday(pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<SimilarShowsResponse>) {
+    public func airingToday(pageNumber: PageNumber, language: String? = nil, timezone: String? = nil, completion: @escaping TMDBResult<SimilarShowsResponse>) {
         tmdb.fetchObject(ofType: SimilarShowsResponse.self,
-                         endpoint: TV.airingToday(pageNumber: pageNumber, language: language),
+                         endpoint: TV.airingToday(pageNumber: pageNumber, language: language, timezone: timezone),
                          completion: completion)
     }
 
@@ -273,10 +276,11 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - pageNumber: The page number to fetch.
     ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+    ///   - timezone: Timezone used to calculate the date range, such as "Europe/Helsinki"; nil uses the server default.
     ///   - completion: Result of a `SimilarShowsResponse` or `TMDBError`.
-    public func onTheAir(pageNumber: PageNumber, language: String? = nil, completion: @escaping TMDBResult<SimilarShowsResponse>) {
+    public func onTheAir(pageNumber: PageNumber, language: String? = nil, timezone: String? = nil, completion: @escaping TMDBResult<SimilarShowsResponse>) {
         tmdb.fetchObject(ofType: SimilarShowsResponse.self,
-                         endpoint: TV.onTheAir(pageNumber: pageNumber, language: language),
+                         endpoint: TV.onTheAir(pageNumber: pageNumber, language: language, timezone: timezone),
                          completion: completion)
     }
 

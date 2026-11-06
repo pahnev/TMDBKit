@@ -9,6 +9,20 @@ import XCTest
 @testable import TMDBKit
 
 class TrendingEndpointTests: TMDBTestCase {
+    func testTrendingLanguageQuery() throws {
+        let application = [URLQueryItem(name: "api_key", value: "123")]
+        for media: MediaType in [.all, .movie, .tv, .person] {
+            for window: TimeWindow in [.day, .week] {
+                let path = "/3/trending/\(media.rawValue)/\(window.rawValue)"
+                try assertGETQuery(path, application) { tmdb.trending.trending(media, withinLast: window, completion: $0) }
+                try assertGETQuery(path, application) { tmdb.trending.trending(media, withinLast: window, language: nil, completion: $0) }
+                try assertGETQuery(path, application + [URLQueryItem(name: "language", value: "fi-FI")]) {
+                    tmdb.trending.trending(media, withinLast: window, language: "fi-FI", completion: $0)
+                }
+            }
+        }
+    }
+
     func testReturnsTrendingMovies() throws {
         try stubHelper.stubWithLocalFile(Trending.trending(mediaType: .movie, timeWindow: .day))
 

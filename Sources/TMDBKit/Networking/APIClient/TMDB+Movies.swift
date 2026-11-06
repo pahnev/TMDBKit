@@ -87,13 +87,10 @@ public extension TMDB {
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
         ///   - language: A language string in ISO 639-1 format, to get images for specific language.
-        ///   Can include multiple languages, as long as the languages are comma separated like so: `en,es`.
-        ///   If you want to include a fallback language (especially useful for backdrops) you can use add `null` at the end.
-        ///   Defaults to `en-US`.
-        ///
+        ///   - includeImageLanguages: Additional image language filters, joined with commas. Use "null" for images without a language; nil omits this query.
         ///   - completion: Result of a `ImagesResponse` or `TMDBError`.
-        public func images(for movieId: Int, language: String? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
-            tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId, language: language), completion: completion)
+        public func images(for movieId: Int, language: String? = nil, includeImageLanguages: [String]? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
+            tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId, language: language, includeImageLanguages: includeImageLanguages), completion: completion)
         }
 
         /// Get the keywords that have been added to a movie.
@@ -211,7 +208,7 @@ public extension TMDB {
 
         /// Get the most newly created movie. This is a live response and will continuously change
         /// - Parameters:
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `Movie` or `TMDBError`.
         public func latest(language: String? = nil, completion: @escaping TMDBResult<Movie>) {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.latest(language: language), completion: completion)

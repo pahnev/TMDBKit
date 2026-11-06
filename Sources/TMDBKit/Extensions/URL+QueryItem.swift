@@ -21,6 +21,12 @@ extension URL {
         return urlComps.url!
     }
 
+    /// Appends an optional query value; nil leaves the query unchanged.
+    func appendingQueryItem(named name: String, value: String?) -> URL {
+        guard let value = value else { return self }
+        return appendingQueryItem(URLQueryItem(name: name, value: value))
+    }
+
     func appendingQueryItems(_ queryItems: [URLQueryItem]) -> URL {
         var url = self
         queryItems.forEach { url = url.appendingQueryItem($0) }

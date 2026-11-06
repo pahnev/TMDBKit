@@ -43,6 +43,29 @@ class TMDBTestCase: XCTestCase {
         return try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)).queryItems ?? []
     }
 
+    /// Wire-only checks deliberately ignore decoding: response-model contracts are tested separately.
+    func assertGETQuery<T>(_ path: String, _ expected: [URLQueryItem],
+                           file: StaticString = #file, line: UInt = #line,
+                           invoke: (@escaping TMDBResult<T>) -> Void) throws {
+        tmdb.clearCaches()
+        var requestCount = 0
+        stubResponse([:]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.url?.path, path, file: file, line: line)
+            XCTAssertEqual(request.httpMethod, "GET", file: file, line: line)
+            XCTAssertNil(request.httpBody, file: file, line: line)
+            XCTAssertNil(request.httpBodyStream, file: file, line: line)
+            let actual = try self.queryItems(in: request)
+            XCTAssertEqual(actual.count, expected.count, file: file, line: line)
+            for item in expected {
+                XCTAssertEqual(actual.filter { $0 == item }.count,
+                               expected.filter { $0 == item }.count, file: file, line: line)
+            }
+        }
+        _ = try awaitFor(invoke)
+        XCTAssertEqual(requestCount, 1, file: file, line: line)
+    }
+
     override func tearDown() {
         tmdb.clearCaches()
         super.tearDown()

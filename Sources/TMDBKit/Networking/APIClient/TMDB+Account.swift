@@ -24,8 +24,8 @@ public extension TMDB {
         /// - Parameters:
         ///   - accountId: The `accountId` whose lists to fetch. Nil by default will return the logged in user's lists.
         ///   - pageNumber: The number of the page if fetching paginated results.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
-        ///   - sortBy: Sort the results.
+        ///   - language: Ignored compatibility argument; created lists do not support a language query.
+        ///   - sortBy: Ignored compatibility argument; created lists do not support a sort query.
         ///   - completion: Result of `ListsResponse` or `TMDBError`
         public func createdListsFor(accountId: Int? = nil, pageNumber: PageNumber?, language: String? = nil, sortBy: Sort? = nil, completion: @escaping TMDBResult<HTTPResponseContaining<ListsResponse>>) {
             tmdb.authenticatedRequestWithResponse(for: Account.createdLists(accountId: accountId,
