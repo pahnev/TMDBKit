@@ -123,7 +123,7 @@ enum TV: Endpoint {
              .deleteRating,
              .watchProviders:
             return nil
-        case .rateShow(let rating, _):
+        case .rateShow(_, let rating):
             return try! JSONEncoder().encode(["value": rating])
         }
     }

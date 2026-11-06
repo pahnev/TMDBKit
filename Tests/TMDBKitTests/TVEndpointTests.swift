@@ -287,12 +287,21 @@ class TVEndpointTests: TMDBTestCase {
     }
 
     func test_rateShow_httpBody() throws {
-        let body = try XCTUnwrap(TV.rateShow(tvId: 1, rating: 1).httpBody)
-        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
-        XCTAssertEqual(Set(object.keys), Set(["value"]))
-        let number = try XCTUnwrap(object["value"] as? NSNumber)
-        XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
-        XCTAssertEqual(number.doubleValue, 1)
+        let data = try XCTUnwrap(TV.rateShow(tvId: 1399, rating: 8.5).httpBody)
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Double])
+        XCTAssertEqual(body, ["value": 8.5])
+        XCTAssertEqual(TV.rateShow(tvId: 1399, rating: 8.5).url.path, "/3/tv/1399/rating")
+    }
+
+    func testRateShowSerializesBoundaryRatings() throws {
+        for rating in [0.5, 10.0] {
+            let data = try XCTUnwrap(TV.rateShow(tvId: 1399, rating: rating).httpBody)
+            let body = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            XCTAssertEqual(Set(body.keys), Set(["value"]))
+            let number = try XCTUnwrap(body["value"] as? NSNumber)
+            XCTAssertEqual(CFGetTypeID(number), CFNumberGetTypeID())
+            XCTAssertEqual(number.doubleValue, rating)
+        }
     }
 
     func test_requestHeaders() {

@@ -85,6 +85,7 @@ enum Lists: Endpoint {
             return lists.appendingPathComponent("\(listId)/remove_item")
         case .clearList(let listId):
             return lists.appendingPathComponent("\(listId)/clear")
+                .appendingQueryItem(URLQueryItem(name: "confirm", value: "true"))
         case .deleteList(let listId):
             return lists.appendingPathComponent("\(listId)")
         }

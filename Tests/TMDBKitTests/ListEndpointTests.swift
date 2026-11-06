@@ -56,6 +56,11 @@ class ListEndpointTests: TMDBTestCase {
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
 
+    func testClearListIncludesConfirmation() {
+        let query = URLComponents(url: Lists.clearList(listId: "1").url, resolvingAgainstBaseURL: false)!.queryItems ?? []
+        XCTAssertEqual(query.filter { $0.name == "confirm" }, [URLQueryItem(name: "confirm", value: "true")])
+    }
+
     func test_clearList() throws {
         try stubHelper.stubWithLocalFile(Lists.clearList(listId: "1"))
         let response = try XCTUnwrap(awaitFor { tmdb.lists.clear(listId: "1", completion: $0) }.value)
@@ -141,7 +146,7 @@ class ListEndpointTests: TMDBTestCase {
         XCTAssertEqual(Lists.createList(list: .init(name: "1", description: "1", language: "en")).url, URL(string: "https://api.themoviedb.org/3/list"))
         XCTAssertEqual(Lists.addMovie(listId: "1", mediaId: 1).url, URL(string: "https://api.themoviedb.org/3/list/1/add_item"))
         XCTAssertEqual(Lists.removeMovie(listId: "1", mediaId: 1).url, URL(string: "https://api.themoviedb.org/3/list/1/remove_item"))
-        XCTAssertEqual(Lists.clearList(listId: "1").url, URL(string: "https://api.themoviedb.org/3/list/1/clear"))
+        XCTAssertEqual(Lists.clearList(listId: "1").url, URL(string: "https://api.themoviedb.org/3/list/1/clear?confirm=true"))
         XCTAssertEqual(Lists.deleteList(listId: "1").url, URL(string: "https://api.themoviedb.org/3/list/1"))
     }
 }
