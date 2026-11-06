@@ -15,44 +15,31 @@ final class AuthenticationEndpointTests: TMDBTestCase {
             requestCount += 1
             XCTAssertEqual(request.url?.path, "/3/authentication/session")
             XCTAssertEqual(request.httpMethod, "DELETE")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
             XCTAssertEqual(try self.queryItems(in: request), [URLQueryItem(name: "api_key", value: "123")])
-            let data: Data
-            if let body = request.httpBody {
-                data = body
-            } else {
-                let stream = try XCTUnwrap(request.httpBodyStream)
-                stream.open()
-                defer { stream.close() }
-                var body = Data()
-                var buffer = [UInt8](repeating: 0, count: 1024)
-                while stream.hasBytesAvailable {
-                    let count = stream.read(&buffer, maxLength: buffer.count)
-                    guard count > 0 else { break }
-                    body.append(contentsOf: buffer.prefix(count))
-                }
-                data = body
-            }
-            let body = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: String])
+            let body = try XCTUnwrap(requestBodyJSON(request) as? [String: String])
             XCTAssertEqual(body, ["session_id": "456"])
         }
-        XCTAssertNotNil(try awaitFor { tmdb.deleteSession(completion: $0) }.value)
+        XCTAssertEqual(try awaitFor { tmdb.deleteSession(completion: $0) }.value?.success, true)
         XCTAssertEqual(requestCount, 1)
     }
 
     func test_createRequestToken_returnsToken() throws {
-        try stubHelper.stubWithLocalFile(Authentication.requestToken)
+        try stubHelper.stubWithLocalFile(Authentication.requestToken, expecting: .init(path: "/3/authentication/token/new"))
 
         let token = try awaitFor { tmdb.createRequestToken(completion: $0) }.value
 
         XCTAssertNotNil(token)
+        XCTAssertEqual(token?.requestToken, "7651df58ba8c997583f7e895a18de6b66130edba")
     }
 
     func test_createSession_returnsSession() throws {
-        try stubHelper.stubWithLocalFile(Authentication.createSession(requestToken: "123"))
+        try stubHelper.stubWithLocalFile(Authentication.createSession(requestToken: "123"), expecting: .init(path: "/3/authentication/session/new", method: "POST", body: ["request_token": "123"], contentType: "application/json;charset=utf-8"))
         let requestToken = RequestToken(success: true, expiresAt: "now", requestToken: "123")
         let token = try awaitFor { tmdb.createSession(requestToken: requestToken, completion: $0) }.value
 
         XCTAssertNotNil(token)
+        XCTAssertEqual(token?.sessionId, "79191836ddaa0da3df76a5ffef6f07ad6ab0c641")
     }
 
     func testUpdatedAuthenticatorIsUsedByTransport() throws {
@@ -81,23 +68,7 @@ final class AuthenticationEndpointTests: TMDBTestCase {
             XCTAssertEqual(request.httpMethod, "POST")
             XCTAssertEqual(request.url?.path, "/3/authentication/session/new")
             XCTAssertFalse(try self.queryItems(in: request).contains { $0.name == "request_token" })
-            let data: Data
-            if let body = request.httpBody {
-                data = body
-            } else {
-                let stream = try XCTUnwrap(request.httpBodyStream)
-                stream.open()
-                defer { stream.close() }
-                var body = Data()
-                var buffer = [UInt8](repeating: 0, count: 1024)
-                while stream.hasBytesAvailable {
-                    let count = stream.read(&buffer, maxLength: buffer.count)
-                    guard count > 0 else { break }
-                    body.append(contentsOf: buffer.prefix(count))
-                }
-                data = body
-            }
-            let body = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: String])
+            let body = try XCTUnwrap(requestBodyJSON(request) as? [String: String])
             XCTAssertEqual(body, ["request_token": "token-123"])
         }
         let token = RequestToken(success: true, expiresAt: "now", requestToken: "token-123")
