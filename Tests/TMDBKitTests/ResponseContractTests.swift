@@ -21,8 +21,12 @@ final class ResponseContractTests: XCTestCase {
         func state(_ rated: Any) throws -> AccountState {
             try decode(AccountState.self, JSONSerialization.data(withJSONObject: ["id": 1, "favorite": false, "watchlist": true, "rated": rated]))
         }
-        XCTAssertNil(try state(false).rated)
-        XCTAssertEqual(try state(["value": 8.5]).rated?.value, 8.5)
+        let unrated = try state(false)
+        let rated = try state(["value": 8.5])
+        XCTAssertNil(unrated.rated)
+        XCTAssertEqual(rated.rated?.value, 8.5)
+        try roundTrip(unrated)
+        try roundTrip(rated)
         for invalid: Any in [true, "false", [:], ["value": "8.5"], NSNull()] { XCTAssertThrowsError(try state(invalid)) }
     }
 
