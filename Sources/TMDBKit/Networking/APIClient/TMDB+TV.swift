@@ -69,11 +69,12 @@ public struct TVEndpoints {
     /// - Parameters:
     ///   - tvId: The id of the TV show.
     ///   - pageNumber: The page number to fetch.
+    ///   - startDate: Start of the change range in YYYY-MM-DD format.
+    ///   - endDate: End of the change range in YYYY-MM-DD format.
     ///   - completion: Result of a `TVChangesResponse` or `TMDBError`.
-    public func changes(for tvId: Int, pageNumber: PageNumber = 1, completion: @escaping TMDBResult<TVChangesResponse>) {
-        // TODO: start_date and end_date query
+    public func changes(for tvId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil, completion: @escaping TMDBResult<TVChangesResponse>) {
         tmdb.fetchObject(ofType: TVChangesResponse.self,
-                         endpoint: TV.changes(tvId: tvId, pageNumber: pageNumber),
+                         endpoint: TV.changes(tvId: tvId, pageNumber: pageNumber, startDate: startDate, endDate: endDate),
                          completion: completion)
     }
 

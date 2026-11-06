@@ -14,6 +14,37 @@ class MovieEndpointTests: TMDBTestCase {
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 
+    func testChangesForwardsDateRangeAndPage() throws {
+        var requestCount = 0
+        stubResponse(["changes": []]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(request.url?.path, "/3/movie/550/changes")
+            let items = try self.queryItems(in: request)
+            for (name, value) in [("page", "2"), ("start_date", "2026-11-01"), ("end_date", "2026-11-06")] {
+                XCTAssertEqual(items.filter { $0.name == name }.map { $0.value }, [value])
+            }
+        }
+        let result = try awaitFor {
+            tmdb.movies.changes(for: 550, pageNumber: 2, startDate: "2026-11-01", endDate: "2026-11-06", completion: $0)
+        }.value
+        XCTAssertNotNil(result)
+        XCTAssertEqual(requestCount, 1)
+    }
+
+    func testChangesOmitsUnspecifiedDates() throws {
+        var requestCount = 0
+        stubResponse(["changes": []]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.url?.path, "/3/movie/550/changes")
+            let items = try self.queryItems(in: request)
+            XCTAssertEqual(items.filter { $0.name == "page" }.map { $0.value }, ["1"])
+            XCTAssertFalse(items.contains { $0.name == "start_date" || $0.name == "end_date" })
+        }
+        XCTAssertNotNil(try awaitFor { tmdb.movies.changes(for: 550, completion: $0) }.value)
+        XCTAssertEqual(requestCount, 1)
+    }
+
     func testReturnsMovieDetails() throws {
         try stubHelper.stubWithLocalFile(Movies.details(movieId: allQuietMovieId, append: nil, language: nil))
 
@@ -224,7 +255,7 @@ class MovieEndpointTests: TMDBTestCase {
 
         assertURL(.alternativeTitles(movieId: 1, country: "fi"), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles?country=fi")
 
-        assertURL(.changes(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/changes")
+        assertURL(.changes(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/changes?page=1")
 
         assertURL(.credits(movieId: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/credits?language=fi")
 

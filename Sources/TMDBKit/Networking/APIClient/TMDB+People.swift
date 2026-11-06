@@ -32,11 +32,12 @@ public extension TMDB {
         /// - Parameters:
         ///   - personId: The id of the Person.
         ///   - pageNumber: The page number to fetch.
+        ///   - startDate: Start of the change range in YYYY-MM-DD format.
+        ///   - endDate: End of the change range in YYYY-MM-DD format.
         ///   - completion: Result of a `ChangesResponse` or `TMDBError`.
-        public func changes(for personId: Int, pageNumber: PageNumber = 1, completion: @escaping TMDBResult<ChangesResponse>) {
-            // TODO: start and end date query
+        public func changes(for personId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil, completion: @escaping TMDBResult<ChangesResponse>) {
             tmdb.fetchObject(ofType: ChangesResponse.self,
-                             endpoint: People.changes(personId: personId, pageNumber: pageNumber),
+                             endpoint: People.changes(personId: personId, pageNumber: pageNumber, startDate: startDate, endDate: endDate),
                              completion: completion)
         }
 

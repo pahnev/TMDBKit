@@ -9,7 +9,7 @@ import Foundation
 
 enum People: Endpoint {
     case details(personId: Int, language: String?, append: [DetailsAppendable]?)
-    case changes(personId: Int, pageNumber: PageNumber)
+    case changes(personId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
     case movieCredits(personId: Int, language: String?)
     case tvCredits(personId: Int, language: String?)
     case combinedCredits(personId: Int, language: String?)
@@ -37,10 +37,13 @@ enum People: Endpoint {
                     .appendingQueryItems(query)
             }
             return peopleDetails
-        case .changes(let personId, let pageNumber):
+        case .changes(let personId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
             return people
                 .appendingPathComponent("\(personId)/changes")
                 .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .movieCredits(let personId, let language):
             return people
                 .appendingPathComponent("\(personId)/movie_credits")

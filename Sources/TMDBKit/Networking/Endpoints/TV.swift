@@ -17,7 +17,7 @@ enum TV: Endpoint {
 
     case aggregateCredits(tvId: Int, language: String?)
 
-    case changes(tvId: Int, pageNumber: PageNumber)
+    case changes(tvId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
 
     case contentRatings(tvId: Int, language: String?)
 
@@ -188,10 +188,13 @@ enum TV: Endpoint {
             return tv
                 .appendingPathComponent("\(tvId)/alternative_titles")
                 .appendingLanguage(language)
-        case .changes(let tvId, let pageNumber):
+        case .changes(let tvId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
             return tv
                 .appendingPathComponent("\(tvId)/changes")
                 .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .credits(let tvId, let language):
             return tv
                 .appendingPathComponent("\(tvId)/credits")

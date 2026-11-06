@@ -12,6 +12,37 @@ import XCTest
 class TVEndpointTests: TMDBTestCase {
     private let gameOfThrones = 1399
 
+    func testChangesForwardsDateRangeAndPage() throws {
+        var requestCount = 0
+        stubResponse(["changes": []]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(request.url?.path, "/3/tv/1399/changes")
+            let items = try self.queryItems(in: request)
+            for (name, value) in [("page", "2"), ("start_date", "2026-11-01"), ("end_date", "2026-11-06")] {
+                XCTAssertEqual(items.filter { $0.name == name }.map { $0.value }, [value])
+            }
+        }
+        let result = try awaitFor {
+            tmdb.tv.changes(for: 1399, pageNumber: 2, startDate: "2026-11-01", endDate: "2026-11-06", completion: $0)
+        }.value
+        XCTAssertNotNil(result)
+        XCTAssertEqual(requestCount, 1)
+    }
+
+    func testChangesOmitsUnspecifiedDates() throws {
+        var requestCount = 0
+        stubResponse(["changes": []]) { request in
+            requestCount += 1
+            XCTAssertEqual(request.url?.path, "/3/tv/1399/changes")
+            let items = try self.queryItems(in: request)
+            XCTAssertEqual(items.filter { $0.name == "page" }.map { $0.value }, ["1"])
+            XCTAssertFalse(items.contains { $0.name == "start_date" || $0.name == "end_date" })
+        }
+        XCTAssertNotNil(try awaitFor { tmdb.tv.changes(for: 1399, completion: $0) }.value)
+        XCTAssertEqual(requestCount, 1)
+    }
+
     func testReturnsDetails() throws {
         try stubHelper.stubWithLocalFile(TV.details(tvId: gameOfThrones, language: nil, append: nil))
 

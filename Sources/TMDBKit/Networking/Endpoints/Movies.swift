@@ -13,7 +13,7 @@ enum Movies: Endpoint {
 
     case alternativeTitles(movieId: Int, country: String?)
 
-    case changes(movieId: Int)
+    case changes(movieId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
 
     case credits(movieId: Int, language: String?)
 
@@ -176,8 +176,13 @@ enum Movies: Endpoint {
             return movies
                 .appendingPathComponent("\(movieId)/alternative_titles")
                 .appendingCountry(country)
-        case .changes(let movieId):
-            return movies.appendingPathComponent("\(movieId)/changes")
+        case .changes(let movieId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
+            return movies
+                .appendingPathComponent("\(movieId)/changes")
+                .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .credits(let movieId, let lang):
             return movies
                 .appendingPathComponent("\(movieId)/credits")

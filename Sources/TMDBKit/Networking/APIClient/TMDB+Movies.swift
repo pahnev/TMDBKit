@@ -51,10 +51,12 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - pageNumber: The page number to fetch. Defaults to 1.
+        ///   - startDate: Start of the change range in YYYY-MM-DD format.
+        ///   - endDate: End of the change range in YYYY-MM-DD format.
         ///   - completion: Result of a `ChangesResponse` or `TMDBError`.
-        public func changes(for movieId: Int, completion: @escaping TMDBResult<ChangesResponse>) {
-            // TODO: Pagination and date query
-            tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: Movies.changes(movieId: movieId), completion: completion)
+        public func changes(for movieId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil, completion: @escaping TMDBResult<ChangesResponse>) {
+            tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: Movies.changes(movieId: movieId, pageNumber: pageNumber, startDate: startDate, endDate: endDate), completion: completion)
         }
 
         /// Get the cast and crew for a movie.
