@@ -126,4 +126,34 @@ final class ResponseContractTests: XCTestCase {
         XCTAssertEqual(response.results?.us, response.results?["US"])
         XCTAssertEqual(response.results?.iN, response.results?["IN"])
     }
+
+    func testTVRecommendationsWithoutNetworks() throws {
+        let response = try decode(RecommendationsResponse.self, fixture("tv-recommendations"))
+        let first = try XCTUnwrap(response.results.first)
+        XCTAssertEqual(first.id, 1396)
+        XCTAssertEqual(first.name, "Breaking Bad")
+        XCTAssertEqual(first.adult, false)
+        XCTAssertEqual(first.mediaType, "tv")
+        XCTAssertTrue(first.networks.isEmpty)
+        XCTAssertEqual(response.page, 1)
+        XCTAssertEqual(response.totalPages, 2)
+        XCTAssertEqual(response.totalResults, 40)
+        try roundTrip(response)
+    }
+
+    func testTVRecommendationsRejectMalformedIDAndNetworks() throws {
+        // Synthetic boundaries mutate only required identity or network structure.
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture("tv-recommendations")) as? [String: Any])
+        let results = try XCTUnwrap(object["results"] as? [[String: Any]])
+        for mutation: (inout [String: Any]) -> Void in [
+            { $0.removeValue(forKey: "id") }, { $0["id"] = "1396" },
+            { $0["networks"] = "wrong" }, { $0["networks"] = NSNull() }
+        ] {
+            var result = try XCTUnwrap(results.first)
+            mutation(&result)
+            var malformed = object
+            malformed["results"] = [result]
+            XCTAssertThrowsError(try decode(RecommendationsResponse.self, JSONSerialization.data(withJSONObject: malformed)))
+        }
+    }
 }

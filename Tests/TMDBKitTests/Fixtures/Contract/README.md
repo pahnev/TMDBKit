@@ -12,6 +12,11 @@ Only JSON formatting changed. No live API requests or credentials are needed.
 | changes-tv.json | tv-series-changes |
 | providers-movie.json | movie-watch-providers |
 | providers-tv.json | tv-series-watch-providers |
+| tv-recommendations.json | tv-series-recommendations |
 
 Inline test payloads are explicitly labeled synthetic boundaries or regressions;
 they are not represented as official API examples.
+
+Recommendation image nullability remains an evidence gap; these string example
+paths do not establish a recommendation-specific nullable-path contract. The
+reserved nullable-images test is not implemented or counted as passing.
