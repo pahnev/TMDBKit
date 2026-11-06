@@ -15,6 +15,7 @@ Only JSON formatting changed. No live API requests or credentials are needed.
 | tv-recommendations.json | tv-series-recommendations |
 | list-item-status.json | list-check-item-status |
 | person-details.json | person-details |
+| person-tagged-images.json | person-tagged-images |
 | person-movie-credits.json | person-movie-credits |
 | person-tv-credits.json | person-tv-credits |
 | person-combined-credits.json | person-combined-credits |

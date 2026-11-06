@@ -236,4 +236,58 @@ final class ResponseContractTests: XCTestCase {
             }
         }
     }
+    func testTaggedImagesDecodeEpisodeMedia() throws {
+        let response = try decode(TaggedImageResponse.self, fixture("person-tagged-images"))
+        let tagged = response.results[10]
+        XCTAssertEqual(tagged.mediaType, .episode)
+        XCTAssertEqual(tagged.id, "574e9546c3a3687ff1001ba0")
+        XCTAssertEqual(tagged.imageType, "still")
+        guard case .episode(let episode) = tagged.media else { return XCTFail("Expected episode media") }
+        XCTAssertEqual(episode.id, 1196876)
+        XCTAssertEqual(episode.showId, 66623)
+        try roundTrip(response)
+    }
+
+    func testMediaDiscriminatorIsRespected() throws {
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture("person-tagged-images")) as? [String: Any])
+        let results = try XCTUnwrap(object["results"] as? [[String: Any]])
+        var movie = try XCTUnwrap(results.first?["media"] as? [String: Any])
+        // Synthetic explicit discriminators must never fall through to another shape.
+        for discriminator in ["unknown", "tv", "person", "tv_episode"] {
+            movie["media_type"] = discriminator
+            XCTAssertThrowsError(try decode(Media.self, JSONSerialization.data(withJSONObject: movie)))
+        }
+        movie["media_type"] = "movie"
+        for malformed: Any in ["13", true, NSNull()] {
+            movie["id"] = malformed
+            XCTAssertThrowsError(try decode(Media.self, JSONSerialization.data(withJSONObject: movie)))
+        }
+    }
+
+    func testMediaRoundTripsAllSupportedCases() throws {
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture("person-tagged-images")) as? [String: Any])
+        let results = try XCTUnwrap(object["results"] as? [[String: Any]])
+        let movie = try XCTUnwrap(results.first?["media"] as? [String: Any])
+        let episode = try XCTUnwrap(results[10]["media"] as? [String: Any])
+        // Synthetic person/TV shapes complement the official tagged movie/episode.
+        let tv: [String: Any] = ["id": 7, "vote_average": 1.5, "overview": "TV", "first_air_date": "2020-01-01", "origin_country": ["US"], "genre_ids": [1], "original_language": "en", "vote_count": 2, "name": "TV", "original_name": "TV"]
+        let person: [String: Any] = ["id": 8, "popularity": 2.5, "gender": 1, "adult": false, "known_for": [], "name": "Person"]
+        for (type, payload, id) in [("movie", movie, 857), ("tv", tv, 7), ("person", person, 8), ("tv_episode", episode, 1196876)] {
+            var explicit = payload
+            explicit["media_type"] = type
+            let value = try decode(Media.self, JSONSerialization.data(withJSONObject: explicit))
+            switch value {
+            case .movie(let model): XCTAssertEqual(type, "movie"); XCTAssertEqual(model.id, id)
+            case .tv(let model): XCTAssertEqual(type, "tv"); XCTAssertEqual(model.id, id)
+            case .person(let model): XCTAssertEqual(type, "person"); XCTAssertEqual(model.id, id)
+            case .episode(let model): XCTAssertEqual(type, "tv_episode"); XCTAssertEqual(model.id, id)
+            }
+            let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(value)) as? [String: Any])
+            XCTAssertEqual(encoded["media_type"] as? String, type)
+            try roundTrip(value)
+            explicit.removeValue(forKey: "media_type")
+            XCTAssertEqual(try decode(Media.self, JSONSerialization.data(withJSONObject: explicit)), value)
+        }
+    }
+
 }

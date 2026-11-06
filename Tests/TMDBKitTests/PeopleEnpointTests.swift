@@ -146,6 +146,8 @@ class PeopleEndpointTests: TMDBTestCase {
             XCTAssertEqual(tvMedia.posterPath, "/nJKhLuvlhBOY5ckeUG4caD7JdP8.jpg")
         case .person(let person):
             XCTAssertNil(person)
+        case .episode:
+            XCTFail("Expected TV show, received episode")
         }
     }
 

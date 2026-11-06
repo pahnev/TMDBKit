@@ -106,6 +106,7 @@ public extension TMDB {
         }
 
         /// Get the images that this person has been tagged in.
+        /// Deprecated in the TMDB human API reference; retained for compatibility.
         /// - Parameters:
         ///   - personId: The id of the Person.
         ///   - pageNumber: The page number to fetch. Defaults to 1 to get the first results.
