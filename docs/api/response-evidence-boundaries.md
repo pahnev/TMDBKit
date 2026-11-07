@@ -17,6 +17,7 @@ retain the operation inventory and source pointers; no endpoint families were ad
   the changed typed models. The historical string/integer list-ID union remains
   a separately tested compatibility decision. Appended containers intentionally
   omit standalone root IDs while retaining strict child identities.
+- Untyped subfields such as `youtube_id` (null-only example / unspecified schema) remain unknown; no speculative String property was added. A future provenance-backed model change must establish its type first.
 - Recommendation-specific image nullability (Task 7D) remains unresolved. Current
   string-only recommendation image fields are retained; the examples do not prove
   these assumptions and no nullable-image success claim is made.

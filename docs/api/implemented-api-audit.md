@@ -1,5 +1,35 @@
 # Implemented TMDB v3 API contract audit
 
+## Final reconciliation (2026-11-07)
+
+Final runtime/test revision: `e8e91849edd65c5adfabbf2969ce4e3920b652dc`. The original inventory below and [JSON companion](implemented-api-audit.json) remain **historical Task 1 evidence at f12ce068**, including its failures, signatures, field inventories and repair assignments. They are not current assertions. [Final inventory](final-api-inventory.json) records current source signatures, per-operation status, response/model file references, named tests and all missing assets/work. The [wire matrix](test-coverage.md) supplies current public invocations and literal request/response assertions; [missing map](missing-implementations.md) supplies 67 actionable nonpublic entries.
+
+| Final status | Operations | Public presence |
+| --- | --- | --- |
+| public-current | 84 | 84 supported public operations with confirmed repairs and offline coverage |
+| internal-only | 8 | No usable public wrapper; review details also retains malformed local route |
+| declaration-only | 18 | No Endpoint conformance/request construction/public wrapper |
+| absent | 40 | No endpoint implementation/public wrapper |
+| deprecated | 2 | 1 public tagged-images operation; 1 nonpublic keyword-movies operation |
+| **Total** | **152** | **85 public + 67 nonpublic, 148 paths** |
+
+No final `public-needs-update` rows remain for **confirmed** repairs. `public-current` does not mean full upstream-schema alignment: [evidence limits](response-evidence-boundaries.md) retain UNKNOWN requiredness/nullability, empty movie-recommendations schema/example and legacy account conventions. No missing family was implemented to increase exposure. Supported counts exclude both human-reference deprecated operations: **84 public + 66 missing = 150**. The snapshot's deprecated flags remain false for both, with the source disagreement preserved.
+
+Current source contains **101 public operation declarations**: 82 original method families, 17 exact-signature compatibility overloads, one additional movie-search overload and one explicit-ID account overload. Trending maps one method family to four official keys. One original account accessor now remains explicitly legacy while its new overload serves the official key. Utilities are excluded. [Final JSON](final-api-inventory.json) enumerates all 101 declarations; fixtures/enums alone never promote an operation.
+
+| Confirmed repair area | Landed commits | Current evidence |
+| --- | --- | --- |
+| Similarity route, TV rating, list confirmation and auth propagation | `ea36126`, `62d94ce`, `2c10a65` | Movie/TV/list/auth rows in [matrix](test-coverage.md) |
+| Date/search/query options; exact method references | `8a69c01`, `84f3bbc`, `beff9dc`, `15eb37a` | [Public method compatibility](../../Tests/TMDBKitTests/PublicMethodCompatibilityTests.swift), owning endpoint suites |
+| Typed changes, provider regions, recommendations, identity/credit keys | `634040f`, `66ef663`, `9670417`, `7669955` | [ResponseContractTests](../../Tests/TMDBKitTests/ResponseContractTests.swift) |
+| Episode media, audited additive fields; final metadata round trips | `443801e`, `c6895cd`, `fdf2577` | ResponseContractTests, people tagged-image matrix row |
+| Guest alternatives, account explicit IDs, append namespaces, strict unions/evidence boundaries | `3e7f9e9`, `f9ec35a`, `d3d4fec`, `df5a3b4`, `6340d5b` | Owning matrix rows, ResponseContractTests, [decisions/migration](implementation-decisions.md) |
+| Public wire coverage; error/cache regressions | `3413e1f`–`1f6fd6b`, `42c62ad`, `d6403dc`, `2932076`, `54544ad`, `e8e9184` | [Coverage report](test-coverage.md): 85/85 operations, 265 tests; measured source-subset limits retained |
+
+`python3 docs/api/verify-audit.py` verifies baseline signatures/models/tests **using git show at f12ce068**, then separately checks current final signatures, 152 statuses, 67 unique backlog headings, assets and named tests. `--probe-examples` materializes and compiles the historical baseline, preserving the original 79/85 probe interpretation; it is not a final-alignment probe. Final success evidence is the current XCTest matrix and suite.
+
+## Historical Task 1 audit (unchanged evidence)
+
 Audited 2026-11-06 at `f12ce06810f602fce08c048476c9a522c862c83e`. Snapshot provenance and caveats: [spec README](spec/README.md). This is the Task 1 pre-repair inventory, not a claim of stage-one alignment. No production code changed. A second verification with pipefail produced 117 passed / 3 failed: the same two ordering defects plus AccountEndpointTests.test_addToWatchList_httpBody; Task 1A covers all three and all nine object-body assertions.
 
 The complete contract contains **152 operations on 148 paths**. Every operation has one row below. There are **82 existing public network methods**, conceptually mapped to **85 official operations**, because trending covers four literal paths. Account.details is an intended mapping only: its current route is local `/3/account`. There are 8 internal-only operation mappings and 18 declaration-only mappings. Fixtures do not change a status.

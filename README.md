@@ -9,28 +9,34 @@ Swift wrapper for [TMDB v3 API](https://developers.themoviedb.org/3) with cache 
 
 ## Endpoints covered
 
-- [x] Account
-- [ ] Authentication
-- [ ] Certifications
-- [ ] Changes
-- [ ] Collections
-- [ ] Companies
-- [ ] Configuration
-- [ ] Credits
-- [ ] Discover
-- [ ] Find
-- [ ] Genres
-- [ ] Guest Sessions
-- [ ] Keywords
-- [x] Lists
-- [x] Movies
-- [ ] Networks
-- [x] Trending
-- [x] People
-- [ ] Reviews
-- [ ] Search
-- [x] TV
-- [ ] TV Seasons
-- [ ] TV Episodes
-- [ ] TV Episode Groups
-- [ ] Watch Providers
+Against the [pinned TMDB v3 contract](docs/api/spec/README.md): **85 public operations**, including one deprecated tagged-images operation; **67 operations lack public APIs**, including one deprecated keyword listing. `complete` describes supported operation exposure and offline coverage, not full schema alignment. See [remaining evidence limits](docs/api/response-evidence-boundaries.md).
+
+| Family | Exposure | Supported public / supported total | Details |
+| --- | --- | --- | --- |
+| Account | complete | 11 / 11 | [Inventory](docs/api/test-coverage.md) |
+| Authentication | partial | 3 / 7 | [Inventory](docs/api/missing-implementations.md#authentication) |
+| Certifications | not exposed | 0 / 2 | [Inventory](docs/api/missing-implementations.md#certifications) |
+| Changes | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#changes) |
+| Collections | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#collections) |
+| Companies | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#companies) |
+| Configuration | not exposed | 0 / 6 | [Inventory](docs/api/missing-implementations.md#configuration) |
+| Credits | not exposed | 0 / 1 | [Inventory](docs/api/missing-implementations.md#credits) |
+| Discover | not exposed | 0 / 2 | [Inventory](docs/api/missing-implementations.md#discover) |
+| Find | not exposed | 0 / 1 | [Inventory](docs/api/missing-implementations.md#find) |
+| Genres | not exposed | 0 / 2 | [Inventory](docs/api/missing-implementations.md#genres) |
+| Guest Sessions | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#guest-sessions) |
+| Keywords | not exposed | 0 / 1 | [Inventory](docs/api/missing-implementations.md#keywords) |
+| Lists | complete | 7 / 7 | [Inventory](docs/api/test-coverage.md) |
+| Movies | complete | 23 / 23 | [Inventory](docs/api/test-coverage.md) |
+| Networks | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#networks) |
+| Trending | complete | 4 / 4 | [Inventory](docs/api/test-coverage.md) |
+| People | complete | 10 / 10 | [Inventory](docs/api/test-coverage.md) |
+| Reviews | not exposed | 0 / 1 | [Inventory](docs/api/missing-implementations.md#reviews) |
+| Search | partial | 1 / 7 | [Inventory](docs/api/missing-implementations.md#search) |
+| TV | partial | 25 / 26 | [Inventory](docs/api/missing-implementations.md#tv) |
+| TV Seasons | not exposed | 0 / 10 | [Inventory](docs/api/missing-implementations.md#tv-seasons) |
+| TV Episodes | not exposed | 0 / 10 | [Inventory](docs/api/missing-implementations.md#tv-episodes) |
+| TV Episode Groups | not exposed | 0 / 1 | [Inventory](docs/api/missing-implementations.md#tv-episode-groups) |
+| Watch Providers | not exposed | 0 / 3 | [Inventory](docs/api/missing-implementations.md#watch-providers) |
+
+People additionally exposes deprecated tagged images; Keywords additionally has one deprecated, unexposed movie listing. [Final inventory](docs/api/final-api-inventory.json) records all 152 operation statuses, assets and test references. [Migration notes](docs/api/implementation-decisions.md#migration-notes) describe enum additions and compatibility accessors.

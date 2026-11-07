@@ -1,5 +1,7 @@
 # Public operation wire coverage
 
+The [final inventory](final-api-inventory.json) reconciles all 152 pinned operations: 85 public (84 supported + 1 deprecated) and [67 without public APIs](missing-implementations.md) (66 supported + 1 deprecated). Current signatures, baseline/final statuses, model files and named test references are machine-checked by `python3 docs/api/verify-audit.py`. [Controller decisions and migration notes](implementation-decisions.md) retain compatibility tradeoffs.
+
 The denominator is the **85 unique public HTTP operations** recorded by Task 1 in [implemented-api-audit.json](implemented-api-audit.json), baseline revision `f12ce06810f602fce08c048476c9a522c862c83e`. That audit is retained as an explicit pre-repair baseline; its Swift signatures are not the current API inventory. This matrix maps those same 85 `METHOD /3/path` keys to current public calls and named request/response tests: **85 covered, 0 uncovered**.
 
 Reconciliation by family: account 11, authentication 3, lists 7, movies 23, people 11, search 1, trending 4, TV 25. The current source has 101 public operation method declarations: 82 method families map to the 85 keys because trending has four resource paths; 17 compatibility overloads, the additional search overload, and the legacy account accessor account for the other 19 declarations. Utility methods (`updateAuthenticator`, `clearCaches`, `cacheDiskStorageSize`) are not HTTP operations. Internal endpoint-only declarations, including guest-session creation, do not enlarge the denominator.
@@ -191,3 +193,8 @@ The source subtotal sums `files[].summary` only for paths containing `/Sources/T
 - No retry/backoff, cancellation, concurrent credential replacement, arbitrary delayed duplicate completion, or real-server cache behavior is asserted. Existing synchronous cache-hit callback behavior is retained.
 
 The final build emitted only the four existing restricted SwiftPM user-cache warnings. Task 8 review nits also now assert absent Authorization on handwritten authentication/movie/TV mutations and absent DELETE body streams, and link the existing tagged-image first-result parsing test in the matrix.
+
+
+## Final documentation verification (Task 10)
+
+The final documentation run at source revision `e8e9184` repeats the full serial command above (logs `/tmp/task10-full-raw.log` and `/tmp/task10-full.toon`): **265 tests, zero failures**. This verifies the published operation references without changing runtime code or tests. The measured percentages above remain the Task 9 export and its exact 36-file source subset; they are not recalculated from total-export figures or generalized to unexported source files. The final inventory and backlog reconcile 152 operations, 85 public tests and 67 missing entries. Audit/data/relative-link verification and `git diff --check` pass; historical signatures are checked against git baseline sources, independently of final signatures.
