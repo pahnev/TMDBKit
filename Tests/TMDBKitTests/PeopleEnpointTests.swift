@@ -9,7 +9,6 @@ import XCTest
 @testable import TMDBKit
 
 class PeopleEndpointTests: TMDBTestCase {
-
     func testPersonAppendResourcesUseDocumentedNamespaces() throws {
         try assertGETQuery("/3/person/31", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "append_to_response", value: "combined_credits,movie_credits,tv_credits,images,translations")]) {
             tmdb.people.details(for: 31, appending: [.credits, .movieCredits, .tvCredits, .combinedCredits, .images(languages: nil), .translations, .credits], completion: $0)
@@ -45,6 +44,7 @@ class PeopleEndpointTests: TMDBTestCase {
         XCTAssertEqual(person.combinedCredits?.cast.first?.mediaType, "movie")
         XCTAssertEqual(person.credits, person.combinedCredits)
     }
+
     private let personId = 1
 
     func testLegacyUndocumentedQueriesAreOmitted() throws {
@@ -101,7 +101,7 @@ class PeopleEndpointTests: TMDBTestCase {
     }
 
     func testReturnsPersonChanges() throws {
-        stubResponse(try contractObject("changes-person")) { request in
+        try stubResponse(contractObject("changes-person")) { request in
             try RequestExpectation(path: "/3/person/1/changes", query: ["api_key": "123", "page": "1"]).assertRequest(request)
         }
 
@@ -375,5 +375,4 @@ extension PeopleEndpointTests {
             tmdb.people.popular(pageNumber: 2, language: "fi-FI", completion: $0)
         }
     }
-
 }

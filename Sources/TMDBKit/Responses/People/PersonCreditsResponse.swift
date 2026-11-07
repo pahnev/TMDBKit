@@ -45,8 +45,13 @@ public struct CreditsCast: CodableEquatable {
     public let originCountry: [String]?
     public let order: Int?
     public let mediaType: String?
-    public var creditId: String? { creditID }
-    public var genreIds: [Int]? { genreIDS }
+    public var creditId: String? {
+        creditID
+    }
+
+    public var genreIds: [Int]? {
+        genreIDS
+    }
 
     private enum CodingKeys: String, CodingKey {
         case character
@@ -103,6 +108,7 @@ public struct CreditsCast: CodableEquatable {
         case order
         case mediaType = "media_type"
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: WireKeys.self)
         try container.encodeIfPresent(character, forKey: .character)
@@ -131,7 +137,6 @@ public struct CreditsCast: CodableEquatable {
         try container.encodeIfPresent(order, forKey: .order)
         try container.encodeIfPresent(mediaType, forKey: .mediaType)
     }
-
 }
 
 public struct AppendedPersonCredits: CodableEquatable {

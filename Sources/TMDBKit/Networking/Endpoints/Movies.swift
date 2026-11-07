@@ -31,7 +31,7 @@ enum Movies: Endpoint {
 
     case latest(language: String?)
 
-    /// Get a list of movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+    // Get a list of movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
 
     /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
     case lists(movieId: Int, pageNumber: PageNumber, language: String?)
@@ -54,7 +54,7 @@ enum Movies: Endpoint {
 
     case topRated(pageNumber: PageNumber, language: String?, region: String?)
 
-    /// Get a list of upcoming movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+    // Get a list of upcoming movies in theaters. This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
 
     /// You can optionally specify a region parameter which will narrow the search to only look for theatrical release dates within the specified country.
     case translations(movieId: Int)
@@ -161,7 +161,6 @@ enum Movies: Endpoint {
             return movies
                 .appendingPathComponent("\(movieId)")
                 .appendingDetails(append, language: lang)
-
         case .accountStates(let movieId):
             return movies.appendingPathComponent("\(movieId)/account_states")
         case .alternativeTitles(let movieId, let country):
@@ -169,8 +168,10 @@ enum Movies: Endpoint {
                 .appendingPathComponent("\(movieId)/alternative_titles")
                 .appendingCountry(country)
         case .changes(let movieId, let pageNumber, let startDate, let endDate):
-            let dates = [URLQueryItem(name: "start_date", value: startDate),
-                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
+            let dates = [
+                URLQueryItem(name: "start_date", value: startDate),
+                URLQueryItem(name: "end_date", value: endDate)
+            ].filter { $0.value != nil }
             return movies
                 .appendingPathComponent("\(movieId)/changes")
                 .appendingPage(pageNumber)
@@ -228,7 +229,7 @@ enum Movies: Endpoint {
                 .appendingPage(page)
                 .appendingLanguage(lang)
                 .appendingRegion(region)
-        case .latest(_):
+        case .latest:
             return movies
                 .appendingPathComponent("latest")
         case .topRated(let page, let lang, let region):

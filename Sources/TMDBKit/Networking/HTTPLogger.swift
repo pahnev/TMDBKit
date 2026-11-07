@@ -46,8 +46,7 @@ final class HTTPLogger {
     }
 
     func logComplete(with requestIdentifier: RequestIdentifier, data: Data?, response: URLResponse?, error: Error?) {
-        guard isLoggingEnabled() else { return }
-        guard let httpResponse = response as? HTTPURLResponse else { return }
+        guard isLoggingEnabled(), let httpResponse = response as? HTTPURLResponse else { return }
         var startDateMaybe: Date?
 
         internalQueue.sync {

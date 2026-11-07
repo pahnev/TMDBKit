@@ -35,10 +35,8 @@ class StubHelper {
             self.receivedRequests += 1
             try expected.assertRequest(request, file: file, line: line)
             var fileName = endpoint.url.path.dropFirst().replacingOccurrences(of: "/", with: "_")
-            if let query = endpoint.url.query {
-                if query.contains("append_to_response") {
-                    fileName.append("?\(query)")
-                }
+            if let query = endpoint.url.query, query.contains("append_to_response") {
+                fileName.append("?\(query)")
             }
             let file = try XCTUnwrap(self.fixtureCache["v\(fileName).json"])
             let data = try Data(contentsOf: file)

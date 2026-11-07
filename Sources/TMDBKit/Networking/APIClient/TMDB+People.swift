@@ -11,7 +11,7 @@ public extension TMDB {
     struct PeopleEndpoints {
         let tmdb: TMDB
 
-        /// Get the primary person details by id.
+        // Get the primary person details by id.
 
         /// Get the primary person details by id.
         /// - Parameters:
@@ -24,8 +24,8 @@ public extension TMDB {
                              completion: completion)
         }
 
-        /// Get the changes for a person. By default only the last 24 hours are returned.
-        /// You can query up to 14 days in a single query by using the start_date and end_date query parameters.
+        // Get the changes for a person. By default only the last 24 hours are returned.
+        // You can query up to 14 days in a single query by using the start_date and end_date query parameters.
 
         /// Get the changes for a person. By default only the last 24 hours are returned.
         /// You can query up to 14 days in a single query by using the start_date and end_date query parameters.

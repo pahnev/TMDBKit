@@ -97,21 +97,33 @@ extension URL {
                 default: name = item.name
                 }
             }
-            if !names.contains(name) { names.append(name) }
+            if !names.contains(name) {
+                names.append(name)
+            }
             switch item {
             case .reviews(let value), .videos(let value):
-                if selectedLanguage == nil { selectedLanguage = value }
+                if selectedLanguage == nil {
+                    selectedLanguage = value
+                }
             case .images(let values):
                 if let values = values {
                     hasImageLanguages = true
-                    for value in values where !imageLanguages.contains(value) { imageLanguages.append(value) }
+                    for value in values where !imageLanguages.contains(value) {
+                        imageLanguages.append(value)
+                    }
                 }
             default: break
             }
         }
-        if !names.isEmpty { url = url.appendingQueryItem(named: "append_to_response", value: names.joined(separator: ",")) }
-        if language == nil, let selectedLanguage = selectedLanguage { queries.append(URLQueryItem(name: "language", value: selectedLanguage)) }
-        if hasImageLanguages { queries.append(URLQueryItem(name: "include_image_language", value: imageLanguages.joined(separator: ","))) }
+        if !names.isEmpty {
+            url = url.appendingQueryItem(named: "append_to_response", value: names.joined(separator: ","))
+        }
+        if language == nil, let selectedLanguage = selectedLanguage {
+            queries.append(URLQueryItem(name: "language", value: selectedLanguage))
+        }
+        if hasImageLanguages {
+            queries.append(URLQueryItem(name: "include_image_language", value: imageLanguages.joined(separator: ",")))
+        }
         return url.appendingQueryItems(queries)
     }
 }

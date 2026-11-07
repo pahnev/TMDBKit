@@ -27,11 +27,15 @@ final class NetworkCacheTests: TMDBTestCase {
     private func request(_ path: String = "/3/movie/1/account_states", method: String = "GET", session: String? = "456", apiKey: String = "123", body: Data? = nil) -> URLRequest {
         var components = URLComponents(string: "https://api.themoviedb.org" + path)!
         components.queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
-        if let session = session { components.queryItems!.append(URLQueryItem(name: "session_id", value: session)) }
+        if let session = session {
+            components.queryItems!.append(URLQueryItem(name: "session_id", value: session))
+        }
         var request = URLRequest(url: components.url!)
         request.httpMethod = method
         request.httpBody = body
-        if method != "GET" { request.setValue("application/json;charset=utf-8", forHTTPHeaderField: "Content-Type") }
+        if method != "GET" {
+            request.setValue("application/json;charset=utf-8", forHTTPHeaderField: "Content-Type")
+        }
         return request
     }
 
@@ -60,7 +64,7 @@ final class NetworkCacheTests: TMDBTestCase {
         seed(request(), headers: headers())
         var requests = 0
         respond { _ in requests += 1 }
-        for _ in 0..<2 {
+        for _ in 0 ..< 2 {
             XCTAssertEqual(try awaitFor { tmdb.movies.accountStates(for: 1, completion: $0) }.value?.favorite, true)
         }
         XCTAssertEqual(requests, 0)
@@ -103,7 +107,7 @@ final class NetworkCacheTests: TMDBTestCase {
         }
         let result = try awaitFor { tmdb.movies.accountStates(for: 1, completion: $0) }
         XCTAssertNil(result.value)
-        guard case .httpError(304) = underlyingError(try XCTUnwrap(result.error)) as? TMDBError else { return XCTFail("Expected HTTP 304 failure") }
+        guard case .httpError(304) = try underlyingError(XCTUnwrap(result.error)) as? TMDBError else { return XCTFail("Expected HTTP 304 failure") }
         XCTAssertEqual(requests, 1)
     }
 
@@ -123,10 +127,13 @@ final class NetworkCacheTests: TMDBTestCase {
                 XCTAssertEqual(request.cachePolicy, .reloadIgnoringLocalCacheData)
                 XCTAssertEqual(request.value(forHTTPHeaderField: "Cache-Control"), "no-store")
             }
-            for _ in 0..<2 {
+            for _ in 0 ..< 2 {
                 let result = try awaitFor { completion in
-                    if method == "POST" { tmdb.movies.rateMovie(1, rating: 8.5, completion: completion) }
-                    else { tmdb.movies.deleteRating(of: 1, completion: completion) }
+                    if method == "POST" {
+                        tmdb.movies.rateMovie(1, rating: 8.5, completion: completion)
+                    } else {
+                        tmdb.movies.deleteRating(of: 1, completion: completion)
+                    }
                 }
                 XCTAssertEqual(result.value?.statusMessage, "wire")
             }
@@ -136,8 +143,11 @@ final class NetworkCacheTests: TMDBTestCase {
             XCTAssertNil(cache.cachedResponse(for: key))
             cache.removeAllCachedResponses()
             _ = try awaitFor { completion in
-                if method == "POST" { tmdb.movies.rateMovie(1, rating: 8.5, completion: completion) }
-                else { tmdb.movies.deleteRating(of: 1, completion: completion) }
+                if method == "POST" {
+                    tmdb.movies.rateMovie(1, rating: 8.5, completion: completion)
+                } else {
+                    tmdb.movies.deleteRating(of: 1, completion: completion)
+                }
             }
             XCTAssertNil(cache.cachedResponse(for: key), "Never-cache response must not populate an empty cache")
         }
@@ -147,19 +157,27 @@ final class NetworkCacheTests: TMDBTestCase {
         let token = RequestToken(success: true, expiresAt: "now", requestToken: "token")
         let operations: [(URLRequest, Data, (@escaping () -> Void) -> Void)] = [
             (request("/3/authentication/token/new", session: nil), Data(#"{"success":true,"expires_at":"now","request_token":"wire"}"#.utf8), { done in
-                self.tmdb.createRequestToken { result in XCTAssertEqual(result.value?.requestToken, "wire"); done() }
+                self.tmdb.createRequestToken { result in XCTAssertEqual(result.value?.requestToken, "wire")
+                    done()
+                }
             }),
             (request("/3/authentication/session/new", method: "POST", session: nil, body: Data(#"{"request_token":"token"}"#.utf8)), Data(#"{"success":true,"session_id":"wire"}"#.utf8), { done in
-                self.tmdb.createSession(requestToken: token) { result in XCTAssertEqual(result.value?.sessionId, "wire"); done() }
+                self.tmdb.createSession(requestToken: token) { result in XCTAssertEqual(result.value?.sessionId, "wire")
+                    done()
+                }
             }),
             (request("/3/authentication/session", method: "DELETE", session: nil, body: Data(#"{"session_id":"456"}"#.utf8)), Data(#"{"success":true}"#.utf8), { done in
-                self.tmdb.deleteSession { result in XCTAssertEqual(result.value?.success, true); done() }
+                self.tmdb.deleteSession { result in XCTAssertEqual(result.value?.success, true)
+                    done()
+                }
             })
         ]
         for (key, payload, invoke) in operations {
             cache.removeAllCachedResponses()
             let poison = Data("cached authentication response".utf8)
-            if key.httpMethod == "GET" { seed(key, data: poison, headers: headers()) }
+            if key.httpMethod == "GET" {
+                seed(key, data: poison, headers: headers())
+            }
             let prior = cache.cachedResponse(for: key)?.data
             cache.resetCounts()
             var requests = 0
@@ -169,7 +187,9 @@ final class NetworkCacheTests: TMDBTestCase {
                 XCTAssertEqual(request.cachePolicy, .reloadIgnoringLocalCacheData)
                 XCTAssertEqual(request.value(forHTTPHeaderField: "Cache-Control"), "no-store")
             }
-            for _ in 0..<2 { _ = try awaitFor { done in invoke { done(true) } } }
+            for _ in 0 ..< 2 {
+                _ = try awaitFor { done in invoke { done(true) } }
+            }
             XCTAssertEqual(requests, 2)
             XCTAssertEqual(cache.reads, 0)
             XCTAssertEqual(cache.writes, 0)
@@ -187,12 +207,14 @@ final class NetworkCacheTests: TMDBTestCase {
         respond(status: 304, data: Data()) { _ in requests += 1 }
         let result = try awaitFor { tmdb.createRequestToken(completion: $0) }
         XCTAssertNil(result.value)
-        guard case .httpError(304) = underlyingError(try XCTUnwrap(result.error)) as? TMDBError else { return XCTFail("Never-cache must not return a stored token for 304") }
+        guard case .httpError(304) = try underlyingError(XCTUnwrap(result.error)) as? TMDBError else { return XCTFail("Never-cache must not return a stored token for 304") }
         XCTAssertEqual(requests, 1)
     }
 
     func testCredentialReplacementDoesNotReusePreviousAccountResponse() throws {
-        struct Credentials: Authenticator { let apiKey: String; let sessionId: String? }
+        struct Credentials: Authenticator { let apiKey: String
+            let sessionId: String?
+        }
         var requests = 0
         respond(headers: headers()) { request in
             requests += 1
@@ -249,7 +271,7 @@ final class NetworkCacheTests: TMDBTestCase {
             requests += 1
             XCTAssertNil(request.value(forHTTPHeaderField: "If-None-Match"))
         }
-        for _ in 0..<2 {
+        for _ in 0 ..< 2 {
             XCTAssertEqual(try awaitFor { tmdb.movies.accountStates(for: 1, completion: $0) }.value?.favorite, false)
         }
         XCTAssertEqual(requests, 2)
@@ -264,7 +286,6 @@ final class NetworkCacheTests: TMDBTestCase {
         }
     }
 }
-
 
 /// Observe access to a real memory-only Foundation cache, retaining its storage semantics.
 private final class TrackingURLCache: URLCache {
@@ -307,6 +328,6 @@ private final class TrackingURLCache: URLCache {
 }
 
 #if compiler(>=5.5)
-// Foundation protects storage; counterLock protects the added observation state.
-extension TrackingURLCache: @unchecked Sendable {}
+    /// Foundation protects storage; counterLock protects the added observation state.
+    extension TrackingURLCache: @unchecked Sendable {}
 #endif

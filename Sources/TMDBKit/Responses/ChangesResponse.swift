@@ -18,5 +18,7 @@ public struct TVChangesResponse: CodableEquatable {
     public let changes: [TVChange]?
 
     @available(*, deprecated, message: "Use changes, the canonical response key")
-    public var items: [TVChange]? { changes }
+    public var items: [TVChange]? {
+        changes
+    }
 }

@@ -9,9 +9,16 @@ final class SearchEndpointTests: TMDBTestCase {
             XCTAssertEqual(request.httpMethod, "GET")
             XCTAssertEqual(request.url?.path, "/3/search/movie")
             let items = try self.queryItems(in: request)
-            for (name, value) in [("query", "Amélie & C++?/"), ("page", "2"), ("language", "fi-FI"),
-                                  ("include_adult", "true"), ("region", "FI"), ("year", "2001"),
-                                  ("primary_release_year", "2001"), ("api_key", "123")] {
+            for (name, value) in [
+                ("query", "Amélie & C++?/"),
+                ("page", "2"),
+                ("language", "fi-FI"),
+                ("include_adult", "true"),
+                ("region", "FI"),
+                ("year", "2001"),
+                ("primary_release_year", "2001"),
+                ("api_key", "123")
+            ] {
                 XCTAssertEqual(items.filter { $0.name == name }.map { $0.value }, [value])
             }
             XCTAssertEqual(items.count, 8)

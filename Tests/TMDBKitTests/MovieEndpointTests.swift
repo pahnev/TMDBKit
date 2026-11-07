@@ -11,7 +11,6 @@ import XCTest
 @testable import TMDBKit
 
 class MovieEndpointTests: TMDBTestCase {
-
     func testPersonOnlyCreditsAreOmittedForMovieAndTV() throws {
         let appends: [DetailsAppendable] = [.movieCredits, .tvCredits, .combinedCredits]
         let app = [URLQueryItem(name: "api_key", value: "123")]
@@ -65,7 +64,9 @@ class MovieEndpointTests: TMDBTestCase {
                 XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
                 let query = try self.queryItems(in: request)
                 XCTAssertEqual(query.count, 2)
-                for item in credentials { XCTAssertEqual(query.filter { $0 == item }.count, 1) }
+                for item in credentials {
+                    XCTAssertEqual(query.filter { $0 == item }.count, 1)
+                }
                 if method == "POST" {
                     let object = try XCTUnwrap(JSONSerialization.jsonObject(with: self.requestBody(request)) as? [String: Double])
                     XCTAssertEqual(object, ["value": 8.5])
@@ -75,13 +76,17 @@ class MovieEndpointTests: TMDBTestCase {
                 }
             }
             let response: StatusResponse?
-            if method == "POST" { response = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value }
-            else { response = try awaitFor { tmdb.movies.deleteRating(of: 1, guestSessionId: guest, completion: $0) }.value }
+            if method == "POST" {
+                response = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value
+            } else {
+                response = try awaitFor { tmdb.movies.deleteRating(of: 1, guestSessionId: guest, completion: $0) }.value
+            }
             XCTAssertEqual(response?.statusCode, 1)
             XCTAssertEqual(response?.statusMessage, "ok")
             XCTAssertEqual(count, 1)
         }
     }
+
     let blackPantherMovieId = 284054
     let allQuietMovieId = 143
 
@@ -201,7 +206,7 @@ class MovieEndpointTests: TMDBTestCase {
     }
 
     func testReturnsChanges() throws {
-        stubResponse(try contractObject("changes-movie")) { request in
+        try stubResponse(contractObject("changes-movie")) { request in
             try RequestExpectation(path: "/3/movie/143/changes", query: ["api_key": "123", "page": "1"]).assertRequest(request)
         }
 
@@ -307,10 +312,10 @@ class MovieEndpointTests: TMDBTestCase {
         XCTAssertEqual(movies?.results.first?.id, 284053)
     }
 
-    func testSimilarMoviesUsesCurrentRoute() {
+    func testSimilarMoviesUsesCurrentRoute() throws {
         let url = Movies.similarMovies(movieId: 284054, pageNumber: 2, language: "fi-FI").url
         XCTAssertEqual(url.path, "/3/movie/284054/similar")
-        let query = URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!
+        let query = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         XCTAssertTrue(query.contains(URLQueryItem(name: "page", value: "2")))
         XCTAssertTrue(query.contains(URLQueryItem(name: "language", value: "fi-FI")))
     }
@@ -412,7 +417,7 @@ class MovieEndpointTests: TMDBTestCase {
         XCTAssertEqual(nowPlaying?.results.first?.id, 351286)
     }
 
-    func testEndpointURLsAreConstructedProperly() throws {
+    func testEndpointURLsAreConstructedProperly() {
         assertURL(.accountStates(movieId: 1), matches: "https://api.themoviedb.org/3/movie/1/account_states")
 
         assertURL(.alternativeTitles(movieId: 1, country: "fi"), matches: "https://api.themoviedb.org/3/movie/1/alternative_titles?country=fi")
@@ -458,7 +463,7 @@ class MovieEndpointTests: TMDBTestCase {
         assertURL(.videos(movieId: 1, language: "fi"), matches: "https://api.themoviedb.org/3/movie/1/videos?language=fi")
     }
 
-    func testDetailsEndpointURLAppendsDetails() throws {
+    func testDetailsEndpointURLAppendsDetails() {
         let credits = Movies.details(movieId: 1, append: [DetailsAppendable.credits], language: nil)
         assertURL(credits, matches: "https://api.themoviedb.org/3/movie/1?append_to_response=credits")
 
@@ -670,7 +675,6 @@ extension MovieEndpointTests {
             tmdb.movies.credits(for: 550, language: "fi-FI", completion: $0)
         }
     }
-
 }
 
 extension MovieEndpointTests {

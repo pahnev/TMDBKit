@@ -88,7 +88,7 @@ final class AuthenticationEndpointTests: TMDBTestCase {
         }
     }
 
-    func test_endpointURLs() throws {
+    func test_endpointURLs() {
         XCTAssertEqual(Authentication.requestToken.url.absoluteString,
                        "https://api.themoviedb.org/3/authentication/token/new")
 

@@ -40,7 +40,7 @@ class TMDBTestCase: XCTestCase {
         MockURLProtocol.requestHandler = { request in
             try inspectRequest(request)
             let data = try JSONSerialization.data(withJSONObject: response)
-            return (HTTPURLResponse(url: try XCTUnwrap(request.url), statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
+            return try (HTTPURLResponse(url: XCTUnwrap(request.url), statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
         }
     }
 
@@ -49,7 +49,9 @@ class TMDBTestCase: XCTestCase {
         let root = URL(fileURLWithPath: #file).deletingLastPathComponent()
         let data = try Data(contentsOf: root.appendingPathComponent("Fixtures/Contract/\(name).json"))
         var object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
-        if omitID { object.removeValue(forKey: "id") }
+        if omitID {
+            object.removeValue(forKey: "id")
+        }
         return object
     }
 

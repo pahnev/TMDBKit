@@ -57,10 +57,10 @@ enum TV: Endpoint {
     /// Get the top rated movies on TMDb.
     case topRated(pageNumber: PageNumber, language: String?)
 
-    // POST
+    /// POST
     case rateShow(tvId: Int, rating: Double)
 
-    // DELETE
+    /// DELETE
     case deleteRating(tvId: Int)
 
     var httpMethod: HTTPMethod {
@@ -167,7 +167,6 @@ enum TV: Endpoint {
             return tv
                 .appendingPathComponent("\(tvId)")
                 .appendingDetails(append, language: language)
-
         case .accountStates(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/account_states")
@@ -179,8 +178,10 @@ enum TV: Endpoint {
             return tv
                 .appendingPathComponent("\(tvId)/alternative_titles")
         case .changes(let tvId, let pageNumber, let startDate, let endDate):
-            let dates = [URLQueryItem(name: "start_date", value: startDate),
-                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
+            let dates = [
+                URLQueryItem(name: "start_date", value: startDate),
+                URLQueryItem(name: "end_date", value: endDate)
+            ].filter { $0.value != nil }
             return tv
                 .appendingPathComponent("\(tvId)/changes")
                 .appendingPage(pageNumber)
@@ -229,7 +230,7 @@ enum TV: Endpoint {
                 .appendingPathComponent("popular")
                 .appendingPage(page)
                 .appendingLanguage(language)
-        case .latest(_):
+        case .latest:
             return tv
                 .appendingPathComponent("latest")
         case .topRated(let page, let language):

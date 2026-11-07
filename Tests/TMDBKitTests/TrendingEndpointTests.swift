@@ -110,7 +110,7 @@ class TrendingEndpointTests: TMDBTestCase {
 
 extension TrendingEndpointTests {
     func testWeeklyTrendingAllRequestAndResponse() throws {
-        stubResponse(try contractObject("trending-all")) { request in
+        try stubResponse(contractObject("trending-all")) { request in
             try RequestExpectation(path: "/3/trending/all/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
         }
         let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.all, withinLast: .week, language: "fi-FI", completion: $0) }.value)
@@ -134,7 +134,7 @@ extension TrendingEndpointTests {
     }
 
     func testWeeklyTrendingTVRequestAndResponse() throws {
-        stubResponse(try contractObject("trending-tv")) { request in
+        try stubResponse(contractObject("trending-tv")) { request in
             try RequestExpectation(path: "/3/trending/tv/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
         }
         let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.tv, withinLast: .week, language: "fi-FI", completion: $0) }.value)
@@ -146,7 +146,7 @@ extension TrendingEndpointTests {
     }
 
     func testWeeklyTrendingPeopleRequestAndResponse() throws {
-        stubResponse(try contractObject("trending-people")) { request in
+        try stubResponse(contractObject("trending-people")) { request in
             try RequestExpectation(path: "/3/trending/person/week", query: ["api_key": "123", "language": "fi-FI"]).assertRequest(request)
         }
         let response = try XCTUnwrap(awaitFor { tmdb.trending.trending(.person, withinLast: .week, language: "fi-FI", completion: $0) }.value)

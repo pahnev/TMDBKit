@@ -8,14 +8,18 @@ func assertQuery(_ request: URLRequest, equals expected: [String: String],
     for (key, values) in groups {
         XCTAssertEqual(values.count, 1, "Duplicate query key: \(key)", file: file, line: line)
     }
-    for item in items { XCTAssertNotNil(item.value, "Missing query value: \(item.name)", file: file, line: line) }
+    for item in items {
+        XCTAssertNotNil(item.value, "Missing query value: \(item.name)", file: file, line: line)
+    }
     // Do not use uniqueKeysWithValues: duplicates must produce an assertion, not a trap.
     let actual = groups.mapValues { $0.first?.value ?? "" }
     XCTAssertEqual(actual, expected, file: file, line: line)
 }
 
 func requestBodyData(_ request: URLRequest) throws -> Data {
-    if let body = request.httpBody { return body }
+    if let body = request.httpBody {
+        return body
+    }
     let stream = try XCTUnwrap(request.httpBodyStream)
     stream.open()
     defer { stream.close() }
@@ -23,8 +27,12 @@ func requestBodyData(_ request: URLRequest) throws -> Data {
     var buffer = [UInt8](repeating: 0, count: 1024)
     while stream.hasBytesAvailable {
         let count = stream.read(&buffer, maxLength: buffer.count)
-        if count < 0 { throw try XCTUnwrap(stream.streamError) }
-        if count == 0 { break }
+        if count < 0 {
+            throw try XCTUnwrap(stream.streamError)
+        }
+        if count == 0 {
+            break
+        }
         body.append(contentsOf: buffer.prefix(count))
     }
     return body

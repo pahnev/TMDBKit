@@ -25,10 +25,10 @@ public extension Media {
         if keyed.contains(.mediaType) {
             let type = try keyed.decode(String.self, forKey: .mediaType)
             switch type {
-            case "tv": self = .tv(try container.decode(TVMedia.self))
-            case "movie": self = .movie(try container.decode(MovieFragment.self))
-            case "person": self = .person(try container.decode(PopularPerson.self))
-            case "tv_episode": self = .episode(try container.decode(LastEpisodeToAir.self))
+            case "tv": self = try .tv(container.decode(TVMedia.self))
+            case "movie": self = try .movie(container.decode(MovieFragment.self))
+            case "person": self = try .person(container.decode(PopularPerson.self))
+            case "tv_episode": self = try .episode(container.decode(LastEpisodeToAir.self))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .mediaType, in: keyed,
                                                        debugDescription: "Unsupported media discriminator: \(type)")
@@ -47,7 +47,7 @@ public extension Media {
             self = .episode(episode)
         } else {
             throw DecodingError.dataCorrupted(.init(codingPath: container.codingPath,
-                                                   debugDescription: "Media type not supported."))
+                                                    debugDescription: "Media type not supported."))
         }
     }
 
@@ -58,13 +58,19 @@ public extension Media {
         var container = encoder.singleValueContainer()
         switch self {
         case .tv(let tvMedia):
-            if tvMedia.mediaType != nil { try discriminator.encode("tv", forKey: .mediaType) }
+            if tvMedia.mediaType != nil {
+                try discriminator.encode("tv", forKey: .mediaType)
+            }
             try container.encode(tvMedia.withMediaType(nil))
         case .movie(let movieMedia):
-            if movieMedia.mediaType != nil { try discriminator.encode("movie", forKey: .mediaType) }
+            if movieMedia.mediaType != nil {
+                try discriminator.encode("movie", forKey: .mediaType)
+            }
             try container.encode(movieMedia.withMediaType(nil))
         case .person(let person):
-            if person.mediaType != nil { try discriminator.encode("person", forKey: .mediaType) }
+            if person.mediaType != nil {
+                try discriminator.encode("person", forKey: .mediaType)
+            }
             try container.encode(person.withMediaType(nil))
         case .episode(let episode):
             try discriminator.encode("tv_episode", forKey: .mediaType)
@@ -92,8 +98,8 @@ public struct TVMedia: CodableEquatable {
     public let originalName: String
 }
 
-// A Media wrapper owns its discriminator. These copies avoid encoding both the
-// canonical media_type and a synthesized child mediaType alias.
+/// A Media wrapper owns its discriminator. These copies avoid encoding both the
+/// canonical media_type and a synthesized child mediaType alias.
 private extension TVMedia {
     func withMediaType(_ type: String?) -> TVMedia {
         return TVMedia(adult: adult, mediaType: type, posterPath: posterPath, popularity: popularity,

@@ -33,11 +33,13 @@ enum Search: Endpoint {
                 .appendingSearchQuery(query)
                 .appendingPage(page)
         case .movies((let query, let page), let language, let includeAdult, let region, let year, let primaryReleaseYear):
-            let options = [URLQueryItem(name: "language", value: language),
-                           URLQueryItem(name: "include_adult", value: includeAdult.map { String($0) }),
-                           URLQueryItem(name: "region", value: region),
-                           URLQueryItem(name: "year", value: year),
-                           URLQueryItem(name: "primary_release_year", value: primaryReleaseYear)].filter { $0.value != nil }
+            let options = [
+                URLQueryItem(name: "language", value: language),
+                URLQueryItem(name: "include_adult", value: includeAdult.map { String($0) }),
+                URLQueryItem(name: "region", value: region),
+                URLQueryItem(name: "year", value: year),
+                URLQueryItem(name: "primary_release_year", value: primaryReleaseYear)
+            ].filter { $0.value != nil }
             return search.appendingPathComponent("movie")
                 .appendingSearchQuery(query)
                 .appendingPage(page)

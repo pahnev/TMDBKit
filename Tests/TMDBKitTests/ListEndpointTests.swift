@@ -81,8 +81,8 @@ class ListEndpointTests: TMDBTestCase {
         XCTAssertEqual(response.statusMessage, "The item/record was updated successfully.")
     }
 
-    func testClearListIncludesConfirmation() {
-        let query = URLComponents(url: Lists.clearList(listId: "1").url, resolvingAgainstBaseURL: false)!.queryItems ?? []
+    func testClearListIncludesConfirmation() throws {
+        let query = try XCTUnwrap(URLComponents(url: Lists.clearList(listId: "1").url, resolvingAgainstBaseURL: false)?.queryItems) ?? []
         XCTAssertEqual(query.filter { $0.name == "confirm" }, [URLQueryItem(name: "confirm", value: "true")])
     }
 

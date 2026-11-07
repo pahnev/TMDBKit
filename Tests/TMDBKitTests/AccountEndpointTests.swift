@@ -11,7 +11,6 @@ import XCTest
 @testable import TMDBKit
 
 class AccountEndpointTests: TMDBTestCase {
-
     func testAccountDetailsExplicitIDUsesDocumentedPath() throws {
         try assertGETQuery("/3/account/548", [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]) {
             tmdb.account.details(for: 548, completion: $0)
@@ -31,6 +30,7 @@ class AccountEndpointTests: TMDBTestCase {
         try assertGETQuery("/3/account/0/favorite/movies", auth) { tmdb.account.favoriteMoviesFor(pageNumber: nil, completion: $0) }
         try assertGETQuery("/3/account/548/favorite/movies", auth) { tmdb.account.favoriteMoviesFor(accountId: 548, pageNumber: nil, completion: $0) }
     }
+
     func testLegacyUndocumentedQueriesAreOmitted() throws {
         let authenticated = [URLQueryItem(name: "api_key", value: "123"), URLQueryItem(name: "session_id", value: "456")]
         try assertGETQuery("/3/account/1/lists", authenticated + [URLQueryItem(name: "page", value: "2")]) {
@@ -271,7 +271,7 @@ class AccountEndpointTests: TMDBTestCase {
 
 extension AccountEndpointTests {
     func testExplicitAccountDetailsReturnsFields() throws {
-        stubResponse(try contractObject("account-details")) { request in
+        try stubResponse(contractObject("account-details")) { request in
             try RequestExpectation(path: "/3/account/548", query: ["api_key": "123", "session_id": "456"]).assertRequest(request)
         }
         let account = try XCTUnwrap(awaitFor { tmdb.account.details(for: 548, completion: $0) }.value)
@@ -346,5 +346,4 @@ extension AccountEndpointTests {
             tmdb.account.tvShowWatchlist(accountId: 548, pageNumber: 2, language: "fi-FI", sortBy: .createdAt(.descending), completion: $0)
         }
     }
-
 }

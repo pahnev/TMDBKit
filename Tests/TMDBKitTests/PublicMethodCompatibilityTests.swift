@@ -1,5 +1,5 @@
-import XCTest
 import TMDBKit
+import XCTest
 
 final class PublicMethodCompatibilityTests: TMDBTestCase {
     func testOriginalFullMethodNamesRetainTheirFunctionTypes() {

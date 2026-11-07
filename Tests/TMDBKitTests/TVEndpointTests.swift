@@ -10,7 +10,6 @@ import XCTest
 @testable import TMDBKit
 
 class TVEndpointTests: TMDBTestCase {
-
     func testTVAllSupportedAppendsDecode() throws {
         var object = try contractObject("tv-series-details")
         for resource in ["credits", "reviews", "videos", "images", "similar", "translations"] {
@@ -63,7 +62,9 @@ class TVEndpointTests: TMDBTestCase {
                 XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
                 let query = try self.queryItems(in: request)
                 XCTAssertEqual(query.count, 2)
-                for item in credentials { XCTAssertEqual(query.filter { $0 == item }.count, 1) }
+                for item in credentials {
+                    XCTAssertEqual(query.filter { $0 == item }.count, 1)
+                }
                 if method == "POST" {
                     let object = try XCTUnwrap(JSONSerialization.jsonObject(with: self.requestBody(request)) as? [String: Double])
                     XCTAssertEqual(object, ["value": 8.5])
@@ -73,13 +74,17 @@ class TVEndpointTests: TMDBTestCase {
                 }
             }
             let response: StatusResponse?
-            if method == "POST" { response = try awaitFor { tmdb.tv.rateShow(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value }
-            else { response = try awaitFor { tmdb.tv.deleteRating(of: 1, guestSessionId: guest, completion: $0) }.value }
+            if method == "POST" {
+                response = try awaitFor { tmdb.tv.rateShow(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value
+            } else {
+                response = try awaitFor { tmdb.tv.deleteRating(of: 1, guestSessionId: guest, completion: $0) }.value
+            }
             XCTAssertEqual(response?.statusCode, 1)
             XCTAssertEqual(response?.statusMessage, "ok")
             XCTAssertEqual(count, 1)
         }
     }
+
     private let gameOfThrones = 1399
 
     func testTVVideoLanguageFallbackQuery() throws {
@@ -187,7 +192,7 @@ class TVEndpointTests: TMDBTestCase {
         XCTAssertEqual(result?.name, "Game of Thrones")
     }
 
-    func testDetailsURL() throws {
+    func testDetailsURL() {
         let withoutAppending = TV.details(tvId: 1, language: nil, append: nil)
         XCTAssertEqual(withoutAppending.url.absoluteString, "https://api.themoviedb.org/3/tv/1")
 
@@ -720,7 +725,6 @@ extension TVEndpointTests {
             tmdb.tv.credits(for: 1399, language: "fi-FI", completion: $0)
         }
     }
-
 }
 
 extension TVEndpointTests {

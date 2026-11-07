@@ -34,8 +34,11 @@ public struct ListDetails: CodableEquatable {
 public struct ListItemStatus: CodableEquatable {
     public let id: String
     public let itemPresent: Bool
-    public var numericId: Int? { Int(id) }
-    // Preserve the accepted wire kind for legacy string IDs, including "001".
+    public var numericId: Int? {
+        Int(id)
+    }
+
+    /// Preserve the accepted wire kind for legacy string IDs, including "001".
     private let integerWireId: Int?
 
     private enum CodingKeys: String, CodingKey { case id, itemPresent }
@@ -53,6 +56,7 @@ public struct ListItemStatus: CodableEquatable {
         }
         itemPresent = try container.decode(Bool.self, forKey: .itemPresent)
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: WireKeys.self)
         if let integer = integerWireId {

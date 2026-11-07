@@ -9,11 +9,11 @@
 import Foundation
 
 public enum TMDBError: Error, LocalizedError {
-    case networkError(Error) /// Network error during HTTP request was received
-    case emptyDataReceivedError /// Data in URLResponse was nil
-    case httpError(Int) /// Non-OK HTTP status code was received (outside range of 200-299)
-    case nonHttpResponseError /// Non-HTTP response was received
-    case decodingError(DecodingError) /// JSON decoding error
+    case networkError(Error) // Network error during HTTP request was received
+    case emptyDataReceivedError // Data in URLResponse was nil
+    case httpError(Int) // Non-OK HTTP status code was received (outside range of 200-299)
+    case nonHttpResponseError // Non-HTTP response was received
+    case decodingError(DecodingError) // JSON decoding error
     case cacheSavingError(Error) // Error during saving an object to cache.
     case sessionIdMissing
     case unknownDecodingError(Error)

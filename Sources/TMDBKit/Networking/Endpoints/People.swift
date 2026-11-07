@@ -28,10 +28,11 @@ enum People: Endpoint {
             return people
                 .appendingPathComponent("\(personId)")
                 .appendingDetails(append, language: language, person: true)
-
         case .changes(let personId, let pageNumber, let startDate, let endDate):
-            let dates = [URLQueryItem(name: "start_date", value: startDate),
-                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
+            let dates = [
+                URLQueryItem(name: "start_date", value: startDate),
+                URLQueryItem(name: "end_date", value: endDate)
+            ].filter { $0.value != nil }
             return people
                 .appendingPathComponent("\(personId)/changes")
                 .appendingPage(pageNumber)
@@ -60,7 +61,7 @@ enum People: Endpoint {
         case .translations(let personId, _):
             return people
                 .appendingPathComponent("\(personId)/translations")
-        case .latest(_):
+        case .latest:
             return people
                 .appendingPathComponent("latest")
         case .popular(let pageNumber, let language):

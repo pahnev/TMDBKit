@@ -163,7 +163,7 @@ public class TMDB {
 // MARK: - Private
 
 private extension TMDB {
-    func parseWithResponse<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<HTTPResponseContaining<CachedObjectType>>) where CachedObjectType: CodableEquatable {
+    func parseWithResponse<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<HTTPResponseContaining<CachedObjectType>>) {
         do {
             let object = try decodeObject(ofType: CachedObjectType.self, data: value.value)
             completion(.success(HTTPResponseContaining(object: object, responseStatusCode: value.statusCode)))
@@ -175,7 +175,7 @@ private extension TMDB {
         }
     }
 
-    func parse<CachedObjectType>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<CachedObjectType>) where CachedObjectType: CodableEquatable {
+    func parse<CachedObjectType: CodableEquatable>(ofType: CachedObjectType.Type, value: NetworkResult.SuccessValue, completion: TMDBResult<CachedObjectType>) {
         do {
             let object = try decodeObject(ofType: CachedObjectType.self, data: value.value)
             completion(.success(object))
@@ -187,7 +187,7 @@ private extension TMDB {
         }
     }
 
-    func decodeObject<CachedObjectType>(ofType: CachedObjectType.Type, data: Data) throws -> CachedObjectType where CachedObjectType: Decodable {
+    func decodeObject<CachedObjectType: Decodable>(ofType: CachedObjectType.Type, data: Data) throws -> CachedObjectType {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase

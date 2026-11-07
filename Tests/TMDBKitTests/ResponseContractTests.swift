@@ -27,7 +27,9 @@ final class ResponseContractTests: XCTestCase {
         XCTAssertEqual(rated.rated?.value, 8.5)
         try roundTrip(unrated)
         try roundTrip(rated)
-        for invalid: Any in [true, "false", [:], ["value": "8.5"], NSNull()] { XCTAssertThrowsError(try state(invalid)) }
+        for invalid: Any in [true, "false", [:], ["value": "8.5"], NSNull()] {
+            XCTAssertThrowsError(try state(invalid))
+        }
     }
 
     func testAppendedPersonAndTVCreditsRoundTripWithoutStandaloneIDs() throws {
@@ -48,7 +50,9 @@ final class ResponseContractTests: XCTestCase {
         XCTAssertNotNil(encoded["images"])
         XCTAssertNotNil(encoded["translations"])
         XCTAssertNotNil(encoded["combined_credits"])
-        for alias in ["profile_images", "profileImages", "person_translations", "personTranslations", "credits"] { XCTAssertNil(encoded[alias]) }
+        for alias in ["profile_images", "profileImages", "person_translations", "personTranslations", "credits"] {
+            XCTAssertNil(encoded[alias])
+        }
         for wire in ["images", "translations", "movie_credits", "tv_credits", "combined_credits"] {
             var malformed = person
             malformed[wire] = "wrong"
@@ -66,10 +70,12 @@ final class ResponseContractTests: XCTestCase {
         // Negative boundary from the pinned empty example: upstream response completeness
         // is unknown. This is not evidence that useful recommendations responses are empty.
         XCTAssertThrowsError(try decode(PopularMoviesResponse.self, fixture("movie-recommendations-negative-boundary")))
-        for json in [#"{"results":[],"total_pages":0,"total_results":0}"#,
-                     #"{"page":1,"total_pages":0,"total_results":0}"#,
-                     #"{"page":1,"results":[],"total_results":0}"#,
-                     #"{"page":1,"results":[],"total_pages":0}"#] {
+        for json in [
+            #"{"results":[],"total_pages":0,"total_results":0}"#,
+            #"{"page":1,"total_pages":0,"total_results":0}"#,
+            #"{"page":1,"results":[],"total_results":0}"#,
+            #"{"page":1,"results":[],"total_pages":0}"#
+        ] {
             XCTAssertThrowsError(try decode(PopularMoviesResponse.self, Data(json.utf8)))
         }
         // Synthetic shape boundary only; no movie-recommendations example is invented.
@@ -79,8 +85,8 @@ final class ResponseContractTests: XCTestCase {
     }
 
     func testRequiredIDsRemainStrict() throws {
-        // Each row first decodes a complete pinned object, then mutates only identity.
-        // Missing schema required lists never justify defaulting IDs or coercing strings.
+        /// Each row first decodes a complete pinned object, then mutates only identity.
+        /// Missing schema required lists never justify defaulting IDs or coercing strings.
         func row<T: Decodable>(_ type: T.Type, _ operation: String, _ path: String = "", key: String = "id", wrong: Any = "wrong") -> (String, () throws -> Void) {
             (String(describing: type), {
                 let source = try XCTUnwrap(self.fixtureValue(operation, path) as? [String: Any])
@@ -124,7 +130,9 @@ final class ResponseContractTests: XCTestCase {
             row(Review.self, "movie-reviews", "results.0", wrong: 7),
             row(Video.self, "movie-videos", "results.0", wrong: 7)
         ]
-        for (name, verify) in rows { try XCTContext.runActivity(named: name) { _ in try verify() } }
+        for (name, verify) in rows {
+            try XCTContext.runActivity(named: name) { _ in try verify() }
+        }
         // ListItemStatus intentionally accepts historical string IDs; its separate union
         // boundary test rejects missing/null/boolean/fractional/object IDs.
         // Appended containers have no root ID; child identities use the same strict types.
@@ -160,8 +168,8 @@ final class ResponseContractTests: XCTestCase {
         try roundTrip(response)
     }
 
-    // Synthetic union boundaries: TMDB's guides describe numeric season/episode IDs;
-    // all JSON kinds and absent/null are exercised without attributing them to examples.
+    /// Synthetic union boundaries: TMDB's guides describe numeric season/episode IDs;
+    /// all JSON kinds and absent/null are exercised without attributing them to examples.
     func testChangeValuesRoundTripAllJSONKinds() throws {
         let data = Data(#"{"series_id":9007199254740993,"episode_id":123,"fraction":1.25,"enabled":true,"text":"hi","array":[null,false,4],"nested_key":{"file_path":"/x"}}"#.utf8)
         let value = try decode(ChangeValue.self, data)
@@ -198,8 +206,12 @@ final class ResponseContractTests: XCTestCase {
 
     func testChangeRequiredFieldsRejectMalformedData() throws {
         // Synthetic invalid boundaries preserve strict identity and structure.
-        for json in [#"{"action":"a","time":"t"}"#, #"{"id":7,"action":"a","time":"t"}"#,
-                     #"{"id":"i","time":"t"}"#, #"{"id":"i","action":"a","time":false}"#] {
+        for json in [
+            #"{"action":"a","time":"t"}"#,
+            #"{"id":7,"action":"a","time":"t"}"#,
+            #"{"id":"i","time":"t"}"#,
+            #"{"id":"i","action":"a","time":false}"#
+        ] {
             XCTAssertThrowsError(try decode(Change.Item.self, Data(json.utf8)))
             XCTAssertThrowsError(try decode(TVChange.Item.self, Data(json.utf8)))
         }
@@ -266,7 +278,7 @@ final class ResponseContractTests: XCTestCase {
         // Synthetic boundaries mutate only required identity or network structure.
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture("tv-recommendations")) as? [String: Any])
         let results = try XCTUnwrap(object["results"] as? [[String: Any]])
-        for mutation: (inout [String: Any]) -> Void in [
+        for mutation: inout [String: Any] in [
             { $0.removeValue(forKey: "id") }, { $0["id"] = "1396" },
             { $0["networks"] = "wrong" }, { $0["networks"] = NSNull() }
         ] {
@@ -295,9 +307,13 @@ final class ResponseContractTests: XCTestCase {
             XCTAssertEqual(try decode(ChangeValue.self, JSONEncoder().encode(legacy)), .object(["id": .string(text), "item_present": .bool(true)]))
             try roundTrip(legacy)
         }
-        for invalid in [#"{"item_present":true}"#, #"{"id":true,"item_present":true}"#,
-                        #"{"id":{},"item_present":true}"#, #"{"id":1.5,"item_present":true}"#,
-                        #"{"id":null,"item_present":true}"#] {
+        for invalid in [
+            #"{"item_present":true}"#,
+            #"{"id":true,"item_present":true}"#,
+            #"{"id":{},"item_present":true}"#,
+            #"{"id":1.5,"item_present":true}"#,
+            #"{"id":null,"item_present":true}"#
+        ] {
             XCTAssertThrowsError(try decode(ListItemStatus.self, Data(invalid.utf8)))
         }
     }
@@ -346,7 +362,7 @@ final class ResponseContractTests: XCTestCase {
             XCTAssertNil(encoded["genreIDS"])
             try roundTrip(response)
             // Synthetic required-ID and malformed optional-value boundaries.
-            for mutation: (inout [String: Any]) -> Void in [
+            for mutation: inout [String: Any] in [
                 { $0.removeValue(forKey: "id") }, { $0["id"] = "13" },
                 { $0["id"] = false }, { $0["credit_id"] = 5 },
                 { $0["genre_ids"] = ["wrong"] }
@@ -357,6 +373,7 @@ final class ResponseContractTests: XCTestCase {
             }
         }
     }
+
     func testTaggedImagesDecodeEpisodeMedia() throws {
         let response = try decode(TaggedImageResponse.self, fixture("person-tagged-images"))
         let tagged = response.results[10]
@@ -402,10 +419,14 @@ final class ResponseContractTests: XCTestCase {
             explicit["media_type"] = type
             let value = try decode(Media.self, JSONSerialization.data(withJSONObject: explicit))
             switch value {
-            case .movie(let model): XCTAssertEqual(type, "movie"); XCTAssertEqual(model.id, id)
-            case .tv(let model): XCTAssertEqual(type, "tv"); XCTAssertEqual(model.id, id)
-            case .person(let model): XCTAssertEqual(type, "person"); XCTAssertEqual(model.id, id)
-            case .episode(let model): XCTAssertEqual(type, "tv_episode"); XCTAssertEqual(model.id, id)
+            case .movie(let model): XCTAssertEqual(type, "movie")
+                XCTAssertEqual(model.id, id)
+            case .tv(let model): XCTAssertEqual(type, "tv")
+                XCTAssertEqual(model.id, id)
+            case .person(let model): XCTAssertEqual(type, "person")
+                XCTAssertEqual(model.id, id)
+            case .episode(let model): XCTAssertEqual(type, "tv_episode")
+                XCTAssertEqual(model.id, id)
             }
             let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(value)) as? [String: Any])
             XCTAssertEqual(encoded["media_type"] as? String, type)
@@ -415,7 +436,9 @@ final class ResponseContractTests: XCTestCase {
             let historical = try decode(Media.self, JSONSerialization.data(withJSONObject: explicit))
             // Historical movie/TV/person shapes preserve the missing child metadata.
             // Episodes have no child mediaType field and always encode their discriminator.
-            if type == "tv_episode" { XCTAssertEqual(historical, value) }
+            if type == "tv_episode" {
+                XCTAssertEqual(historical, value)
+            }
             try roundTrip(historical)
             let standaloneData = try JSONSerialization.data(withJSONObject: explicit)
             switch type {
@@ -484,7 +507,11 @@ final class ResponseContractTests: XCTestCase {
             var boundary = source
             boundary.removeValue(forKey: key)
             let missing = try decode(TaggedImageResponse.Result.self, JSONSerialization.data(withJSONObject: boundary))
-            if key == "id" { XCTAssertNil(missing.id) } else { XCTAssertNil(missing.imageType) }
+            if key == "id" {
+                XCTAssertNil(missing.id)
+            } else {
+                XCTAssertNil(missing.imageType)
+            }
             try roundTrip(missing)
             boundary[key] = NSNull()
             let null = try decode(TaggedImageResponse.Result.self, JSONSerialization.data(withJSONObject: boundary))
@@ -500,8 +527,11 @@ final class ResponseContractTests: XCTestCase {
     func fixtureValue(_ operation: String, _ path: String = "") throws -> Any {
         var value = try JSONSerialization.jsonObject(with: fixture(operation))
         for component in path.split(separator: ".").map(String.init) {
-            if let index = Int(component), let array = value as? [Any], index < array.count { value = array[index] }
-            else { value = try XCTUnwrap((value as? [String: Any])?[component]) }
+            if let index = Int(component), let array = value as? [Any], index < array.count {
+                value = array[index]
+            } else {
+                value = try XCTUnwrap((value as? [String: Any])?[component])
+            }
         }
         return value
     }
@@ -515,7 +545,9 @@ final class ResponseContractTests: XCTestCase {
             }
             return result as NSDictionary
         }
-        if let array = value as? [Any] { return array.map(comparableJSON) as NSArray }
+        if let array = value as? [Any] {
+            return array.map(comparableJSON) as NSArray
+        }
         return value as! NSObject
     }
 
@@ -775,5 +807,4 @@ final class ResponseContractTests: XCTestCase {
             }
         }
     }
-
 }

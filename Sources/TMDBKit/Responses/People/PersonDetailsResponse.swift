@@ -12,7 +12,10 @@ public struct PersonDetailsResponse: CodableEquatable {
     public let knownForDepartment: String?
     public let deathday: String?
     @available(*, deprecated, message: "Use deathday, the canonical API key")
-    public var deathDay: String? { deathday }
+    public var deathDay: String? {
+        deathday
+    }
+
     public let id: Int
     public let name: String
     public let alsoKnownAs: [String]
@@ -35,12 +38,18 @@ public struct PersonDetailsResponse: CodableEquatable {
 
     /// Nil unless appended to the API call.
     @available(*, deprecated, message: "Person images use profiles; use profileImages. This compatibility field is nil.")
-    public var images: AppendedImages? { nil }
+    public var images: AppendedImages? {
+        nil
+    }
+
     public let profileImages: AppendedPersonImages?
 
     /// Nil unless appended to the API call.
     /// Compatibility alias for the documented combined_credits resource.
-    public var credits: AppendedPersonCredits? { combinedCredits }
+    public var credits: AppendedPersonCredits? {
+        combinedCredits
+    }
+
     public let movieCredits: AppendedPersonCredits?
     public let tvCredits: AppendedPersonCredits?
     public let combinedCredits: AppendedPersonCredits?
@@ -55,7 +64,10 @@ public struct PersonDetailsResponse: CodableEquatable {
 
     /// Nil unless appended to the API call.
     @available(*, deprecated, message: "Use personTranslations for person data. The movie-shaped compatibility projection is unavailable and nil.")
-    public var translations: AppendedTranslations? { nil }
+    public var translations: AppendedTranslations? {
+        nil
+    }
+
     public let personTranslations: [PersonTranslation]?
 
     private struct PersonTranslations: CodableEquatable {
@@ -121,6 +133,7 @@ public struct PersonDetailsResponse: CodableEquatable {
         case similar
         case translations
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: WireKeys.self)
         try container.encodeIfPresent(birthday, forKey: .birthday)
@@ -147,7 +160,6 @@ public struct PersonDetailsResponse: CodableEquatable {
         try container.encodeIfPresent(similar, forKey: .similar)
         try container.encodeIfPresent(personTranslations.map { PersonTranslations(translations: $0) }, forKey: .translations)
     }
-
 }
 
 public struct PopularPersonResponse: CodableEquatable {

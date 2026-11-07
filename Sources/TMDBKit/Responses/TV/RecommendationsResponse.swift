@@ -29,6 +29,7 @@ public struct RecommendationsResponse: CodableEquatable {
         private enum CodingKeys: String, CodingKey {
             case backdropPath, firstAirDate, genreIds, id, name, originCountry, originalLanguage, originalName, overview, posterPath, voteAverage, voteCount, networks, popularity, adult, mediaType
         }
+
         private enum WireKeys: String, CodingKey {
             case backdropPath = "backdrop_path"
             case firstAirDate = "first_air_date"
@@ -47,6 +48,7 @@ public struct RecommendationsResponse: CodableEquatable {
             case adult
             case mediaType = "media_type"
         }
+
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             backdropPath = try container.decode(String.self, forKey: .backdropPath)
@@ -66,6 +68,7 @@ public struct RecommendationsResponse: CodableEquatable {
             adult = try container.decodeIfPresent(Bool.self, forKey: .adult)
             mediaType = try container.decodeIfPresent(String.self, forKey: .mediaType)
         }
+
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: WireKeys.self)
             try container.encode(backdropPath, forKey: .backdropPath)
@@ -94,6 +97,7 @@ public struct RecommendationsResponse: CodableEquatable {
     private enum WireKeys: String, CodingKey {
         case page, results, totalPages = "total_pages", totalResults = "total_results"
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: WireKeys.self)
         try container.encode(page, forKey: .page)
@@ -101,7 +105,6 @@ public struct RecommendationsResponse: CodableEquatable {
         try container.encode(totalPages, forKey: .totalPages)
         try container.encode(totalResults, forKey: .totalResults)
     }
-
 }
 
 public struct AppendedRecommendations: CodableEquatable {

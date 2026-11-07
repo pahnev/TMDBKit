@@ -149,13 +149,13 @@ public extension TMDB {
 
         // MARK: - POST
 
-        /// This method allows you to mark a movie or TV show as a favorite item.
-        ///
-        /// - Parameters:
-        ///   - isFavorite: Whether the item should be added or removed from favorites list.
-        ///   - media: The media to be added or removed from favorites list.
-        ///   - accountId: The `accountId`, of the user. Nil preserves the legacy ID 0 route, an unverified server convention.
-        ///   - completion: Result of `StatusResponse` or `TMDBError`
+        // This method allows you to mark a movie or TV show as a favorite item.
+        //
+        // - Parameters:
+        //   - isFavorite: Whether the item should be added or removed from favorites list.
+        //   - media: The media to be added or removed from favorites list.
+        //   - accountId: The `accountId`, of the user. Nil preserves the legacy ID 0 route, an unverified server convention.
+        //   - completion: Result of `StatusResponse` or `TMDBError`
 
         public func markAsFavorite(_ isFavorite: Bool, media: ListableMedia, for accountId: Int? = nil, completion: @escaping TMDBResult<StatusResponse>) {
             let favorite = FavoriteMedia(mediaType: media.type, mediaId: media.id, favorite: isFavorite)

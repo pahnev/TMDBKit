@@ -10,11 +10,17 @@ import Foundation
 enum Reviews: Endpoint {
     case details(reviewId: Int)
 
-    var httpMethod: HTTPMethod { return .GET }
+    var httpMethod: HTTPMethod {
+        return .GET
+    }
 
-    var httpBody: Data? { nil }
+    var httpBody: Data? {
+        nil
+    }
 
-    var requestHeaders: [String: String] { [:] }
+    var requestHeaders: [String: String] {
+        [:]
+    }
 
     var url: URL {
         switch self {
