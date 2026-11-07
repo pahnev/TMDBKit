@@ -323,3 +323,7 @@ All authorized implementation and mapping tasks are complete. Checked requiremen
 | 10 | Documentation-only final reconciliation; README exposure table; per-operation backlog and durable rulings | Fresh full serial run: **265 passed / 0 failed**; audit/final data/relative links and `git diff --check` pass |
 
 The [Review Focus evidence table](../../api/implementation-decisions.md#review-focus-evidence) maps every focus condition to named tests. Unavoidable enum-case migrations were documented before implementation; exact legacy method references and compatibility properties remain covered. The final source contains 101 public operation declarations mapping to 85 unique official HTTP keys; missing/internal/declaration-only families were not implemented. Recommended future family plans are backlog recommendations only. No push, merge, branch change, dependency addition or Swift-tools-version change was part of execution.
+
+## Final review closure (2026-11-07)
+
+The whole-branch review found no Critical or Important issues. Its three Minor findings were closed in the final follow-up: all chronological controller rulings are copied, the official account-details endpoint maps to `Account.detailsFor`, and whole-valued Double canonicalization has an explicit regression and documentation. Full serial coverage run: **266 passed, 0 failed**. The final inventory pins the source/test revision of that follow-up. No missing API families were implemented; upstream evidence limits remain documented.
