@@ -49,10 +49,16 @@ public struct AggregateCast: CodableEquatable {
     public let order: Int
     public let popularity: Double
     public let profilePath: String?
+    public let roles: [Role]?
     public let totalEpisodeCount: Int
 }
 
 public struct AggregateCrew: CodableEquatable {
+    public let adult: Bool?
+    public let knownForDepartment: String?
+    public let originalName: String?
+    public let popularity: Double?
+    public let jobs: [Job]?
     public struct Job: CodableEquatable {
         public let creditId: String
         public let job: String
@@ -65,4 +71,10 @@ public struct AggregateCrew: CodableEquatable {
     public let name: String
     public let profilePath: String?
     public let totalEpisodeCount: Int
+}
+
+/// TV credits appended to details; no standalone response ID is required.
+public struct AppendedTVCredits: CodableEquatable {
+    public let cast: [TVCast]
+    public let crew: [Crew]
 }

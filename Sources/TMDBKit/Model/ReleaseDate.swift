@@ -8,6 +8,8 @@
 import Foundation
 
 public struct ReleaseDate: CodableEquatable {
+    /// Element schema is unspecified; preserve arbitrary JSON descriptor values.
+    public let descriptors: [ChangeValue]?
     public let certification: String
     public let iso6391: String
     public let releaseDate: String

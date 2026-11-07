@@ -8,6 +8,8 @@
 import Foundation
 
 public struct Video: CodableEquatable {
+    public let official: Bool?
+    public let publishedAt: String?
     public let id: String
     public let iso31661: String
     public let iso6391: String

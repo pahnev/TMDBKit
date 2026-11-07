@@ -12,8 +12,11 @@ public struct TaggedImageResponse: CodableEquatable {
         public enum MediaType: String, CodableEquatable {
             case movie
             case tv
+            case episode
         }
 
+        public let id: String?
+        public let imageType: String?
         public let iso6391: String?
         public let voteCount: Int
         public let mediaType: MediaType

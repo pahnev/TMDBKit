@@ -8,6 +8,10 @@
 import Foundation
 
 public struct TVDetails: CodableEquatable {
+    public let adult: Bool?
+    public let productionCountries: [ProductionCountry]?
+    public let spokenLanguages: [Language]?
+    public let tagline: String?
     public let backdropPath: String?
     public let createdBy: [CreatedBy]
     public let episodeRunTime: [Int]
@@ -40,6 +44,10 @@ public struct TVDetails: CodableEquatable {
     public let reviews: AppendedReviews?
     public let videos: AppendedVideos?
     public let images: AppendedImages?
+    public let credits: AppendedTVCredits?
+    public let similar: SimilarShowsResponse?
+    public let recommendations: RecommendationsResponse?
+    public let translations: AppendedTranslations?
 }
 
 // MARK: - CreatedBy
@@ -55,6 +63,8 @@ public struct CreatedBy: CodableEquatable {
 // MARK: - LastEpisodeToAir
 
 public struct LastEpisodeToAir: CodableEquatable {
+    public let runtime: Int?
+    public let rating: Double?
     public let airDate: String
     public let episodeNumber: Int
     public let id: Int
@@ -92,6 +102,7 @@ public struct RecommendationNetwork: CodableEquatable {
 // MARK: - Season
 
 public struct Season: CodableEquatable {
+    public let voteAverage: Double?
     public let airDate: String?
     public let episodeCount: Int
     public let id: Int

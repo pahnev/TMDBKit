@@ -13,7 +13,7 @@ enum Movies: Endpoint {
 
     case alternativeTitles(movieId: Int, country: String?)
 
-    case changes(movieId: Int)
+    case changes(movieId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
 
     case credits(movieId: Int, language: String?)
 
@@ -25,7 +25,7 @@ enum Movies: Endpoint {
 
     case externalIds(movieId: Int)
 
-    case images(movieId: Int, language: String?)
+    case images(movieId: Int, language: String?, includeImageLanguages: [String]? = nil)
 
     case keywords(movieId: Int)
 
@@ -158,36 +158,34 @@ enum Movies: Endpoint {
 
         switch self {
         case .details(let movieId, let append, let lang):
-            let movieDetails = movies
+            return movies
                 .appendingPathComponent("\(movieId)")
-                .appendingLanguage(lang)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return movieDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return movieDetails
+                .appendingDetails(append, language: lang)
+
         case .accountStates(let movieId):
             return movies.appendingPathComponent("\(movieId)/account_states")
         case .alternativeTitles(let movieId, let country):
             return movies
                 .appendingPathComponent("\(movieId)/alternative_titles")
                 .appendingCountry(country)
-        case .changes(let movieId):
-            return movies.appendingPathComponent("\(movieId)/changes")
+        case .changes(let movieId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
+            return movies
+                .appendingPathComponent("\(movieId)/changes")
+                .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .credits(let movieId, let lang):
             return movies
                 .appendingPathComponent("\(movieId)/credits")
                 .appendingLanguage(lang)
         case .externalIds(let movieId):
             return movies.appendingPathComponent("\(movieId)/external_ids")
-        case .images(let movieId, let lang):
+        case .images(let movieId, let lang, let languages):
             return movies
                 .appendingPathComponent("\(movieId)/images")
                 .appendingLanguage(lang)
+                .appendingQueryItem(named: "include_image_language", value: languages?.joined(separator: ","))
         case .keywords(let movieId):
             return movies.appendingPathComponent("\(movieId)/keywords")
         case .releaseDates(let movieId):
@@ -207,7 +205,7 @@ enum Movies: Endpoint {
                 .appendingLanguage(lang)
         case .similarMovies(let movieId, let page, let lang):
             return movies
-                .appendingPathComponent("\(movieId)/similar_movies")
+                .appendingPathComponent("\(movieId)/similar")
                 .appendingPage(page)
                 .appendingLanguage(lang)
         case .reviews(let movieId, let page, let lang):
@@ -230,10 +228,9 @@ enum Movies: Endpoint {
                 .appendingPage(page)
                 .appendingLanguage(lang)
                 .appendingRegion(region)
-        case .latest(let lang):
+        case .latest(_):
             return movies
                 .appendingPathComponent("latest")
-                .appendingLanguage(lang)
         case .topRated(let page, let lang, let region):
             return movies
                 .appendingPathComponent("top_rated")

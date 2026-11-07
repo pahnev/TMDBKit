@@ -17,6 +17,18 @@ public struct WatchProvider: CodableEquatable {
     public let logoPath: String
     public let providerId: Int
     public let providerName: String
+
+    private enum WireKeys: String, CodingKey {
+        case displayPriority = "display_priority", logoPath = "logo_path"
+        case providerId = "provider_id", providerName = "provider_name"
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: WireKeys.self)
+        try container.encode(displayPriority, forKey: .displayPriority)
+        try container.encode(logoPath, forKey: .logoPath)
+        try container.encode(providerId, forKey: .providerId)
+        try container.encode(providerName, forKey: .providerName)
+    }
 }
 
 public struct ProviderResult: CodableEquatable {
@@ -24,68 +36,76 @@ public struct ProviderResult: CodableEquatable {
     public let buy: [WatchProvider]?
     public let rent: [WatchProvider]?
     public let flatrate: [WatchProvider]?
+    public let ads: [WatchProvider]?
+    public let free: [WatchProvider]?
 }
 
 public struct Results: CodableEquatable {
-    public let ar, at, au, be, bg, bo, br, ca, ch, cl, co, cr, cz,
-               de, dk, ec, ee, es, fi, fr, gb, gr, gt, hk, hn, hu,
-               id, ie, iN, it, jp, kr, lt, lv, mx, my,
-               nl, no, nz, pe, ph, pl, pt, py, ro, ru, se,
-               sg, th, tr, us, ve, za: ProviderResult?
+    public let regions: [String: ProviderResult]
 
-    enum CodingKeys: String, CodingKey {
-        case ar = "AR"
-        case at = "AT"
-        case au = "AU"
-        case be = "BE"
-        case bg = "BG"
-        case bo = "BO"
-        case br = "BR"
-        case ca = "CA"
-        case ch = "CH"
-        case cl = "CL"
-        case co = "CO"
-        case cr = "CR"
-        case cz = "CZ"
-        case de = "DE"
-        case dk = "DK"
-        case ec = "EC"
-        case ee = "EE"
-        case es = "ES"
-        case fi = "FI"
-        case fr = "FR"
-        case gb = "GB"
-        case gr = "GR"
-        case gt = "GT"
-        case hk = "HK"
-        case hn = "HN"
-        case hu = "HU"
-        case id = "ID"
-        case ie = "IE"
-        case iN = "IN"
-        case it = "IT"
-        case jp = "JP"
-        case kr = "KR"
-        case lt = "LT"
-        case lv = "LV"
-        case mx = "MX"
-        case my = "MY"
-        case nl = "NL"
-        case no = "NO"
-        case nz = "NZ"
-        case pe = "PE"
-        case ph = "PH"
-        case pl = "PL"
-        case pt = "PT"
-        case py = "PY"
-        case ro = "RO"
-        case ru = "RU"
-        case se = "SE"
-        case sg = "SG"
-        case th = "TH"
-        case tr = "TR"
-        case us = "US"
-        case ve = "VE"
-        case za = "ZA"
+    public subscript(region: String) -> ProviderResult? { regions[region] }
+
+    // Decode a dictionary rather than CodingKeys so key strategies cannot rewrite
+    // arbitrary wire region keys (including keys unknown to this SDK version).
+    public init(from decoder: Decoder) throws {
+        regions = try decoder.singleValueContainer().decode([String: ProviderResult].self)
     }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(regions)
+    }
+
+    public var ar: ProviderResult? { regions["AR"] }
+    public var at: ProviderResult? { regions["AT"] }
+    public var au: ProviderResult? { regions["AU"] }
+    public var be: ProviderResult? { regions["BE"] }
+    public var bg: ProviderResult? { regions["BG"] }
+    public var bo: ProviderResult? { regions["BO"] }
+    public var br: ProviderResult? { regions["BR"] }
+    public var ca: ProviderResult? { regions["CA"] }
+    public var ch: ProviderResult? { regions["CH"] }
+    public var cl: ProviderResult? { regions["CL"] }
+    public var co: ProviderResult? { regions["CO"] }
+    public var cr: ProviderResult? { regions["CR"] }
+    public var cz: ProviderResult? { regions["CZ"] }
+    public var de: ProviderResult? { regions["DE"] }
+    public var dk: ProviderResult? { regions["DK"] }
+    public var ec: ProviderResult? { regions["EC"] }
+    public var ee: ProviderResult? { regions["EE"] }
+    public var es: ProviderResult? { regions["ES"] }
+    public var fi: ProviderResult? { regions["FI"] }
+    public var fr: ProviderResult? { regions["FR"] }
+    public var gb: ProviderResult? { regions["GB"] }
+    public var gr: ProviderResult? { regions["GR"] }
+    public var gt: ProviderResult? { regions["GT"] }
+    public var hk: ProviderResult? { regions["HK"] }
+    public var hn: ProviderResult? { regions["HN"] }
+    public var hu: ProviderResult? { regions["HU"] }
+    public var id: ProviderResult? { regions["ID"] }
+    public var ie: ProviderResult? { regions["IE"] }
+    public var iN: ProviderResult? { regions["IN"] }
+    public var it: ProviderResult? { regions["IT"] }
+    public var jp: ProviderResult? { regions["JP"] }
+    public var kr: ProviderResult? { regions["KR"] }
+    public var lt: ProviderResult? { regions["LT"] }
+    public var lv: ProviderResult? { regions["LV"] }
+    public var mx: ProviderResult? { regions["MX"] }
+    public var my: ProviderResult? { regions["MY"] }
+    public var nl: ProviderResult? { regions["NL"] }
+    public var no: ProviderResult? { regions["NO"] }
+    public var nz: ProviderResult? { regions["NZ"] }
+    public var pe: ProviderResult? { regions["PE"] }
+    public var ph: ProviderResult? { regions["PH"] }
+    public var pl: ProviderResult? { regions["PL"] }
+    public var pt: ProviderResult? { regions["PT"] }
+    public var py: ProviderResult? { regions["PY"] }
+    public var ro: ProviderResult? { regions["RO"] }
+    public var ru: ProviderResult? { regions["RU"] }
+    public var se: ProviderResult? { regions["SE"] }
+    public var sg: ProviderResult? { regions["SG"] }
+    public var th: ProviderResult? { regions["TH"] }
+    public var tr: ProviderResult? { regions["TR"] }
+    public var us: ProviderResult? { regions["US"] }
+    public var ve: ProviderResult? { regions["VE"] }
+    public var za: ProviderResult? { regions["ZA"] }
 }

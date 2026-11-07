@@ -9,5 +9,6 @@ import Foundation
 
 public struct Language: CodableEquatable {
     public let iso6391: String
+    public let englishName: String?
     public let name: String
 }

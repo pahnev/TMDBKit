@@ -63,6 +63,7 @@ public class TMDB {
     /// - Parameter authenticator: The new `Authenticator` to use.
     public func updateAuthenticator(_ authenticator: Authenticator) {
         self.authenticator = authenticator
+        networkClient.updateAuthenticator(authenticator)
     }
 
     /// - Returns: Total byte size of all caches stored on disk by TMDBKit
@@ -93,7 +94,7 @@ public class TMDB {
             completion(.failure(.sessionIdMissing))
             return
         }
-        authenticatedRequestAndParse(Authentication.deleteSession(sessionId: sessionId), completion: completion)
+        fetchObject(ofType: SuccessResponse.self, endpoint: Authentication.deleteSession(sessionId: sessionId), completion: completion)
     }
 
     /// Fetches the wanted object either from Cache if one is found, otherwise from the network. The successful network request is then cached.
@@ -132,16 +133,29 @@ public class TMDB {
         }
     }
 
-    func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
-        networkClient.executeAuthenticatedRequest(for: endpoint,
-                                                  sessionId: authenticator.sessionId,
-                                                  additionalHeaders: additionalHeaders) { result in
+    /// Application authentication, retaining an optional configured user session for private reads.
+    func requestAndParseWithOptionalSession<Type: CodableEquatable>(_ endpoint: Endpoint, completion: @escaping TMDBResult<Type>) {
+        networkClient.executeRequest(for: endpoint, sessionQuery: authenticator.sessionId.map(SessionQuery.user)) { result in
+            switch result {
+            case .error(let error): completion(.failure(TMDBError.networkError(error)))
+            case .success(let value): self.parse(ofType: Type.self, value: value, completion: completion)
+            }
+        }
+    }
+
+    func authenticatedRequestAndParse<Type: CodableEquatable>(_ endpoint: Endpoint, guestSessionId: String? = nil, additionalHeaders: [String: String] = [:], completion: @escaping TMDBResult<Type>) {
+        let handle: (NetworkResult) -> Void = { result in
             switch result {
             case .error(let error):
                 completion(.failure(TMDBError.networkError(error)))
             case .success(let value):
                 self.parse(ofType: Type.self, value: value, completion: completion)
             }
+        }
+        if let guestSessionId = guestSessionId {
+            networkClient.executeAuthenticatedRequest(for: endpoint, sessionQuery: .guest(guestSessionId), additionalHeaders: additionalHeaders, completion: handle)
+        } else {
+            networkClient.executeAuthenticatedRequest(for: endpoint, sessionId: authenticator.sessionId, additionalHeaders: additionalHeaders, completion: handle)
         }
     }
 }

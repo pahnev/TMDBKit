@@ -10,6 +10,7 @@ import Foundation
 
 public struct MovieFragment: CodableEquatable {
     public let posterPath: String?
+    public let mediaType: String?
     public let adult: Bool
     public let overview: String
     public let releaseDate: String?

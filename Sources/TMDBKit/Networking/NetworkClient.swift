@@ -19,21 +19,40 @@ enum NetworkResult {
     case error(Error)
 }
 
+/// The selected credential is serialized under exactly one session query key.
+enum SessionQuery {
+    case user(String)
+    case guest(String)
+
+    var item: URLQueryItem {
+        switch self {
+        case .user(let value): return URLQueryItem(name: "session_id", value: value)
+        case .guest(let value): return URLQueryItem(name: "guest_session_id", value: value)
+        }
+    }
+}
+
 final class NetworkClient {
-    private let authenticator: Authenticator
+    private var authenticator: Authenticator
     private let httpLogger: HTTPLogger
     private let urlSession: URLSession
     private let cache: URLCache
 
-    init(authenticator: Authenticator, urlSession: URLSession = .shared, cache: URLCache = URLCache.shared) {
+    init(authenticator: Authenticator, urlSession: URLSession = .shared, cache: URLCache? = nil) {
         self.authenticator = authenticator
-        self.cache = cache
+        self.cache = cache ?? URLCache.shared
         self.urlSession = urlSession
 
         httpLogger = HTTPLogger()
 
-        cache.diskCapacity = 100 * 1024 * 1024
-        cache.memoryCapacity = 100 * 1024 * 1024
+        if cache == nil {
+            self.cache.diskCapacity = 100 * 1024 * 1024
+            self.cache.memoryCapacity = 100 * 1024 * 1024
+        }
+    }
+
+    func updateAuthenticator(_ authenticator: Authenticator) {
+        self.authenticator = authenticator
     }
 
     func cacheDiskStorageSize() -> Int {
@@ -49,28 +68,32 @@ final class NetworkClient {
             completion(.error(TMDBError.sessionIdMissing))
             return
         }
-        startRequest(authenticatedRequest(endpoint, sessionId: sessionId, additionalHeaders: additionalHeaders),
+        executeAuthenticatedRequest(for: endpoint, sessionQuery: .user(sessionId), additionalHeaders: additionalHeaders, completion: completion)
+    }
+
+    func executeAuthenticatedRequest(for endpoint: Endpoint, sessionQuery: SessionQuery, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+        startRequest(authenticatedRequest(endpoint, sessionQuery: sessionQuery, additionalHeaders: additionalHeaders),
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
     }
 
-    func executeRequest(for endpoint: Endpoint, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
-        startRequest(authenticatedRequest(endpoint, additionalHeaders: additionalHeaders),
+    func executeRequest(for endpoint: Endpoint, sessionQuery: SessionQuery? = nil, additionalHeaders: [String: String] = [:], completion: @escaping (NetworkResult) -> Void) {
+        startRequest(authenticatedRequest(endpoint, sessionQuery: sessionQuery, additionalHeaders: additionalHeaders),
                      cachePolicy: endpoint.cachePolicy,
                      completion: completion)
     }
 }
 
 private extension NetworkClient {
-    func urlFor(_ endpoint: Endpoint, sessionId: String?) -> URL {
+    func urlFor(_ endpoint: Endpoint, sessionQuery: SessionQuery?) -> URL {
         let url = endpoint.url.appendingQueryItem(URLQueryItem(name: "api_key", value: authenticator.apiKey))
-        guard let sessionId = sessionId else { return url }
-        return url.appendingQueryItem(URLQueryItem(name: "session_id", value: sessionId))
+        guard let sessionQuery = sessionQuery else { return url }
+        return url.appendingQueryItem(sessionQuery.item)
     }
 
-    func authenticatedRequest(_ endpoint: Endpoint, sessionId: String? = nil, additionalHeaders: [String: String]) -> URLRequest {
+    func authenticatedRequest(_ endpoint: Endpoint, sessionQuery: SessionQuery? = nil, additionalHeaders: [String: String]) -> URLRequest {
         var request = URLRequest(url: endpoint.url)
-        request.url = urlFor(endpoint, sessionId: sessionId)
+        request.url = urlFor(endpoint, sessionQuery: sessionQuery)
 
         request.httpMethod = endpoint.httpMethod.rawValue
         request.allHTTPHeaderFields = endpoint.requestHeaders
@@ -86,15 +109,23 @@ private extension NetworkClient {
     func startRequest(_ request: URLRequest, cachePolicy: CachePolicy, completion: @escaping (NetworkResult) -> Void) {
         var modifiedRequest = request
         let reqId = httpLogger.logStart(request)
-        let cachedResponse = cache.cachedResponse(for: request)
+        if cachePolicy == .never {
+            modifiedRequest.cachePolicy = .reloadIgnoringLocalCacheData
+            modifiedRequest.setValue("no-store", forHTTPHeaderField: "Cache-Control")
+        }
+        var cachedResponse = cachePolicy == .allowed ? cache.cachedResponse(for: request) : nil
+        if let response = cachedResponse?.response as? HTTPURLResponse,
+           !HTTPResponseHeaders(response.allHeaderFields).allowsStorage {
+            cache.removeCachedResponse(for: request)
+            cachedResponse = nil
+        }
 
-        if cachePolicy == .allowed,
-           let cachedResponse = cachedResponse,
+        if let cachedResponse = cachedResponse,
            let httpResponse = cachedResponse.response as? HTTPURLResponse {
             let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
-            let now = Date()
+            let storedAt = cachedResponse.userInfo?["TMDBKitStoredAt"] as? Date
 
-            if let maxAge = headers.maxAge, maxAge > 0, now < Date.withTimeIntervalSinceNow(maxAge) ?? now {
+            if headers.isFresh(at: Date(), storedAt: storedAt) {
                 return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
                                                                       headers: headers,
                                                                       statusCode: httpResponse.statusCode)))
@@ -130,23 +161,23 @@ private extension NetworkClient {
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }
 
+                let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
                 if cachePolicy == .allowed {
-                    self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: modifiedRequest)
+                    if headers.allowsStorage {
+                        let cached = CachedURLResponse(response: httpResponse, data: data,
+                                                       userInfo: ["TMDBKitStoredAt": Date()], storagePolicy: .allowed)
+                        self.cache.storeCachedResponse(cached, for: request)
+                    } else {
+                        self.cache.removeCachedResponse(for: request)
+                    }
                 }
 
                 return completion(.success(NetworkResult.SuccessValue(value: data,
-                                                                      headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
+                                                                      headers: headers,
                                                                       statusCode: httpResponse.statusCode)))
             }
         }
 
         task.resume()
-    }
-}
-
-private extension Date {
-    static func withTimeIntervalSinceNow(_ timeInterval: TimeInterval?) -> Date? {
-        guard let timeInterval = timeInterval else { return nil }
-        return Date().addingTimeInterval(timeInterval)
     }
 }

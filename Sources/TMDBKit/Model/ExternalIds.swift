@@ -9,6 +9,12 @@
 import Foundation
 
 public struct ExternalIds: CodableEquatable {
+    public let wikidataId: String?
+    public let freebaseMid: String?
+    public let freebaseId: String?
+    public let tiktokId: String?
+    public let tvdbId: Int?
+    public let tvrageId: Int?
     public let imdbId: String?
     public let facebookId: String?
     public let instagramId: String?

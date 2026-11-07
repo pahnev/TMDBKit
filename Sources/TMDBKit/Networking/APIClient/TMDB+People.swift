@@ -32,11 +32,12 @@ public extension TMDB {
         /// - Parameters:
         ///   - personId: The id of the Person.
         ///   - pageNumber: The page number to fetch.
+        ///   - startDate: Start of the change range in YYYY-MM-DD format.
+        ///   - endDate: End of the change range in YYYY-MM-DD format.
         ///   - completion: Result of a `ChangesResponse` or `TMDBError`.
-        public func changes(for personId: Int, pageNumber: PageNumber = 1, completion: @escaping TMDBResult<ChangesResponse>) {
-            // TODO: start and end date query
+        public func changes(for personId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil, completion: @escaping TMDBResult<ChangesResponse>) {
             tmdb.fetchObject(ofType: ChangesResponse.self,
-                             endpoint: People.changes(personId: personId, pageNumber: pageNumber),
+                             endpoint: People.changes(personId: personId, pageNumber: pageNumber, startDate: startDate, endDate: endDate),
                              completion: completion)
         }
 
@@ -88,7 +89,7 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - personId: The id of the Person.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `ExternalIds` or `TMDBError`.
         public func externalIds(for personId: Int, language: String? = nil, completion: @escaping TMDBResult<ExternalIds>) {
             tmdb.fetchObject(ofType: ExternalIds.self,
@@ -105,10 +106,11 @@ public extension TMDB {
         }
 
         /// Get the images that this person has been tagged in.
+        /// Deprecated in the TMDB human API reference; retained for compatibility.
         /// - Parameters:
         ///   - personId: The id of the Person.
         ///   - pageNumber: The page number to fetch. Defaults to 1 to get the first results.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `TaggedImageResponse` or `TMDBError`.
         public func taggedImages(for personId: Int, pageNumber: PageNumber = 1, language: String? = nil, completion: @escaping TMDBResult<TaggedImageResponse>) {
             tmdb.fetchObject(ofType: TaggedImageResponse.self,
@@ -119,7 +121,7 @@ public extension TMDB {
         /// Get a list of translations that have been created for a person.
         /// - Parameters:
         ///   - personId: The id of the Person.
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `PersonTranslationResponse` or `TMDBError`.
         public func translations(for personId: Int, language: String? = nil, completion: @escaping TMDBResult<PersonTranslationResponse>) {
             tmdb.fetchObject(ofType: PersonTranslationResponse.self,
@@ -129,7 +131,7 @@ public extension TMDB {
 
         /// Get the most newly created person. This is a live response and will continuously change.
         /// - Parameters:
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `PersonDetailsResponse` or `TMDBError`.
         public func latest(in language: String? = nil, completion: @escaping TMDBResult<PersonDetailsResponse>) {
             tmdb.fetchObject(ofType: PersonDetailsResponse.self,

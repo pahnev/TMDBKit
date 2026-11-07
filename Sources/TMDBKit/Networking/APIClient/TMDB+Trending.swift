@@ -15,10 +15,11 @@ public struct TrendingEndpoints {
     /// - Parameters:
     ///   - mediaType: The type of media to include. `.all` will include all movies, TV shows and people in the results as a global trending list
     ///   - timeWindow: The time period of the results to be returned.
+    ///   - language: Language for translated fields; nil uses the server default.
     ///   - completion: The closure called on completion with `TrendingResponse` or `TMDBError`.
-    public func trending(_ mediaType: MediaType, withinLast timeWindow: TimeWindow, completion: @escaping TMDBResult<TrendingResponse>) {
+    public func trending(_ mediaType: MediaType, withinLast timeWindow: TimeWindow, language: String? = nil, completion: @escaping TMDBResult<TrendingResponse>) {
         tmdb.fetchObject(ofType: TrendingResponse.self,
-                         endpoint: Trending.trending(mediaType: mediaType, timeWindow: timeWindow),
+                         endpoint: Trending.trending(mediaType: mediaType, timeWindow: timeWindow, language: language),
                          completion: completion)
     }
 }

@@ -12,11 +12,18 @@ import Foundation
 
 public struct ImagesResponse: CodableEquatable {
     public let id: Int
+    public let logos: [Image]?
     public let backdrops: [Image]
     public let posters: [Image]
 }
 
 public struct AppendedImages: CodableEquatable {
+    public let logos: [Image]?
     public let backdrops: [Image]
     public let posters: [Image]
+}
+
+/// Profile images appended to person details; no standalone response ID is required.
+public struct AppendedPersonImages: CodableEquatable {
+    public let profiles: [Image]
 }

@@ -31,9 +31,10 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of a `AccountState` or `TMDBError`.
-        public func accountStates(for movieId: Int, completion: @escaping TMDBResult<AccountState>) {
-            tmdb.authenticatedRequestAndParse(Movies.accountStates(movieId: movieId), completion: completion)
+        public func accountStates(for movieId: Int, guestSessionId: String? = nil, completion: @escaping TMDBResult<AccountState>) {
+            tmdb.authenticatedRequestAndParse(Movies.accountStates(movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
 
         /// Get all of the alternative titles for a movie. By default returns all title for all countries.
@@ -51,10 +52,12 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - pageNumber: The page number to fetch. Defaults to 1.
+        ///   - startDate: Start of the change range in YYYY-MM-DD format.
+        ///   - endDate: End of the change range in YYYY-MM-DD format.
         ///   - completion: Result of a `ChangesResponse` or `TMDBError`.
-        public func changes(for movieId: Int, completion: @escaping TMDBResult<ChangesResponse>) {
-            // TODO: Pagination and date query
-            tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: Movies.changes(movieId: movieId), completion: completion)
+        public func changes(for movieId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil, completion: @escaping TMDBResult<ChangesResponse>) {
+            tmdb.fetchObject(ofType: ChangesResponse.self, endpoint: Movies.changes(movieId: movieId, pageNumber: pageNumber, startDate: startDate, endDate: endDate), completion: completion)
         }
 
         /// Get the cast and crew for a movie.
@@ -85,13 +88,10 @@ public extension TMDB {
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
         ///   - language: A language string in ISO 639-1 format, to get images for specific language.
-        ///   Can include multiple languages, as long as the languages are comma separated like so: `en,es`.
-        ///   If you want to include a fallback language (especially useful for backdrops) you can use add `null` at the end.
-        ///   Defaults to `en-US`.
-        ///
+        ///   - includeImageLanguages: Additional image language filters, joined with commas. Use "null" for images without a language; nil omits this query.
         ///   - completion: Result of a `ImagesResponse` or `TMDBError`.
-        public func images(for movieId: Int, language: String? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
-            tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId, language: language), completion: completion)
+        public func images(for movieId: Int, language: String? = nil, includeImageLanguages: [String]? = nil, completion: @escaping TMDBResult<ImagesResponse>) {
+            tmdb.fetchObject(ofType: ImagesResponse.self, endpoint: Movies.images(movieId: movieId, language: language, includeImageLanguages: includeImageLanguages), completion: completion)
         }
 
         /// Get the keywords that have been added to a movie.
@@ -209,7 +209,7 @@ public extension TMDB {
 
         /// Get the most newly created movie. This is a live response and will continuously change
         /// - Parameters:
-        ///   - language: A language string in ISO 639-1 format, to get translated data for the fields that support it. Defaults to `en-US`.
+        ///   - language: Ignored compatibility argument; this operation does not support a language query.
         ///   - completion: Result of a `Movie` or `TMDBError`.
         public func latest(language: String? = nil, completion: @escaping TMDBResult<Movie>) {
             tmdb.fetchObject(ofType: Movie.self, endpoint: Movies.latest(language: language), completion: completion)
@@ -269,9 +269,10 @@ public extension TMDB {
         /// - Parameters:
         ///   - movieId: The id of the `Movie` to rate.
         ///   - rating: The rating. The value is expected to be between 0.5 and 10.0.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func rateMovie(_ movieId: Int, rating: Double, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), completion: completion)
+        public func rateMovie(_ movieId: Int, rating: Double, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.rateMovie(rating: rating, movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
 
         // MARK: DELETE
@@ -281,9 +282,10 @@ public extension TMDB {
         ///
         /// - Parameters:
         ///   - movieId: The id of the `Movie`.
+        ///   - guestSessionId: Selects guest authentication; nil uses the configured user session.
         ///   - completion: Result of the action, either `StatusResponse` or `TMDBError`.
-        public func deleteRating(of movieId: Int, completion: @escaping TMDBResult<StatusResponse>) {
-            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), completion: completion)
+        public func deleteRating(of movieId: Int, guestSessionId: String? = nil, completion: @escaping TMDBResult<StatusResponse>) {
+            tmdb.authenticatedRequestAndParse(Movies.deleteRating(movieId: movieId), guestSessionId: guestSessionId, completion: completion)
         }
     }
 }

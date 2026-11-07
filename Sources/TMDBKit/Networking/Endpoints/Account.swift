@@ -57,7 +57,9 @@ struct SortedPagination {
 }
 
 enum Account: Endpoint {
+    /// Legacy /account route, not confirmed by the pinned contract.
     case details
+    case detailsFor(accountId: Int)
     case createdLists(accountId: Int?, pagination: SortedPagination, language: String?)
     case favoriteMovies(accountId: Int?, pagination: SortedPagination, language: String?)
     case favoriteTVShows(accountId: Int?, pagination: SortedPagination, language: String?)
@@ -71,7 +73,7 @@ enum Account: Endpoint {
 
     var httpMethod: HTTPMethod {
         switch self {
-        case .details,
+        case .details, .detailsFor,
              .createdLists,
              .favoriteMovies,
              .favoriteTVShows,
@@ -89,7 +91,7 @@ enum Account: Endpoint {
 
     var httpBody: Data? {
         switch self {
-        case .details,
+        case .details, .detailsFor,
              .createdLists,
              .favoriteMovies,
              .favoriteTVShows,
@@ -112,7 +114,7 @@ enum Account: Endpoint {
 
     var requestHeaders: [String: String] {
         switch self {
-        case .details,
+        case .details, .detailsFor,
              .createdLists,
              .favoriteMovies,
              .favoriteTVShows,
@@ -134,12 +136,13 @@ enum Account: Endpoint {
         switch self {
         case .details:
             return account
-        case .createdLists(let accountId, let pagination, let language):
+        case .detailsFor(let accountId):
+            return account.appendingPathComponent(String(accountId))
+        case .createdLists(let accountId, let pagination, _):
             return account
                 .appendingAccountId(accountId)
                 .appendingPathComponent("lists")
-                .appendingSortedPagination(pagination)
-                .appendingLanguage(language)
+                .appendingQueryItem(named: "page", value: pagination.page.map { String($0) })
         case .favoriteMovies(let accountId, pagination: let pagination, let language):
             return account
                 .appendingAccountId(accountId)

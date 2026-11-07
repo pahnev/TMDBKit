@@ -56,10 +56,8 @@ enum Authentication: Endpoint {
         switch self {
         case .requestToken:
             return authentication.appendingPathComponent("token/new")
-        case .createSession(let token):
-            return authentication
-                .appendingPathComponent("session/new")
-                .appendingQueryItem(URLQueryItem(name: "request_token", value: token))
+        case .createSession:
+            return authentication.appendingPathComponent("session/new")
         case .createQuestSession:
             return authentication.appendingPathComponent("guest_session/new")
         case .deleteSession:

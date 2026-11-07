@@ -9,7 +9,7 @@ import Foundation
 
 enum People: Endpoint {
     case details(personId: Int, language: String?, append: [DetailsAppendable]?)
-    case changes(personId: Int, pageNumber: PageNumber)
+    case changes(personId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
     case movieCredits(personId: Int, language: String?)
     case tvCredits(personId: Int, language: String?)
     case combinedCredits(personId: Int, language: String?)
@@ -25,22 +25,17 @@ enum People: Endpoint {
 
         switch self {
         case .details(let personId, let language, let append):
-            let peopleDetails = people
+            return people
                 .appendingPathComponent("\(personId)")
-                .appendingLanguage(language)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return peopleDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return peopleDetails
-        case .changes(let personId, let pageNumber):
+                .appendingDetails(append, language: language, person: true)
+
+        case .changes(let personId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
             return people
                 .appendingPathComponent("\(personId)/changes")
                 .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .movieCredits(let personId, let language):
             return people
                 .appendingPathComponent("\(personId)/movie_credits")
@@ -53,25 +48,21 @@ enum People: Endpoint {
             return people
                 .appendingPathComponent("\(personId)/combined_credits")
                 .appendingLanguage(language)
-        case .externalIds(let personId, let language):
+        case .externalIds(let personId, _):
             return people
                 .appendingPathComponent("\(personId)/external_ids")
-                .appendingLanguage(language)
         case .images(let personId):
             return people.appendingPathComponent("\(personId)/images")
-        case .taggedImages(let personId, let pageNumber, let language):
+        case .taggedImages(let personId, let pageNumber, _):
             return people
                 .appendingPathComponent("\(personId)/tagged_images")
                 .appendingPage(pageNumber)
-                .appendingLanguage(language)
-        case .translations(let personId, let language):
+        case .translations(let personId, _):
             return people
                 .appendingPathComponent("\(personId)/translations")
-                .appendingLanguage(language)
-        case .latest(let language):
+        case .latest(_):
             return people
                 .appendingPathComponent("latest")
-                .appendingLanguage(language)
         case .popular(let pageNumber, let language):
             return people
                 .appendingPathComponent("popular")

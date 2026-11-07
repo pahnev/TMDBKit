@@ -17,7 +17,7 @@ enum TV: Endpoint {
 
     case aggregateCredits(tvId: Int, language: String?)
 
-    case changes(tvId: Int, pageNumber: PageNumber)
+    case changes(tvId: Int, pageNumber: PageNumber = 1, startDate: String? = nil, endDate: String? = nil)
 
     case contentRatings(tvId: Int, language: String?)
 
@@ -27,7 +27,7 @@ enum TV: Endpoint {
 
     case externalIds(tvId: Int, language: String?)
 
-    case images(tvId: Int, language: String?)
+    case images(tvId: Int, language: String?, includeImageLanguages: [String]? = nil)
 
     case keywords(tvId: Int)
 
@@ -42,15 +42,15 @@ enum TV: Endpoint {
 
     case translations(tvId: Int)
 
-    case videos(tvId: Int, language: String?)
+    case videos(tvId: Int, language: String?, includeVideoLanguages: [String]? = nil)
 
     case watchProviders(tvId: Int)
 
     case latest(language: String?)
 
-    case airingToday(pageNumber: PageNumber, language: String?)
+    case airingToday(pageNumber: PageNumber, language: String?, timezone: String? = nil)
 
-    case onTheAir(pageNumber: PageNumber, language: String?)
+    case onTheAir(pageNumber: PageNumber, language: String?, timezone: String? = nil)
 
     case popular(pageNumber: PageNumber, language: String?)
 
@@ -123,7 +123,7 @@ enum TV: Endpoint {
              .deleteRating,
              .watchProviders:
             return nil
-        case .rateShow(let rating, _):
+        case .rateShow(_, let rating):
             return try! JSONEncoder().encode(["value": rating])
         }
     }
@@ -164,56 +164,49 @@ enum TV: Endpoint {
 
         switch self {
         case .details(let tvId, let language, let append):
-            let tvDetails = tv
+            return tv
                 .appendingPathComponent("\(tvId)")
-                .appendingLanguage(language)
-            if let append = append {
-                let appendEndpoints = append.map { $0.name }.joined(separator: ",")
-                let appendToResponse = URLQueryItem(name: "append_to_response", value: appendEndpoints)
-                let query = append.compactMap { $0.queryItem }
-                return tvDetails
-                    .appendingQueryItem(appendToResponse)
-                    .appendingQueryItems(query)
-            }
-            return tvDetails
-        case .accountStates(let tvId, let language):
+                .appendingDetails(append, language: language)
+
+        case .accountStates(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/account_states")
-                .appendingLanguage(language)
         case .aggregateCredits(let tvId, let language):
             return tv
                 .appendingPathComponent("\(tvId)/aggregate_credits")
                 .appendingLanguage(language)
-        case .alternativeTitles(let tvId, let language):
+        case .alternativeTitles(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/alternative_titles")
-                .appendingLanguage(language)
-        case .changes(let tvId, let pageNumber):
+        case .changes(let tvId, let pageNumber, let startDate, let endDate):
+            let dates = [URLQueryItem(name: "start_date", value: startDate),
+                         URLQueryItem(name: "end_date", value: endDate)].filter { $0.value != nil }
             return tv
                 .appendingPathComponent("\(tvId)/changes")
                 .appendingPage(pageNumber)
+                .appendingQueryItems(dates)
         case .credits(let tvId, let language):
             return tv
                 .appendingPathComponent("\(tvId)/credits")
                 .appendingLanguage(language)
-        case .episodeGroups(let tvId, let language):
+        case .episodeGroups(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/episode_groups")
-                .appendingLanguage(language)
-        case .externalIds(let tvId, let language):
+        case .externalIds(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/external_ids")
-                .appendingLanguage(language)
-        case .images(let tvId, let language):
+        case .images(let tvId, let language, let languages):
             return tv
                 .appendingPathComponent("\(tvId)/images")
                 .appendingLanguage(language)
+                .appendingQueryItem(named: "include_image_language", value: languages?.joined(separator: ","))
         case .keywords(let tvId):
             return tv.appendingPathComponent("\(tvId)/keywords")
-        case .videos(let tvId, let language):
+        case .videos(let tvId, let language, let languages):
             return tv
                 .appendingPathComponent("\(tvId)/videos")
                 .appendingLanguage(language)
+                .appendingQueryItem(named: "include_video_language", value: languages?.joined(separator: ","))
         case .translations(let tvId):
             return tv.appendingPathComponent("\(tvId)/translations")
         case .recommendations(let tvId, let page, let language):
@@ -236,29 +229,29 @@ enum TV: Endpoint {
                 .appendingPathComponent("popular")
                 .appendingPage(page)
                 .appendingLanguage(language)
-        case .latest(let language):
+        case .latest(_):
             return tv
                 .appendingPathComponent("latest")
-                .appendingLanguage(language)
         case .topRated(let page, let language):
             return tv
                 .appendingPathComponent("top_rated")
                 .appendingPage(page)
                 .appendingLanguage(language)
-        case .airingToday(let page, let language):
+        case .airingToday(let page, let language, let timezone):
             return tv
                 .appendingPathComponent("airing_today")
                 .appendingPage(page)
                 .appendingLanguage(language)
-        case .onTheAir(let page, let language):
+                .appendingQueryItem(named: "timezone", value: timezone)
+        case .onTheAir(let page, let language, let timezone):
             return tv
                 .appendingPathComponent("on_the_air")
                 .appendingPage(page)
                 .appendingLanguage(language)
-        case .contentRatings(let tvId, let language):
+                .appendingQueryItem(named: "timezone", value: timezone)
+        case .contentRatings(let tvId, _):
             return tv
                 .appendingPathComponent("\(tvId)/content_ratings")
-                .appendingLanguage(language)
         case .screenedTheatrically(let tvId):
             return tv
                 .appendingPathComponent("\(tvId)/screened_theatrically")
