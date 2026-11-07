@@ -109,15 +109,23 @@ private extension NetworkClient {
     func startRequest(_ request: URLRequest, cachePolicy: CachePolicy, completion: @escaping (NetworkResult) -> Void) {
         var modifiedRequest = request
         let reqId = httpLogger.logStart(request)
-        let cachedResponse = cache.cachedResponse(for: request)
+        if cachePolicy == .never {
+            modifiedRequest.cachePolicy = .reloadIgnoringLocalCacheData
+            modifiedRequest.setValue("no-store", forHTTPHeaderField: "Cache-Control")
+        }
+        var cachedResponse = cachePolicy == .allowed ? cache.cachedResponse(for: request) : nil
+        if let response = cachedResponse?.response as? HTTPURLResponse,
+           !HTTPResponseHeaders(response.allHeaderFields).allowsStorage {
+            cache.removeCachedResponse(for: request)
+            cachedResponse = nil
+        }
 
-        if cachePolicy == .allowed,
-           let cachedResponse = cachedResponse,
+        if let cachedResponse = cachedResponse,
            let httpResponse = cachedResponse.response as? HTTPURLResponse {
             let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
-            let now = Date()
+            let storedAt = cachedResponse.userInfo?["TMDBKitStoredAt"] as? Date
 
-            if let maxAge = headers.maxAge, maxAge > 0, now < Date.withTimeIntervalSinceNow(maxAge) ?? now {
+            if headers.isFresh(at: Date(), storedAt: storedAt) {
                 return completion(.success(NetworkResult.SuccessValue(value: cachedResponse.data,
                                                                       headers: headers,
                                                                       statusCode: httpResponse.statusCode)))
@@ -153,23 +161,23 @@ private extension NetworkClient {
                     return completion(.error(TMDBError.httpError(httpResponse.statusCode)))
                 }
 
+                let headers = HTTPResponseHeaders(httpResponse.allHeaderFields)
                 if cachePolicy == .allowed {
-                    self.cache.storeCachedResponse(CachedURLResponse(response: httpResponse, data: data), for: modifiedRequest)
+                    if headers.allowsStorage {
+                        let cached = CachedURLResponse(response: httpResponse, data: data,
+                                                       userInfo: ["TMDBKitStoredAt": Date()], storagePolicy: .allowed)
+                        self.cache.storeCachedResponse(cached, for: request)
+                    } else {
+                        self.cache.removeCachedResponse(for: request)
+                    }
                 }
 
                 return completion(.success(NetworkResult.SuccessValue(value: data,
-                                                                      headers: HTTPResponseHeaders(httpResponse.allHeaderFields),
+                                                                      headers: headers,
                                                                       statusCode: httpResponse.statusCode)))
             }
         }
 
         task.resume()
-    }
-}
-
-private extension Date {
-    static func withTimeIntervalSinceNow(_ timeInterval: TimeInterval?) -> Date? {
-        guard let timeInterval = timeInterval else { return nil }
-        return Date().addingTimeInterval(timeInterval)
     }
 }

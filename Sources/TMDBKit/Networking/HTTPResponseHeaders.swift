@@ -12,42 +12,55 @@ struct HTTPResponseHeaders {
     let etag: String?
     let maxAge: TimeInterval?
 
-    /*
-     All possible cache response directives:
-     Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+    let date: Date?
+    let age: TimeInterval
+    let requiresRevalidation: Bool
+    let allowsStorage: Bool
 
-     Cache-Control: must-revalidate
-     Cache-Control: no-cache
-     Cache-Control: no-store
-     Cache-Control: no-transform
-     Cache-Control: public
-     Cache-Control: private
-     Cache-Control: proxy-revalidate
-     Cache-Control: max-age=<seconds>
-     Cache-Control: s-maxage=<seconds>
+    private static func directives(from value: String?) -> [String] {
+        return value?.lowercased().split(separator: ",").map {
+            $0.trimmingCharacters(in: .whitespacesAndNewlines)
+        } ?? []
+    }
 
-     Note that directives may also be combined, e.g.
-     Cache-Control: no-cache, no-store, must-revalidate
-
-     Currently we support only max-age=<seconds>
-     */
     private static func parseMaxAge(from cacheControlHeader: String?) -> TimeInterval? {
-        guard let cacheControl = cacheControlHeader else { return nil }
-
-        // Including explicit types to help Swift typechecker to perform faster
-        let cacheControlDirectives: [String] = cacheControl.lowercased().split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-        let maxAgeDirective: String? = cacheControlDirectives.filter { $0.starts(with: "max-age") }.first
-        let maxAgeKeyValue: [String.SubSequence]? = maxAgeDirective.map { $0.split(separator: "=") }
-
-        guard let keyValuePair = maxAgeKeyValue, keyValuePair.count == 2, let maxAge = TimeInterval(keyValuePair[1]) else { return nil }
-
-        return maxAge
+        let directive = directives(from: cacheControlHeader).first {
+            $0.split(separator: "=").first?.trimmingCharacters(in: .whitespaces) == "max-age"
+        }
+        let pair = directive?.split(separator: "=", maxSplits: 1)
+        guard let parts = pair, parts.count == 2 else { return nil }
+        return TimeInterval(parts[1].trimmingCharacters(in: .whitespaces).trimmingCharacters(in: CharacterSet(charactersIn: "\"")))
     }
 
     init(_ headers: [AnyHashable: Any]) {
-        let stringHeaders = headers as? [String: String]
+        var fields: [String: String] = [:]
+        for (key, value) in headers {
+            guard let name = key as? String, let value = value as? String else { continue }
+            fields[name.lowercased()] = value
+        }
+        etag = fields["etag"]
+        maxAge = HTTPResponseHeaders.parseMaxAge(from: fields["cache-control"])
+        age = max(0, fields["age"].flatMap(TimeInterval.init) ?? 0)
+        let directives = HTTPResponseHeaders.directives(from: fields["cache-control"]).map {
+            $0.split(separator: "=").first?.trimmingCharacters(in: .whitespaces) ?? ""
+        }
+        requiresRevalidation = directives.contains("no-cache")
+        allowsStorage = !directives.contains("no-store")
 
-        etag = stringHeaders?["Etag"]
-        maxAge = HTTPResponseHeaders.parseMaxAge(from: stringHeaders?["Cache-Control"])
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        date = fields["date"].flatMap { formatter.date(from: $0) }
+    }
+
+    func isFresh(at now: Date, storedAt: Date?) -> Bool {
+        guard allowsStorage, !requiresRevalidation, let maxAge = maxAge, maxAge > 0,
+              let responseDate = date ?? storedAt else { return false }
+        // Imported entries lack our receipt metadata; Date still supplies their apparent age.
+        let receivedAt = storedAt ?? now
+        let initialAge = max(age, max(0, receivedAt.timeIntervalSince(responseDate)))
+        let currentAge = initialAge + max(0, now.timeIntervalSince(receivedAt))
+        return currentAge < maxAge
     }
 }
