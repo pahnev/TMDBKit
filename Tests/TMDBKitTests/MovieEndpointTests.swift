@@ -60,6 +60,7 @@ class MovieEndpointTests: TMDBTestCase {
             stubResponse(["status_code": 1, "status_message": "ok"]) { request in
                 count += 1
                 XCTAssertEqual(request.httpMethod, method)
+                XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
                 XCTAssertEqual(request.url?.path, "/3/movie/1/rating")
                 XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
                 let query = try self.queryItems(in: request)
@@ -68,7 +69,10 @@ class MovieEndpointTests: TMDBTestCase {
                 if method == "POST" {
                     let object = try XCTUnwrap(JSONSerialization.jsonObject(with: self.requestBody(request)) as? [String: Double])
                     XCTAssertEqual(object, ["value": 8.5])
-                } else { XCTAssertNil(request.httpBody) }
+                } else {
+                    XCTAssertNil(request.httpBody)
+                    XCTAssertNil(request.httpBodyStream)
+                }
             }
             let response: StatusResponse?
             if method == "POST" { response = try awaitFor { tmdb.movies.rateMovie(1, rating: 8.5, guestSessionId: guest, completion: $0) }.value }

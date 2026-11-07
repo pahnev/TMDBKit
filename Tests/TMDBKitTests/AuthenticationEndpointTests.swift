@@ -15,6 +15,7 @@ final class AuthenticationEndpointTests: TMDBTestCase {
             requestCount += 1
             XCTAssertEqual(request.url?.path, "/3/authentication/session")
             XCTAssertEqual(request.httpMethod, "DELETE")
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
             XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json;charset=utf-8")
             XCTAssertEqual(try self.queryItems(in: request), [URLQueryItem(name: "api_key", value: "123")])
             let body = try XCTUnwrap(requestBodyJSON(request) as? [String: String])
