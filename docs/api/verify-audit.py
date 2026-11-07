@@ -3,6 +3,7 @@
 import argparse
 import collections
 import hashlib
+from decimal import Decimal
 from functools import lru_cache
 import json
 from pathlib import Path
@@ -103,7 +104,18 @@ def validate():
 def validate_final(official, baseline):
     final = json.loads((ROOT / 'docs/api/final-api-inventory.json').read_text())
     assert final['baseline_revision'] == BASELINE
-    subprocess.run(['git', 'diff', '--exit-code', final['source_revision'], '--', 'Sources/TMDBKit', 'Tests/TMDBKitTests', 'Package.swift'], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
+    # Fixture formatting may change without changing the pinned source/test contract.
+    subprocess.run(['git', 'diff', '--exit-code', final['source_revision'], '--',
+                    'Sources/TMDBKit', 'Tests/TMDBKitTests', 'Package.swift',
+                    ':(glob,exclude)Tests/TMDBKitTests/Fixtures/**/*.json'],
+                   cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
+    changed_fixtures = subprocess.check_output(
+        ['git', 'diff', '--name-only', '-z', final['source_revision'], '--',
+         ':(glob)Tests/TMDBKitTests/Fixtures/**/*.json'], cwd=ROOT).decode().split('\0')
+    for path in filter(None, changed_fixtures):
+        original = subprocess.check_output(['git', 'show', final['source_revision'] + ':' + path], cwd=ROOT)
+        assert json.loads(original, parse_float=Decimal) == json.loads(
+            (ROOT / path).read_bytes(), parse_float=Decimal), 'Fixture contents changed: ' + path
     assert final['contract_sha256'] == EXPECTED_HASH
     rows = final['operations']
     account = next(row for row in rows if row['operation_id'] == 'account-details')
