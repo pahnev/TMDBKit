@@ -12,7 +12,7 @@ The harness creates isolated URLCache instances for each injected client/session
 
 ## Shared errors
 
-`E` in every row links to [NetworkClientTests](../../Tests/TMDBKitTests/NetworkClientTests.swift): `testSharedHTTPErrorMapping` (401/404/429/500), `testSharedNetworkErrorMapping` (timeout), `testSharedNonHTTPResponseMapping`, and `testSharedDecodingErrorMapping`. These assert the existing public mapping, including legacy nested `networkError(httpError(status))`, `networkError(networkError(URLError))`, and `networkError(nonHttpResponseError)` wrappers. Missing user credentials are covered by `testMissingUserSessionRetainsErrorWithoutRequest` and `AuthenticationEndpointTests.test_deleteSession_withoutSession_returnsError`. Per-operation server error payload variations and further cache/transport behavior belong to Task 9; this table does not claim them.
+`E` in every row links to [NetworkClientTests](../../Tests/TMDBKitTests/NetworkClientTests.swift): `testSharedHTTPErrorMapping` (401/404/429/500), `testSharedNetworkErrorMapping` (timeout), `testSharedNonHTTPResponseMapping`, and `testSharedDecodingErrorMapping`. These assert the existing public mapping, including legacy nested `networkError(httpError(status))`, `networkError(networkError(URLError))`, and `networkError(nonHttpResponseError)` wrappers. Missing user credentials are covered by `testMissingUserSessionRetainsErrorWithoutRequest` and `AuthenticationEndpointTests.test_deleteSession_withoutSession_returnsError`. Task 9 adds `testHTTPFailuresCompleteOnce` (401/403/404/422/429/500), `testTransportFailureCompletesOnce` (timeout), and `testMalformedJSONReturnsDecodingError` through the public token method. These assert no success value and one completion, draining already-enqueued main callbacks without sleeps. Per-operation server error payload variations remain outside this shared mapping claim.
 
 ## Per-operation matrix
 
@@ -144,3 +144,50 @@ CLANG_MODULE_CACHE_PATH=/tmp/tmdbkit-clang-cache SWIFTPM_MODULECACHE_OVERRIDE=/t
 ```
 
 The only full-run warnings were the existing restricted SwiftPM user-cache paths. No network API calls or real credentials were used.
+
+
+## Transport and cache lifecycle (Task 9)
+
+[NetworkCacheTests](../../Tests/TMDBKitTests/NetworkCacheTests.swift) uses an injected memory-only URLCache, a session with automatic caching disabled, literal seeded response dates/headers, and serial URLProtocol requests. Its counting cache subclass delegates storage to Foundation and observes production reads/writes; Foundation rejects mutation cache seeds, so POST/DELETE isolation is asserted through zero cache accesses and repeated outgoing requests. No live API calls, credentials, or timing sleeps are used.
+
+| Behavior | Named test and evidence |
+| --- | --- |
+| Fresh payload skips the network | `testFreshCacheAvoidsRequest`: two public calls return seeded favorite=true, zero requests |
+| Expired payload revalidates | `testExpiredCacheRevalidatesWithETag`: Date one hour old plus max-age=1 produces one request with literal If-None-Match; returned replacement is reused fresh |
+| Conditional success and missing entry | `testNotModifiedReturnsCachedPayload` returns seeded object with status wrapper 304; `testNotModifiedWithoutCacheFails` retains underlying httpError(304) |
+| Mutation isolation | `testMutationsNeverReadOrPopulateCache`: representative POST/DELETE each send two requests, no cache reads/writes, no stored response; outgoing reload/no-store policy asserted |
+| Authentication isolation | `testAuthenticationResponsesAreNotCached`: request-token GET, session POST and DELETE each send repeated requests without cache access/storage; seeded token entry is ignored. `testNeverCacheNotModifiedCannotReuseStoredPayload` rejects 304 despite a stored secret token |
+| Credential replacement | `testCredentialReplacementDoesNotReusePreviousAccountResponse`: cache account A, replace API key/session, assert exact new query and account B response with another wire request |
+| Cache clearing | `testClearCachesRemovesStoredResponses`: two seeded entries removed, next public call reaches network |
+| Header/response directives | `testResponseAgeHeaderAlsoExpiresCache`, `testNoCacheAlwaysRevalidates`, `testNoStoreNeitherReadsNorStoresPayload`, `testCacheHeaderNamesAreCaseInsensitive` |
+| Injection isolation | `NetworkClientTests.testInjectedCacheRetainsCallerCapacities` preserves requested 1 MB memory / zero disk; default clients retain the existing 100 MB shared-cache configuration |
+
+Regression-backed repairs preserve the injected cache capacities; compare max-age with actual Date/Age plus stored receipt time; normalize header names; honor no-cache/no-store; and limit cache lookup/304 fallback to cache-permitted requests. Existing public error nesting, callback API, authentication protocol and 304 status wrapper remain unchanged. A 304 uses the cached body without refreshing its stored metadata, so subsequent requests can revalidate again. The tests assert outgoing URLSession reload/no-store directives; their deliberately disabled automatic cache does not claim an integration test of Foundation's live disk-cache behavior.
+
+The final serial run passed **265 tests, zero failures**. The focused authentication/movie/TV/transport/cache run passed **135**, including both Task 9 suites (**22**). Full command:
+
+```sh
+set -o pipefail
+CLANG_MODULE_CACHE_PATH=/tmp/tmdbkit-clang-cache SWIFTPM_MODULECACHE_OVERRIDE=/tmp/tmdbkit-swift-cache swift test --disable-sandbox --enable-code-coverage 2>&1 | tee /tmp/task9-full-raw.log | xcsift -f toon -w > /tmp/task9-full.toon
+```
+
+Measured from `.build/out/Products/Debug/codecov/TMDBKit.json` produced by that run (LLVM-reported line/function counts):
+
+| Scope | Lines covered / count | Functions covered / count |
+| --- | --- | --- |
+| Entire export, including tests and generated test entry point | 8895 / 9104 (97.70%) | 3261 / 3366 (96.88%) |
+| 36 exported files under Sources/TMDBKit only | 2091 / 2250 (92.93%) | 261 / 342 (76.32%) |
+| NetworkClient.swift | 214 / 219 (97.72%) | 13 / 15 (86.67%) |
+| HTTPResponseHeaders.swift | 57 / 59 (96.61%) | 12 / 14 (85.71%) |
+| APIClient/TMDB.swift | 161 / 174 (92.53%) | 28 / 31 (90.32%) |
+| TMDBError.swift | 0 / 20 (0%) | 0 / 1 (0%) |
+
+The source subtotal sums `files[].summary` only for paths containing `/Sources/TMDBKit/`; the export total is **not** library-only coverage. These are measured denominators, not a percentage target. LLVM exports zero branch counters for this run, so no branch-coverage percentage is claimed. Remaining paths/limits include:
+
+- `NetworkClient`: nil-data error guard (URLProtocol's successful completion supplies Data even when empty), disk-size accessor and nonempty additional-header forwarding. Non-HTTP response failures are covered; a non-HTTP *cached* entry is not seeded.
+- Headers: malformed/non-string header entries, empty directive fallback, and date-less imported entries/receipt-time fallback. Standard current/old Date, Age, ETag casing and no-cache/no-store are exercised; this is not a general HTTP-cache compliance suite.
+- `TMDB`: separate error branches for optional-session/response-wrapper requests, valueNotFound decoding and unknown-decoder-error precondition fallbacks. Shared error categories are exercised through a public token method; every endpoint/error combination is not claimed.
+- `TMDBError.errorDescription` is not invoked: assertions intentionally check error categories and underlying values, not localized wording. The unused cacheSavingError case remains declared.
+- No retry/backoff, cancellation, concurrent credential replacement, arbitrary delayed duplicate completion, or real-server cache behavior is asserted. Existing synchronous cache-hit callback behavior is retained.
+
+The final build emitted only the four existing restricted SwiftPM user-cache warnings. Task 8 review nits also now assert absent Authorization on handwritten authentication/movie/TV mutations and absent DELETE body streams, and link the existing tagged-image first-result parsing test in the matrix.
