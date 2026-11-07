@@ -1,6 +1,9 @@
 import Foundation
 
-/// Lossless JSON change payload. Object keys retain their original wire spelling.
+/// JSON change payload preserving integral identifiers and original object-key spelling.
+/// Integral tokens decode as `integer` before `number`. A manually constructed
+/// `number(1.0)` may encode as `1` and canonicalize to `integer(1)` on decoding;
+/// exact numeric enum-case preservation is not guaranteed for whole-valued Doubles.
 public indirect enum ChangeValue: CodableEquatable {
     case string(String)
     case integer(Int)

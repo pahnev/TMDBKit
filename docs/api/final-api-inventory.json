@@ -52,7 +52,7 @@
       "public_present": true,
       "snapshot_deprecated": false,
       "reference_deprecated": false,
-      "endpoint_symbol": "Account.details",
+      "endpoint_symbol": "Account.detailsFor",
       "contract_pointer": "/paths/~13~1account~1{account_id}/get",
       "repair_tasks": [
         "7G",

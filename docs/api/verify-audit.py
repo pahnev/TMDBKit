@@ -106,6 +106,8 @@ def validate_final(official, baseline):
     subprocess.run(['git', 'diff', '--exit-code', final['source_revision'], '--', 'Sources/TMDBKit', 'Tests/TMDBKitTests', 'Package.swift'], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
     assert final['contract_sha256'] == EXPECTED_HASH
     rows = final['operations']
+    account = next(row for row in rows if row['operation_id'] == 'account-details')
+    assert account['endpoint_symbol'] == 'Account.detailsFor', 'Official account details must not map to legacy /account'
     assert len(rows) == len({r['key'] for r in rows}) == 152
     assert {r['key'] for r in rows} == set(official)
     old = {r['key']: r for r in baseline['operations']}

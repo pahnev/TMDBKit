@@ -188,6 +188,14 @@ final class ResponseContractTests: XCTestCase {
         try roundTrip(tv)
     }
 
+    func testChangeValueWholeDoubleCanonicalizesToInteger() throws {
+        // JSONEncoder need not preserve a fractional spelling for a whole Double.
+        let original = ChangeValue.number(1.0)
+        let decoded = try decode(ChangeValue.self, JSONEncoder().encode(original))
+        XCTAssertEqual(decoded, .integer(1))
+        XCTAssertNotEqual(decoded, original)
+    }
+
     func testChangeRequiredFieldsRejectMalformedData() throws {
         // Synthetic invalid boundaries preserve strict identity and structure.
         for json in [#"{"action":"a","time":"t"}"#, #"{"id":7,"action":"a","time":"t"}"#,
